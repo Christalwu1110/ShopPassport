@@ -542,6 +542,55 @@ body[data-skin=cny] .week{background:linear-gradient(90deg,#a50e22,#e3a82b)}
 @media (max-width:380px){.ccard .v{font-size:13px}.ccard{padding:8px 6px}}
 /* rewards ticket text never runs under the tag */
 .ticket .r{padding-right:56px}
+/* ===== UI polish v3 ===== */
+/* use the whole screen on phones (iOS home-screen app included) */
+@media (max-width:760px){html,body{height:100%;overflow:hidden}.phone{position:fixed;inset:0;width:auto;height:auto}}
+/* docked tab bar, flush with the bottom edge, labels like a native app */
+.nav{left:0;right:0;bottom:0;transform:none;border-radius:22px 22px 0 0;padding:8px 6px calc(10px + env(safe-area-inset-bottom));gap:0;justify-content:space-around;align-items:flex-end;background:color-mix(in srgb,var(--card) 88%,transparent);-webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4);box-shadow:0 -1px 0 rgba(0,0,0,.06),0 -10px 30px rgba(20,22,40,.08)}
+@media (max-width:760px){.nav{bottom:0}}
+.nav.hide{transform:translateY(110%)}
+.nav button{flex:1;width:auto;height:auto;border-radius:12px;display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 0;background:none!important;color:#9a9caa!important}
+.nav button span{font:600 10px Inter;letter-spacing:.01em}
+.nav button svg{width:22px;height:22px}
+.nav button.on{color:var(--ink2)!important}
+.nav button.on::after{content:"";width:4px;height:4px;border-radius:50%;background:var(--accent);margin-top:1px}
+.nav button.scanbtn{flex:1;width:auto;height:auto;margin:0;outline:0;box-shadow:none}
+.nav button.scanbtn b{width:58px;height:58px;margin-top:-30px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:#fff;box-shadow:0 10px 22px -6px color-mix(in srgb,var(--accent) 70%,transparent);border:4px solid var(--app);transition:transform .15s}
+.nav button.scanbtn:active b{transform:scale(.94)}
+.nav button.scanbtn.on::after{display:none}
+.nav button.scanbtn span{color:var(--accent)}
+body[data-skin=halloween] .nav{background:color-mix(in srgb,var(--card) 90%,transparent)}
+/* content clears the docked bar */
+.ppwrap{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
+.me-scroll,.rlist{padding-bottom:calc(110px + env(safe-area-inset-bottom))}
+.routecard{bottom:calc(92px + env(safe-area-inset-bottom))}
+/* profile: content fades out under the header instead of colliding with it */
+.me-scroll{-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 22px);mask-image:linear-gradient(to bottom,transparent 0,#000 22px);padding-top:8px}
+/* passport page: sized from the page itself, so stamps never overlap on any phone */
+.ppage{container-type:size;border-radius:4px 18px 18px 4px}
+.pst,.slot{width:min(26cqw,23cqh)}
+.ppage[data-n="3"] .pst,.ppage[data-n="3"] .slot,.ppage[data-n="4"] .pst,.ppage[data-n="4"] .slot{width:min(34cqw,25cqh)}
+/* empty slot = a ghost stamp: same rectangle, perforated edge, dashed inner frame */
+.slot{border:0;border-radius:0;padding:0;aspect-ratio:120/156;--r:3px;
+  background:radial-gradient(var(--r),#0000 97%,#d9dce4) round calc(-1.5*var(--r)) calc(-1.5*var(--r))/calc(3*var(--r)) calc(3*var(--r)),linear-gradient(#d9dce4 0 0) no-repeat 50%/calc(100% - 3*var(--r)) calc(100% - 3*var(--r));
+  color:#9a9eab;gap:4px;opacity:.95}
+.slot::before{content:"";position:absolute;inset:8px;background:#f8f9fb;border:1.5px dashed #c5c9d3}
+.slot>*{position:relative}
+.slot:hover{background:radial-gradient(var(--r),#0000 97%,#c5cad6) round calc(-1.5*var(--r)) calc(-1.5*var(--r))/calc(3*var(--r)) calc(3*var(--r)),linear-gradient(#c5cad6 0 0) no-repeat 50%/calc(100% - 3*var(--r)) calc(100% - 3*var(--r))}
+.slot span{width:30px;height:30px;background:#eceef3;font:400 15px 'Alfa Slab One';color:#b3b7c3}
+.slot em{position:absolute;top:14px;left:0;right:0;text-align:center;font:500 7.5px 'JetBrains Mono';letter-spacing:.14em;font-style:normal;color:#b3b7c3}
+.slot small{font:600 9px Inter;color:#8a8e9b;letter-spacing:0;padding:0 10px}
+/* passport index tabs sticking out of the page edge */
+.itabs{position:absolute;right:-13px;top:16%;display:flex;flex-direction:column;gap:6px;z-index:3}
+.itabs button{writing-mode:vertical-rl;font:700 8px 'JetBrains Mono';letter-spacing:.14em;text-transform:uppercase;color:#fff;background:var(--tc);opacity:.45;padding:10px 3px;border-radius:0 6px 6px 0;box-shadow:2px 2px 0 rgba(0,0,0,.08)}
+.itabs button.on{opacity:1;padding-right:6px}
+.ppwrap{padding-right:26px}
+/* page header reads like a passport visa page */
+.pphead{padding-top:14px}
+.pgt b{font-size:22px}
+.pgt span{font:600 11px 'JetBrains Mono';background:color-mix(in srgb,var(--accent) 10%,#fff);color:var(--accent);padding:3px 8px;border-radius:99px}
+/* map: docked bar leaves room */
+.fab{bottom:calc(96px + env(safe-area-inset-bottom))}
 /* shop page: content clears the sticky button */
 .shopscroll{padding-bottom:calc(120px + env(safe-area-inset-bottom))}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
@@ -1091,11 +1140,11 @@ body[data-skin=cny] .week{background:linear-gradient(90deg,#a50e22,#e3a82b)}
   </section>
 
   <nav class="nav hide" id="nav">
-    <button data-go="passport" aria-label="Passport"><svg viewBox="0 0 24 24"><use href="#i-book"/></svg></button>
-    <button data-go="map" aria-label="Map"><svg viewBox="0 0 24 24"><use href="#i-map"/></svg></button>
-    <button data-go="scan" aria-label="Scan" class="scanbtn"><svg viewBox="0 0 24 24"><use href="#i-scan"/></svg></button>
-    <button data-go="rewards" aria-label="Rewards"><svg viewBox="0 0 24 24"><use href="#i-gift"/></svg></button>
-    <button data-go="me" aria-label="Profile"><svg viewBox="0 0 24 24"><use href="#i-user"/></svg></button>
+    <button data-go="passport" aria-label="Passport"><svg viewBox="0 0 24 24"><use href="#i-book"/></svg><span>Passport</span></button>
+    <button data-go="map" aria-label="Explore"><svg viewBox="0 0 24 24"><use href="#i-map"/></svg><span>Explore</span></button>
+    <button data-go="scan" aria-label="Scan" class="scanbtn"><b><svg viewBox="0 0 24 24"><use href="#i-scan"/></svg></b><span>Scan</span></button>
+    <button data-go="rewards" aria-label="Rewards"><svg viewBox="0 0 24 24"><use href="#i-gift"/></svg><span>Rewards</span></button>
+    <button data-go="me" aria-label="Profile"><svg viewBox="0 0 24 24"><use href="#i-user"/></svg><span>Profile</span></button>
   </nav>
   <div class="pick" id="pick"></div>
   <div class="snow"></div>
@@ -1157,7 +1206,7 @@ const PINS={fresh:{l:'Fresh cakes daily',t:'product',d:'Cakes baked every day, u
   records:{l:'Record shop',t:'product',d:'New and used vinyl, CDs and books.'},cafebar:{l:'Café-bar',t:'space',d:'Grab a drink after digging through the crates.'},live:{l:'Live music',t:'space',d:'A small live room with regular gigs and signings.'},multi:{l:'All-in-one space',t:'space',d:'Record shop, café-bar and live room in one.'},
   jointdeal:{l:'Joint offer',t:'story',d:'20% off with a Boston Tea Party receipt.'},collector:{l:'Owner’s collection',t:'story',d:'Pieces the owner has collected over many years.'},oldthings:{l:'Old things',t:'product',d:'Medals, badges, old books and souvenirs.'},bristolold:{l:'Bristol memorabilia',t:'story',d:'Old objects connected to the city.'},
   historic:{l:'Historic',t:'story',d:'Named after the hole drinkers used to watch for press gangs.'},seasonal:{l:'Seasonal menu',t:'product',d:'The menu follows the seasons and local produce.'},local:{l:'Local produce',t:'craft',d:'Works with local suppliers.'},garden:{l:'Garden',t:'space',d:'Sit outside when the weather’s good.'}};
-const SERIES=[{id:'landmarks',name:'Landmarks',seal:'Bristol Seal',paper:'#f3f8fc'},{id:'streetart',name:'Street Art',seal:'Spray Can Seal',paper:'#f1f2f5'},{id:'indie',name:'Independent Shops',seal:'Local Hero Seal',paper:'#fdf3f5'}];
+const SERIES=[{id:'landmarks',name:'Landmarks',seal:'Bristol Seal',paper:'#f3f8fc',tab:'#2c44d6'},{id:'streetart',name:'Street Art',seal:'Spray Can Seal',paper:'#eff1f6',tab:'#ff6a3d'},{id:'indie',name:'Independent Shops',seal:'Local Hero Seal',paper:'#fdf3f5',tab:'#2f8a52'}];
 const ROUTES=[{id:'banksy',name:'Banksy & Park Street',len:'Full day',stops:['stokes','roughtrade','steps','cafe56','militaria','boutique','frogmore','cityhall']},
   {id:'harbour',name:'Harbourside',len:'Half day',stops:['cityhall','hole','mshed','hanover']},
   {id:'clifton',name:'Clifton afternoon',len:'Half day',stops:['cabot','bridge']}];
@@ -1225,15 +1274,17 @@ function pageHTML(){
   <div class="pgt"><b>${s.name}</b><span>${n} / ${ids.length}</span></div>
   <svg class="wm" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="50" cy="50" r="46"/><circle cx="50" cy="50" r="40" stroke-dasharray="2 3"/><path d="M26 64V40M74 64V40M26 42Q50 70 74 42M20 64h60"/></svg>`;
   ids.forEach((id,i)=>{
-    const p=POS[i],c=S.collected[id];
+    const p=layoutFor(ids.length)[i],c=S.collected[id];
     if(c) h+=`<button class="pst ${id===S.newId?'new':''}" data-id="${id}" style="left:${p.l}%;top:${p.t}%;--rot:${p.r}deg">${SHOPS[id].limited?`<div class="holo">${stampHTML(id,'sm')}</div>`:stampHTML(id,'sm')}${i%2===0?pmHTML():''}</button>`;
-    else h+=`<button class="slot" data-id="${id}" style="left:${p.l+1}%;top:${p.t+1}%;--rot:${p.r/2}deg"><span>?</span><small>${SHOPS[id].short}</small></button>`;
+    else h+=`<button class="slot" data-id="${id}" style="left:${p.l}%;top:${p.t}%;--rot:${p.r/2}deg"><em>No.${String(i+1).padStart(2,'0')}</em><span>?</span><small>${SHOPS[id].short}</small></button>`;
   });
+  h+=`<div class="itabs">${SERIES.map((x,j)=>`<button class="${j===S.page?'on':''}" data-tab="${j}" style="--tc:${x.tab}">${x.name.split(' ')[0]}</button>`).join('')}</div>`;
   h+=`<div class="reward ${done?'':'lock'}"><svg viewBox="0 0 160 200"><use href="#seal"/></svg><div><b>${done?s.seal+' earned':'Complete to earn the '+s.seal}</b><small>${done?'Series complete · '+TODAY:(ids.length-n)+' more stamp'+(ids.length-n>1?'s':'')+' to go'}</small></div></div>
   <div class="ppfoot"><span>SWIPE TO TURN</span><span class="dots">${SERIES.map((_,i)=>`<i class="${i===S.page?'on':''}"></i>`).join('')}</span></div>`;
   return h;
 }
-function paintPage(){const pg=$('#ppage');pg.style.background=`repeating-radial-gradient(circle at 110% -10%,transparent 0 7px,rgba(44,68,214,.055) 7px 8px),repeating-radial-gradient(circle at -10% 110%,transparent 0 7px,rgba(255,106,61,.055) 7px 8px),${SERIES[S.page].paper}`}
+function layoutFor(n){return n<=3?[{l:8,t:16,r:-5},{l:52,t:14,r:4},{l:30,t:47,r:-2}]:n===4?[{l:8,t:16,r:-5},{l:52,t:14,r:4},{l:10,t:48,r:3},{l:54,t:46,r:-3}]:[{l:5,t:17,r:-6},{l:36,t:14,r:5},{l:67,t:18,r:-3},{l:18,t:49,r:4},{l:54,t:47,r:-4}]}
+function paintPage(){const pg=$('#ppage');pg.dataset.n=items(SERIES[S.page].id).length;pg.style.background=`repeating-radial-gradient(circle at 110% -10%,transparent 0 7px,rgba(44,68,214,.055) 7px 8px),repeating-radial-gradient(circle at -10% 110%,transparent 0 7px,rgba(255,106,61,.055) 7px 8px),${SERIES[S.page].paper}`}
 function renderNext(){
   const n=nearestTodo();const el=$('#nextbar');
   if(!n){el.innerHTML='<b>All stamps collected ✦</b>';return}
@@ -1255,7 +1306,7 @@ let sx=null,moved=false;
 $('#ppwrap').addEventListener('pointerdown',e=>{sx=e.clientX;moved=false});
 $('#ppwrap').addEventListener('pointermove',e=>{if(sx!==null&&Math.abs(e.clientX-sx)>10)moved=true});
 $('#ppwrap').addEventListener('pointerup',e=>{if(sx===null)return;const dx=e.clientX-sx;sx=null;if(Math.abs(dx)>40)turn(S.page+(dx<0?1:-1))});
-$('#ppage').addEventListener('click',e=>{if(moved)return;const b=e.target.closest('[data-id]');if(b){buzz();openShop(b.dataset.id)}});
+$('#ppage').addEventListener('click',e=>{if(moved)return;const tb=e.target.closest('[data-tab]');if(tb){turn(+tb.dataset.tab);return}const b=e.target.closest('[data-id]');if(b){buzz();openShop(b.dataset.id)}});
 
 /* ---------- sheet ---------- */
 function openSheet(html){$('#sheet').innerHTML='<div class="grab"></div>'+html;$('#sheet').classList.add('on');$('#backdrop').classList.add('on')}
