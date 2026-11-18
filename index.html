@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#1f2a5c">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Shop Passport">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -663,6 +663,30 @@ body[data-skin=halloween] .nav{background:color-mix(in srgb,var(--card) 90%,tran
 .scan-ui{padding:0 var(--m) calc(var(--tab) + var(--safe-b) + 24px)}
 /* sheets: content sits above the home indicator */
 .sheet{left:0;right:0;bottom:0;border-radius:14px 14px 0 0;padding:8px var(--m) calc(var(--safe-b) + 16px)}
+/* ===== fixes after on-device test ===== */
+@media (max-width:760px){
+  html,body{height:100%}
+  .phone{position:fixed;top:0;left:0;right:0;bottom:auto;height:var(--app-h,100dvh)}
+  /* safe-area top is already applied once by .view; don't add it twice */
+  .vpad{padding-top:12px}
+  .mhd{padding-top:12px}
+  #v-map .msearch{top:calc(var(--safe-t) + 8px)}
+}
+/* map: weekly banner and chips stay inside the screen */
+.maptop{right:16px;left:16px;max-width:none}
+.week{width:100%;min-width:0;padding:10px 12px;gap:10px}
+.week>div{flex:1;min-width:0}
+.week b{display:block;max-width:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px}
+.week small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px}
+.week .cnt{flex:none;margin-left:0;font-size:11px}
+.fchips{margin:0 -16px;padding:0 16px}
+/* pick one of three: cards keep their size; the chosen one stays centred */
+.cards{align-items:stretch}
+.ccard{aspect-ratio:auto;min-height:168px;max-width:112px;overflow:hidden}
+.ccard .v{font-size:14px;line-height:1.2}
+.ccard .c{font-size:10.5px}
+.ccard.chosen{transform:scale(1.06)!important}
+.ccard.out{display:none}
 /* shop page: content clears the sticky button */
 .shopscroll{padding-bottom:calc(120px + env(safe-area-inset-bottom))}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
@@ -1430,7 +1454,7 @@ $('#mfilter').addEventListener('click',e=>{const b=e.target.closest('[data-f]');
 function weekLeft(){const d=new Date(),n=(7-d.getDay())%7;return n===0?'Ends today':`${n} days left`}
 function weekCount(){return Object.keys(S.collected).filter(k=>WEEK.zones.includes(SHOPS[k].zone)).length}
 function renderWeek(){const n=Math.min(weekCount(),WEEK.need);
-  $('#weekBanner').innerHTML=`<div class="stamp sm" style="--paper:#f2d38a;${S.weekGot?'':'filter:grayscale(.6)'}"><svg viewBox="0 0 120 156"><use href="#st-week"/></svg></div><div><b>This week · ${WEEK.name}</b><small>${S.weekGot?'This week’s limited stamp is yours ✦':'Collect 3 stamps in this area for this week’s limited stamp'}</small></div><span class="cnt">${n}/${WEEK.need} · ${weekLeft()}</span>`;
+  $('#weekBanner').innerHTML=`<div class="stamp sm" style="--paper:#f2d38a;${S.weekGot?'':'filter:grayscale(.6)'}"><svg viewBox="0 0 120 156"><use href="#st-week"/></svg></div><div><b>This week · ${WEEK.name}</b><small>${S.weekGot?'This week’s limited stamp is yours ✦':'Collect 3 here this week for a limited stamp'}</small></div><span class="cnt">${n}/${WEEK.need} · ${weekLeft()}</span>`;
   $('#weekBanner').onclick=()=>{buzz();S.filter='todo';document.querySelectorAll('#mfilter button').forEach(x=>x.classList.toggle('on',x.dataset.f==='todo'));toast('Showing places you haven’t collected yet');renderMap()};
 }
 /* routes */
@@ -1476,7 +1500,7 @@ function cartoonize(){
     if(l.type==='background')set(l.id,'background-color',P.land);
     else if(l.type==='fill'){if(/water/.test(id))set(l.id,'fill-color',P.water);else if(/park|grass|wood|forest|garden|pitch|cemetery|landcover/.test(id))set(l.id,'fill-color',P.park);else if(/building/.test(id)){set(l.id,'fill-color',P.bld);set(l.id,'fill-outline-color',P.bld)}else if(/landuse|residential/.test(id))set(l.id,'fill-color',P.land)}
     else if(l.type==='line'){if(/water|river|waterway/.test(id))set(l.id,'line-color',P.water);else if(/rail/.test(id))set(l.id,'line-color',P.rail);else if(/road|street|highway|path|bridge|tunnel|motorway|primary|secondary|tertiary|minor|service/.test(id))set(l.id,'line-color',P.road);else if(/boundary|admin/.test(id)){try{RM.setLayoutProperty(l.id,'visibility','none')}catch(e){}}}
-    else if(l.type==='symbol'&&/poi|transit|housenum|aerialway|airport|station/.test(id)){try{RM.setLayoutProperty(l.id,'visibility','none')}catch(e){}}
+    else if(l.type==='symbol'&&/poi|transit|housenum|aerialway|airport|station|shield|ref/.test(id)){try{RM.setLayoutProperty(l.id,'visibility','none')}catch(e){}}
     else if(l.type==='fill-extrusion'){try{RM.setLayoutProperty(l.id,'visibility','none')}catch(e){}}
   });
 }
@@ -1576,7 +1600,7 @@ function showPick(id,next){
     if(P.dataset.done==='1')return;P.dataset.done='1';buzz();
     const i=+b.dataset.i,c=i===2?myst:cs[i];
     if(i===2){b.classList.remove('mys');b.classList.add(c.r);b.innerHTML=`<span class="rar">${rarity[c.r]}</span><div class="v">${c.v}</div><div class="c">${c.cond}</div><div class="e">${c.days?'Valid until '+addDays(c.days):'Keep forever'}</div>`}
-    P.querySelectorAll('.ccard').forEach(x=>x.classList.add(x===b?'chosen':'gone'));
+    P.querySelectorAll('.ccard').forEach(x=>x.classList.add(x===b?'chosen':'gone'));setTimeout(()=>P.querySelectorAll('.ccard.gone').forEach(x=>x.classList.add('out')),380);
     if(c.keep)S.keep.push({name:c.v,sym:s.sym,paper:s.paper,at:TODAY,shop:id});
     else S.coupons.unshift({id:uid(),shop:id,v:c.v,cond:c.cond,exp:addDays(c.days),r:c.r,used:null});
     save();
@@ -1797,7 +1821,6 @@ function fitViewport(){try{
   let h=window.innerHeight;
   const ios=/iPhone|iPad|iPod/.test(navigator.userAgent)||(/Macintosh/.test(navigator.userAgent)&&'ontouchend' in document);
   /* iOS Home Screen apps with a translucent status bar report a height short by the status bar */
-  if(ios&&isStandalone()){const sh=Math.max(screen.height,screen.width)>h&&innerWidth<innerHeight?screen.height:h;h=Math.max(h,sh)}
   document.documentElement.style.setProperty('--app-h',h+'px');
 }catch(e){}}
 fitViewport();addEventListener('resize',fitViewport);addEventListener('orientationchange',()=>setTimeout(fitViewport,300));
