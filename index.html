@@ -687,6 +687,68 @@ body[data-skin=halloween] .nav{background:color-mix(in srgb,var(--card) 90%,tran
 .ccard .c{font-size:10.5px}
 .ccard.chosen{transform:scale(1.06)!important}
 .ccard.out{display:none}
+/* ===== stamps in lists, festivals, featured routes ===== */
+.prow .stamp{width:30px;height:39px;flex:none;aspect-ratio:auto}
+.prow .stamp svg{height:100%}
+.nextrow{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 var(--m) 12px;scrollbar-width:none;flex:none}
+.nextrow::-webkit-scrollbar{display:none}
+.nextrow .nextbar{flex:none;width:86%;margin:0;scroll-snap-align:start}
+.nextbar.fest{background:linear-gradient(120deg,var(--cover2),var(--cover));color:#fff}
+.nextbar.fest small{color:rgba(255,255,255,.75);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+.nextbar.fest .go{color:var(--gold)}
+.nextbar.fest>div{min-width:0}
+.nextbar .fs{width:30px;height:39px;flex:none;border-radius:3px;overflow:hidden;box-shadow:0 0 0 2px #fff}
+.nextbar .fs svg{width:100%;height:100%}
+.featured{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 calc(-1*var(--m));padding:2px var(--m) 6px;scrollbar-width:none}
+.featured::-webkit-scrollbar{display:none}
+.fcard{flex:none;width:236px;border-radius:16px;overflow:hidden;background:var(--card);text-align:left;scroll-snap-align:start;color:inherit;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+.fcard .cv{height:104px;position:relative;overflow:hidden}
+.fcard .ftag{position:absolute;top:10px;left:10px;font:600 9px 'JetBrains Mono';letter-spacing:.12em;text-transform:uppercase;background:rgba(255,255,255,.9);color:#111;padding:4px 8px;border-radius:99px;z-index:2}
+.fcard .fst{position:absolute;bottom:-14px;width:48px;left:calc(18px + var(--i)*40px);transform:rotate(calc((var(--i) - 1)*8deg))}
+.fcard .fst.big{left:auto;right:14px;width:56px;bottom:-8px;transform:rotate(6deg)}
+.fcard .bd{padding:12px 14px 14px}
+.fcard b{font:700 15px 'Inter Tight';display:block}
+.fcard small{display:block;font-size:12px;color:var(--muted);line-height:1.35;margin:3px 0 10px;min-height:32px}
+.fcard .meta{display:flex;justify-content:space-between;font:600 10.5px 'JetBrains Mono';color:var(--accent)}
+.deco{position:absolute;inset:0;pointer-events:none;z-index:45;overflow:hidden}
+.scr:not([data-view=passport]):not([data-view=me]):not([data-view=rewards]):not([data-view=map]) .deco{display:none}
+.lights{position:absolute;left:0;right:0;top:calc(var(--safe-t) + 2px);height:14px;background:radial-gradient(circle,#ffd23a 3px,transparent 4px) 0 4px/26px 14px repeat-x,radial-gradient(circle,#ff4d4d 3px,transparent 4px) 13px 6px/26px 14px repeat-x;animation:twinkle 1.6s steps(2) infinite}
+.lights::before{content:"";position:absolute;left:0;right:0;top:0;height:8px;border-bottom:1.5px solid #2f6b3a;border-radius:0 0 50% 50%/0 0 100% 100%}
+@keyframes twinkle{50%{filter:brightness(1.6) saturate(1.3)}}
+@media (min-width:761px){.lights{top:40px}.lantern{top:36px!important}}
+.bat{position:absolute;left:-40px;top:var(--y);width:34px;animation:batfly 10s linear var(--d) infinite;opacity:.85}
+@keyframes batfly{0%{transform:translate(0,0) scaleY(1)}10%{transform:translate(50px,-12px) scaleY(.6)}20%{transform:translate(100px,4px) scaleY(1)}100%{transform:translate(520px,-30px) scaleY(.7)}}
+.lantern{position:absolute;top:calc(var(--safe-t));width:26px;pointer-events:auto;transform-origin:top center;animation:swing 3s ease-in-out var(--s) infinite}
+.lantern svg{width:100%}
+@keyframes swing{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+.lantern.swing2{animation:swing .4s ease-in-out 3}
+.spark{position:absolute;width:5px;height:5px;border-radius:50%;animation:spark .9s ease-out forwards}
+@keyframes spark{to{transform:translate(var(--x),var(--y));opacity:0}}
+.advent{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:14px;perspective:600px}
+.door{aspect-ratio:1;border-radius:10px;background:#7a0a1f;color:#f2d38a;font:400 15px 'Alfa Slab One';box-shadow:inset 0 -3px 0 rgba(0,0,0,.25)}
+.door.open{background:#2f6b3a;color:#f2d38a}
+.door.today{background:#c8102e;animation:pulse 1.4s ease-in-out infinite;box-shadow:0 0 0 3px #f2d38a}
+.door.locked{opacity:.45}
+.door.flip{animation:flip .6s ease}
+@keyframes pulse{50%{transform:scale(1.08)}}
+@keyframes flip{0%{transform:rotateY(0)}50%{transform:rotateY(90deg)}100%{transform:rotateY(0)}}
+.ghostpin .gh,.mk.ghostpin .gh{width:44px;height:47px;display:block;filter:drop-shadow(0 0 10px #ffb36b);animation:float 2.2s ease-in-out infinite;border-radius:8px;overflow:hidden}
+.ghostpin .gh svg{width:100%;height:100%}
+.ghostpin i{background:#ff7a1a!important;color:#111!important}
+.stamp.boo{animation:boo .7s cubic-bezier(.3,1.5,.5,1)}
+@keyframes boo{0%{transform:scale(.2) rotate(-30deg);opacity:0}100%{transform:rotate(-5deg);opacity:1}}
+.env{position:relative;width:180px;height:230px;border-radius:14px;background:linear-gradient(160deg,#d4182f,#a50e22);box-shadow:0 24px 50px -20px rgba(165,14,34,.7);margin:6px 0 4px}
+.env .flap{position:absolute;left:0;right:0;top:0;height:96px;background:#c8102e;clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;transition:transform .5s ease;z-index:3;border-radius:14px 14px 0 0}
+.env .eseal{position:absolute;left:50%;top:76px;width:44px;height:44px;margin-left:-22px;border-radius:50%;background:#f5cf6b;color:#a50e22;display:grid;place-items:center;font:400 20px 'Alfa Slab One';z-index:4;transition:opacity .3s}
+.env .slip{position:absolute;left:14px;right:14px;top:18px;height:150px;border-radius:10px;background:#fff8e6;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:transform .6s cubic-bezier(.3,1.3,.5,1) .35s;color:#a50e22;padding:10px;text-align:center}
+.env .slip b{font:800 16px 'Inter Tight'}.env .slip small{font-size:11px;color:#a5702b}
+.env.open .flap{transform:rotateX(180deg);z-index:0}
+.env.open .eseal{opacity:0}
+.env.open .slip{transform:translateY(-84px);z-index:5}
+.env{margin:96px 0 4px}
+.coin{position:absolute;left:50%;top:40%;width:12px;height:12px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff3c2,#e3a82b);opacity:0;animation:coin 1s ease-out forwards;z-index:6}
+@keyframes coin{0%{opacity:1;transform:translate(0,0)}100%{opacity:0;transform:translate(var(--x),var(--y))}}
+body[data-skin=halloween] .fcard,body[data-skin=halloween] .nextbar:not(.fest){background:var(--card);color:var(--ink2)}
 /* shop page: content clears the sticky button */
 .shopscroll{padding-bottom:calc(120px + env(safe-area-inset-bottom))}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
@@ -1085,6 +1147,45 @@ body[data-skin=halloween] .nav{background:color-mix(in srgb,var(--card) 90%,tran
   <text x="44" y="69" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="currentColor">SHOP PASSPORT</text>
 </symbol>
 
+<!-- Seasonal: Christmas -->
+<symbol id="st-xmas" viewBox="0 0 120 156">
+  <rect width="120" height="128" fill="#7a0a1f"/>
+  <g fill="#fff" opacity=".9"><circle cx="14" cy="18" r="2"/><circle cx="96" cy="12" r="2.4"/><circle cx="104" cy="46" r="1.8"/><circle cx="22" cy="60" r="1.6"/><circle cx="60" cy="10" r="1.6"/></g>
+  <path d="M60 20l-26 40h12l-18 26h16l-20 26h72l-20-26h16l-18-26h12z" fill="#2f6b3a"/>
+  <path d="M60 14l3 7 7 .5-5.5 4.5 2 7-6.5-4-6.5 4 2-7L50 21.5l7-.5z" fill="#f2d38a"/>
+  <g fill="#f2d38a"><circle cx="50" cy="56" r="3"/><circle cx="70" cy="74" r="3"/><circle cx="46" cy="92" r="3"/><circle cx="76" cy="100" r="3"/></g><g fill="#ff7aa8"><circle cx="64" cy="48" r="2.6"/><circle cx="54" cy="80" r="2.6"/><circle cx="62" cy="104" r="2.6"/></g>
+  <rect x="54" y="112" width="12" height="10" fill="#5a3a2a"/><path d="M0 120c30-6 90-6 120 0v8H0z" fill="#fff"/>
+  <rect width="120" height="128" fill="url(#grain)"/>
+  <rect y="126" width="120" height="30" fill="#fff"/>
+  <text x="60" y="146" text-anchor="middle" font-family="Alfa Slab One" font-size="11" fill="#7a0a1f">WINTER LIGHTS</text>
+</symbol>
+<!-- Seasonal: Halloween -->
+<symbol id="st-ghost" viewBox="0 0 120 156">
+  <rect width="120" height="128" fill="#1d1830"/>
+  <circle cx="88" cy="28" r="14" fill="#ffe7a8"/><circle cx="94" cy="24" r="13" fill="#1d1830"/>
+  <path d="M10 128V96l10-10 10 10V84l10-14 10 14v44zM70 128V90l12-12 12 12v38z" fill="#2c2440"/>
+  <path d="M60 36c-18 0-26 14-26 30v40l7-6 6 6 7-6 6 6 6-6 7 6 6-6 7 6V66c0-16-8-30-26-30z" fill="#f4f1ea"/>
+  <ellipse cx="52" cy="64" rx="4" ry="6" fill="#1d1830"/><ellipse cx="68" cy="64" rx="4" ry="6" fill="#1d1830"/><ellipse cx="60" cy="80" rx="5" ry="4" fill="#1d1830"/>
+  <path d="M18 40c4-4 8-4 10 0 2-4 6-4 10 0-4 0-7 3-10 6-3-3-6-6-10-6z" fill="#ff7a1a"/>
+  <rect width="120" height="128" fill="url(#grain)"/>
+  <rect y="126" width="120" height="30" fill="#fff"/>
+  <text x="60" y="146" text-anchor="middle" font-family="Alfa Slab One" font-size="11" fill="#c2410c">GHOST WALK</text>
+</symbol>
+<!-- Seasonal: Spring Festival -->
+<symbol id="st-cny" viewBox="0 0 120 156">
+  <rect width="120" height="128" fill="#c8102e"/>
+  <circle cx="60" cy="64" r="44" fill="#d4182f"/><circle cx="60" cy="64" r="44" fill="none" stroke="#f5cf6b" stroke-width="1.5" stroke-dasharray="3 4"/>
+  <path d="M60 12v12" stroke="#f5cf6b" stroke-width="2"/>
+  <rect x="46" y="24" width="28" height="7" rx="2" fill="#f5cf6b"/>
+  <ellipse cx="60" cy="58" rx="28" ry="26" fill="#ff3b3b"/>
+  <path d="M48 34c-6 14-6 34 0 48M60 32v52M72 34c6 14 6 34 0 48" stroke="#a50e22" stroke-width="2" fill="none"/>
+  <rect x="46" y="82" width="28" height="7" rx="2" fill="#f5cf6b"/>
+  <path d="M60 89v14M56 103h8l-4 12z" stroke="#f5cf6b" stroke-width="2" fill="#f5cf6b"/>
+  <g fill="#f5cf6b"><circle cx="20" cy="22" r="3"/><circle cx="100" cy="100" r="3"/><circle cx="96" cy="24" r="2"/></g>
+  <rect width="120" height="128" fill="url(#grain)"/>
+  <rect y="126" width="120" height="30" fill="#fff"/>
+  <text x="60" y="146" text-anchor="middle" font-family="Alfa Slab One" font-size="10.5" fill="#c8102e">LANTERN TRAIL</text>
+</symbol>
 <!-- enamel pin base -->
 <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 2l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 15.4 6.7 18.4l1.2-6L3.4 8.3l6-.7z" fill="currentColor"/></symbol>
 <symbol id="i-gift" viewBox="0 0 24 24"><path d="M4 10h16v10H4zM3 7h18v3H3zM12 7v13M12 7c-2-4-6-3-5 0M12 7c2-4 6-3 5 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
@@ -1178,7 +1279,7 @@ body[data-skin=halloween] .nav{background:color-mix(in srgb,var(--card) 90%,tran
       <button class="av" data-go="me" aria-label="Profile"></button>
     </div>
     <div class="chips" id="chips"></div>
-    <button class="nextbar" id="nextbar"></button>
+    <div class="nextrow" id="nextrow"><button class="nextbar" id="nextbar"></button><button class="nextbar fest" id="festcard"></button></div>
     <div class="ppwrap" id="ppwrap"><div class="ppage" id="ppage"></div></div>
   </section>
 
@@ -1228,6 +1329,7 @@ body[data-skin=halloween] .nav{background:color-mix(in srgb,var(--card) 90%,tran
       <div class="sec"><h4>Series<span>Complete one to earn a seal</span></h4><div id="mseries"></div></div>
       <div class="sec"><h4>Seals<span id="sealcount"></span></h4><div class="seals" id="mseals" style="padding-bottom:4px"></div></div>
       <div class="sec"><h4>Pins<span>Collect 3 of a kind for a badge</span></h4><div class="badges2" id="mpins"></div></div>
+      <div class="sec"><h4>Featured routes<span>Swipe for more</span></h4><div class="featured" id="mfeat"></div></div>
       <div class="sec"><h4>Routes<span>Finish one to get a city postcard</span></h4><div id="mroutesMe"></div></div>
       <div class="sec"><h4>Skins<span>Restyle the passport and map</span></h4><div class="skins" id="mskins"></div></div>
       <div class="sec mbtns"><button class="btn sm" id="installBtn">Add to Home Screen</button><button class="btn line sm" id="toMerchant">Switch to merchant back office</button><button class="btn line sm" id="loadDemo">Load demo progress</button></div>
@@ -1244,6 +1346,7 @@ body[data-skin=halloween] .nav{background:color-mix(in srgb,var(--card) 90%,tran
   </nav>
   <div class="pick" id="pick"></div>
   <div class="snow"></div>
+  <div class="deco" id="deco"></div>
 
   <div class="backdrop" id="backdrop"></div>
   <div class="sheet" id="sheet"></div>
@@ -1305,7 +1408,14 @@ const PINS={fresh:{l:'Fresh cakes daily',t:'product',d:'Cakes baked every day, u
 const SERIES=[{id:'landmarks',name:'Landmarks',seal:'Bristol Seal',paper:'#f3f8fc',tab:'#2c44d6'},{id:'streetart',name:'Street Art',seal:'Spray Can Seal',paper:'#eff1f6',tab:'#ff6a3d'},{id:'indie',name:'Independent Shops',seal:'Local Hero Seal',paper:'#fdf3f5',tab:'#2f8a52'}];
 const ROUTES=[{id:'banksy',name:'Banksy & Park Street',len:'Full day',stops:['stokes','roughtrade','steps','cafe56','militaria','boutique','frogmore','cityhall']},
   {id:'harbour',name:'Harbourside',len:'Half day',stops:['cityhall','hole','mshed','hanover']},
-  {id:'clifton',name:'Clifton afternoon',len:'Half day',stops:['cabot','bridge']}];
+  {id:'clifton',name:'Clifton afternoon',len:'Half day',stops:['cabot','bridge']},
+  {id:'curio',name:'Old City Curiosities',len:'1.5 hrs',featured:true,c:['#c9d3ff','#2b3a67'],desc:'Stone steps, a collectors’ shop, fresh cake and crates of vinyl.',stops:['steps','cafe56','militaria','roughtrade']},
+  {id:'rainy',name:'Rainy Day Indoors',len:'2 hrs',featured:true,c:['#9fd8f0','#1f2a5c'],desc:'Every stop has a roof: records, cake, an old pub and a museum.',stops:['roughtrade','cafe56','hole','mshed']},
+  {id:'sunset',name:'Sunset to the Bridge',len:'2 hrs',featured:true,c:['#ffb08f','#c8553d'],desc:'City Hall, up Cabot Tower, then the bridge at golden hour.',stops:['cityhall','cabot','bridge']},
+  {id:'xmas',name:'Winter Lights Walk',len:'1.5 hrs',season:'christmas',sym:'st-xmas',c:['#c8102e','#2f6b3a'],desc:'College Green lights, Christmas Steps and a warm pub to finish.',stops:['cityhall','frogmore','steps','cafe56','hole']},
+  {id:'ghost',name:'Old Bristol Ghost Walk',len:'1 hr',season:'halloween',sym:'st-ghost',c:['#2c2440','#ff7a1a'],desc:'Press gangs, steep steps and old curiosities after dark.',stops:['steps','militaria','hole','mshed']},
+  {id:'lantern',name:'Lantern Trail',len:'1 hr',season:'cny',sym:'st-cny',c:['#d4182f','#f5cf6b'],desc:'Follow the red lanterns. A red envelope waits at every stop.',stops:['cityhall','roughtrade','cafe56','steps']}];
+const visibleRoutes=()=>ROUTES.filter(r=>!r.season||r.season===S.skin);
 const WEEK={name:'Old City & Park Street Explorer Week',zones:['oldcity','parkst'],need:3};
 const HOME={lat:51.4527,lng:-2.6005};/* default “you are here”: College Green */
 const POS=[{l:6,t:17,r:-6},{l:37,t:14,r:5},{l:68,t:18,r:-3},{l:14,t:50,r:4},{l:54,t:48,r:-4}];
@@ -1344,7 +1454,7 @@ const buzz=()=>{try{navigator.vibrate&&navigator.vibrate(18)}catch(e){}};
 function go(v){
   closeSheet();
   S.view=v;
-  document.querySelectorAll('.view').forEach(el=>el.classList.toggle('on',el.id==='v-'+v));
+  document.querySelectorAll('.view').forEach(el=>el.classList.toggle('on',el.id==='v-'+v));$('#scr').dataset.view=v;
   $('#nav').classList.toggle('hide',['onb','role','quiz','cover','shop','merchant'].includes(v));
   document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.go===v));
   $('#sb').classList.toggle('light',v==='scan'||v==='cover'||S.skin==='halloween');
@@ -1387,7 +1497,7 @@ function renderNext(){
   el.innerHTML=`<span class="q">?</span><div><b>Next: ${SHOPS[n].short}</b><small>${SHOPS[n].area} · ${walk(n)}</small></div><span class="go">Show me →</span>`;
   el.onclick=()=>{buzz();S.sel=n;go('map')};
 }
-function renderPassport(){renderChips();paintPage();$('#ppage').innerHTML=pageHTML();renderNext();S.newId=null}
+function renderPassport(){renderChips();paintPage();$('#ppage').innerHTML=pageHTML();renderNext();renderFest();S.newId=null}
 function turn(i){
   if(i<0||i>=SERIES.length||i===S.page)return;
   const fwd=i>S.page,pg=$('#ppage');buzz();
@@ -1445,6 +1555,7 @@ function hiddenBy(id){const f=S.filter||'all',s=SHOPS[id];return (f==='landmark'
 function renderMap(){
   $('#pins').innerHTML=Object.keys(SHOPS).map(id=>{const s=SHOPS[id],c=S.collected[id];
     return `<button class="pin mk ${c?'done':''} ${hiddenBy(id)?'hidden':''}" data-pin="${id}" style="left:${s.x}%;top:${s.y}%">${markerInner(id)}</button>`}).join('');
+  if(ghostOn())$('#pins').insertAdjacentHTML('beforeend',`<button class="pin ghostpin" id="ghostPin" style="left:${proj(GHOST).x}%;top:${proj(GHOST).y}%"><span class="gh"><svg viewBox="0 0 120 128"><use href="#st-ghost"/></svg></span><i>Who’s there?</i></button>`);
   renderWeek();renderRouteChips();drawRoute();
   initRealMap();refreshMarkers();
   if(S.sel){const id=S.sel;S.sel=null;setTimeout(()=>{flyTo(id);mapSheet(id)},350)}
@@ -1459,7 +1570,7 @@ function renderWeek(){const n=Math.min(weekCount(),WEEK.need);
 }
 /* routes */
 function renderRouteChips(){
-  $('#mroutes').innerHTML=ROUTES.map(r=>{const n=r.stops.filter(k=>S.collected[k]).length;return `<button class="rt ${S.route===r.id?'on':''}" data-r="${r.id}">${r.name} · ${n}/${r.stops.length}</button>`}).join('');
+  $('#mroutes').innerHTML=visibleRoutes().sort((a,b)=>(b.season?2:b.featured?1:0)-(a.season?2:a.featured?1:0)).map(r=>{const n=r.stops.filter(k=>S.collected[k]).length;return `<button class="rt ${S.route===r.id?'on':''}" data-r="${r.id}">${r.season||r.featured?'✦ ':''}${r.name} · ${n}/${r.stops.length}</button>`}).join('');
 }
 $('#mroutes').addEventListener('click',e=>{const b=e.target.closest('[data-r]');if(!b)return;buzz();S.route=S.route===b.dataset.r?null:b.dataset.r;renderRouteChips();drawRoute()});
 function drawRoute(){
@@ -1511,6 +1622,7 @@ function refreshMarkers(){
     const el=document.createElement('button');el.className='mk '+(S.collected[id]?'done':'');el.innerHTML=markerInner(id);
     el.addEventListener('click',ev=>{ev.stopPropagation();buzz();mapSheet(id)});
     RMmarks.push(new maplibregl.Marker({element:el,anchor:'bottom'}).setLngLat([s.lng,s.lat]).addTo(RM))});
+  if(ghostOn()){const g=document.createElement('button');g.className='mk ghostpin';g.innerHTML='<span class="gh"><svg viewBox="0 0 120 128"><use href="#st-ghost"/></svg></span><i>Who’s there?</i>';g.addEventListener('click',ev=>{ev.stopPropagation();catchGhost()});RMmarks.push(new maplibregl.Marker({element:g,anchor:'bottom'}).setLngLat([GHOST.lng,GHOST.lat]).addTo(RM))}
   const me=document.createElement('div');me.className='me-dot';me.style.position='relative';
   RMmarks.push(new maplibregl.Marker({element:me}).setLngLat([(S.here||HOME).lng,(S.here||HOME).lat]).addTo(RM));
 }
@@ -1524,7 +1636,7 @@ function setRealRoute(r){
   }catch(e){}
 }
 function flyTo(id){if(RMstate==='ready'){try{RM.flyTo({center:[SHOPS[id].lng,SHOPS[id].lat],zoom:15.5})}catch(e){}}}
-$('#pins').addEventListener('click',e=>{const p=e.target.closest('[data-pin]');if(p){buzz();mapSheet(p.dataset.pin)}});
+$('#pins').addEventListener('click',e=>{if(e.target.closest('#ghostPin')){catchGhost();return}const p=e.target.closest('[data-pin]');if(p){buzz();mapSheet(p.dataset.pin)}});
 function mapSheet(id){
   const s=SHOPS[id],c=S.collected[id];
   document.querySelectorAll('.pin').forEach(p=>p.classList.toggle('sel',p.dataset.pin===id));
@@ -1557,7 +1669,7 @@ function unlock(id){
   const nv=S.visits[id].length;
   const sid=s.series,complete=first&&got(sid).length===items(sid).length;
   save();
-  const cols=['#ff6a3d','#2c44d6','#ffd23a','#3fae68','#ff7aa8','#7ad0f0'];
+  const cols=({christmas:['#c8102e','#2f8a52','#fff','#f2d38a','#c8102e','#2f8a52'],halloween:['#ff7a1a','#8a4fff','#1d1830','#ff7a1a','#c2410c','#f4f1ea'],cny:['#d4182f','#f5cf6b','#d4182f','#f5cf6b','#ff3b3b','#e3a82b']})[S.skin]||['#ff6a3d','#2c44d6','#ffd23a','#3fae68','#ff7aa8','#7ad0f0'];
   let conf='';for(let i=0;i<34;i++){const a=Math.random()*Math.PI*2,d=110+Math.random()*170;conf+=`<i class="conf" style="background:${cols[i%6]};--x:${Math.cos(a)*d}px;--y:${Math.sin(a)*d+120}px;--r:${Math.random()*720-360}deg;animation-delay:${.82+Math.random()*.12}s"></i>`}
   const si=SERIES.find(x=>x.id===sid);
   $('#unlock').innerHTML=`<div class="burst"></div>${conf}
@@ -1659,14 +1771,15 @@ function renderMe(){
   const pc=pinCounts();
   $('#mpins').innerHTML=Object.keys(PIN_TYPES).map(t=>{const T=PIN_TYPES[t],n=pc[t]||0;return `<div class="badge2 ${n>=3?'':'off'}" style="--pc:${T.c}"><span class="dot"><svg viewBox="0 0 24 24"><use href="#i-pin"/></svg></span>${T.badge}<span class="mono" style="font-size:10px;color:var(--muted)">${T.n} ${Math.min(n,3)}/3</span></div>`}).join('');
   /* routes + postcards */
-  $('#mroutesMe').innerHTML=ROUTES.map(r=>{const n=r.stops.filter(k=>S.collected[k]).length,t=r.stops.length;return `<div class="prow"><span class="stamp sm" style="--paper:${SHOPS[r.stops[0]].paper}"><svg viewBox="0 0 120 156"><use href="#${SHOPS[r.stops[0]].sym}"/></svg></span><div class="t"><b>${r.name}<em>${n}/${t}</em></b><div class="tr"><i style="width:${n/t*100}%"></i></div></div><button class="chip ${n===t?'on':''}" data-route="${r.id}" style="flex:none">${n===t?'Postcard':'Walk it'}</button></div>`}).join('');
+  renderFeatured();
+  $('#mroutesMe').innerHTML=visibleRoutes().filter(r=>!r.featured&&!r.season).map(r=>{const n=r.stops.filter(k=>S.collected[k]).length,t=r.stops.length;return `<div class="prow"><span class="stamp sm" style="--paper:${SHOPS[r.stops[0]].paper}"><svg viewBox="0 0 120 156"><use href="#${SHOPS[r.stops[0]].sym}"/></svg></span><div class="t"><b>${r.name}<em>${n}/${t}</em></b><div class="tr"><i style="width:${n/t*100}%"></i></div></div><button class="chip ${n===t?'on':''}" data-route="${r.id}" style="flex:none">${n===t?'Postcard':'Walk it'}</button></div>`}).join('');
   /* skins */
-  const SK=[['default','Classic','linear-gradient(135deg,#2c3a7a,#1f2a5c)'],['christmas','Christmas','linear-gradient(135deg,#c8102e,#2f6b3a)'],['halloween','Halloween','linear-gradient(135deg,#ff7a1a,#141118)'],['cny','Lunar New Year','linear-gradient(135deg,#d4182f,#f5cf6b)']];
+  const SK=[['default','Classic','linear-gradient(135deg,#2c3a7a,#1f2a5c)'],['christmas','Christmas','linear-gradient(135deg,#c8102e,#2f6b3a)'],['halloween','Halloween','linear-gradient(135deg,#ff7a1a,#141118)'],['cny','Spring Festival','linear-gradient(135deg,#d4182f,#f5cf6b)']];
   $('#mskins').innerHTML=SK.map(([k,n,g])=>`<button class="${S.skin===k?'on':''}" data-skin="${k}"><i style="background:${g}"></i>${n}</button>`).join('');
 }
 $('#mroutesMe').addEventListener('click',e=>{const b=e.target.closest('[data-route]');if(!b)return;buzz();const r=ROUTES.find(x=>x.id===b.dataset.route);if(r.stops.every(k=>S.collected[k])){window.__afterAch=null;postcard(r.id)}else{S.route=r.id;go('map')}});
-$('#mskins').addEventListener('click',e=>{const b=e.target.closest('[data-skin]');if(!b)return;buzz();S.skin=b.dataset.skin;applySkin();save();renderMe();toast({default:'Classic skin',christmas:'Christmas skin: it’s snowing on the map',halloween:'Halloween skin: after-dark mode',cny:'Lunar New Year skin: red and gold'}[S.skin])});
-function applySkin(){document.body.dataset.skin=S.skin;$('#sb').classList.toggle('light',S.view==='scan'||S.view==='cover'||S.skin==='halloween');try{document.querySelector('meta[name=theme-color]').content=getComputedStyle(document.body).getPropertyValue('--cover').trim()}catch(e){}cartoonize()}
+$('#mskins').addEventListener('click',e=>{const b=e.target.closest('[data-skin]');if(!b)return;buzz();S.skin=b.dataset.skin;applySkin();save();renderMe();toast({default:'Classic skin',christmas:'Christmas skin: open today’s Advent door',halloween:'Halloween skin: a ghost is hiding on the map',cny:'Spring Festival skin: lanterns are up. Tap one!'}[S.skin])});
+function applySkin(){document.body.dataset.skin=S.skin;renderDeco();if(S.view==='passport')renderFest();$('#sb').classList.toggle('light',S.view==='scan'||S.view==='cover'||S.skin==='halloween');try{document.querySelector('meta[name=theme-color]').content=getComputedStyle(document.body).getPropertyValue('--cover').trim()}catch(e){}cartoonize()}
 $('#toMerchant').onclick=()=>{buzz();S.role='merchant';save();if(S.merchant)go('merchant');else startQuiz('merchant')};
 $('#loadDemo').onclick=()=>{buzz();seedDemo();toast('Demo progress loaded');renderMe()};
 function seedDemo(){
@@ -1816,6 +1929,93 @@ else go('onb');
 /* “add to home screen” hint when opened in a mobile browser tab */
 function maybeA2HS(){try{if(window.__a2)return;const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
   if(!standalone&&innerWidth<=760&&!S.a2hs){const d=document.createElement('div');d.className='a2hs';d.innerHTML='<span><b>Add Shop Passport to your Home Screen</b><br>Opens full screen, like an app.</span><button class="add" style="opacity:1;background:#fff;color:#111;border-radius:99px;padding:6px 12px;font:600 11px Inter">Add</button><button class="x">✕</button>';d.querySelector('.x').onclick=()=>{d.remove();S.a2hs=true;save()};d.querySelector('.add').onclick=()=>{d.remove();S.a2hs=true;save();installApp()};window.__a2=1;$('#scr').appendChild(d);setTimeout(()=>d.remove(),12000)}}catch(e){}}
+/* ---------- festivals: decorations + one interaction each ---------- */
+var GHOST={lat:51.4562,lng:-2.5960};
+function proj(o){const la=[51.4465,51.4635],lo=[-2.6120,-2.5880],cl=(v,a,b)=>Math.max(a,Math.min(b,v));return {x:+cl(8+(o.lng-lo[0])/(lo[1]-lo[0])*84,7,93).toFixed(1),y:+cl(30+(la[1]-o.lat)/(la[1]-la[0])*56,30,88).toFixed(1)}}
+function ghostOn(){return S.skin==='halloween'&&!S.ghostGot}
+function todayKey(){return new Date().toISOString().slice(0,10)}
+function adventDay(){const d=new Date();return d.getMonth()===11?Math.min(d.getDate(),24):1}
+function keepStamp(name,sym,paper){S.keep.push({name,sym,paper,at:TODAY});save()}
+function addCoupon(shop,c){S.coupons.unshift({id:uid(),shop,v:c.v,cond:c.cond,exp:addDays(c.days||7),r:c.r||'rare',used:null});save()}
+function renderFest(){
+  const el=$('#festcard');if(!el)return;
+  const F={
+    christmas:{t:'Advent calendar',s:S.advent&&S.advent[adventDay()]?'Today’s door is open ✦ Come back tomorrow':`Day ${adventDay()} · tap to open today’s door`,sym:'st-xmas',go:openAdvent},
+    halloween:{t:'Ghost hunt',s:S.ghostGot?'You caught the ghost ✦ Try the Ghost Walk':'A ghost is hiding near Christmas Steps tonight',sym:'st-ghost',go:openGhost},
+    cny:{t:'Red envelope',s:S.hongbao===todayKey()?'Opened today ✦ Come back tomorrow':'Tap to open today’s red envelope',sym:'st-cny',go:openEnvelope}
+  }[S.skin];
+  const fr=ROUTES.filter(r=>r.featured);const r=fr[new Date().getDate()%fr.length];
+  const d=F||{t:'Featured route · '+r.name,s:`${r.stops.length} stops · ${r.len} · ${r.desc}`,sym:SHOPS[r.stops[0]].sym,go:()=>startRoute(r.id)};
+  el.innerHTML=`<span class="fs"><svg viewBox="0 0 120 156"><use href="#${d.sym}"/></svg></span><div><b>${d.t}</b><small>${d.s}</small></div><span class="go">${F?'Open':'Start'} →</span>`;
+  el.onclick=()=>{buzz();d.go()};
+}
+function startRoute(id){S.route=id;S.filter='all';go('map');setTimeout(()=>{renderRouteChips();drawRoute()},60)}
+function renderFeatured(){
+  const list=visibleRoutes().filter(r=>r.featured||r.season).sort((a,b)=>(b.season?1:0)-(a.season?1:0));
+  $('#mfeat').innerHTML=list.map(r=>{const n=r.stops.filter(k=>S.collected[k]).length,t=r.stops.length,c=r.c||['#c9d3ff','#2b3a67'];
+    return `<button class="fcard" data-feat="${r.id}"><div class="cv" style="background:linear-gradient(135deg,${c[0]},${c[1]})"><span class="ftag">${r.season?'Seasonal':'Featured'}</span>${r.stops.slice(0,3).map((k,i)=>`<span class="fst" style="--i:${i}">${stampHTML(k,'sm')}</span>`).join('')}${r.sym?`<span class="fst big"><div class="stamp sm" style="--paper:#fff"><svg viewBox="0 0 120 156"><use href="#${r.sym}"/></svg></div></span>`:''}</div>
+      <div class="bd"><b>${r.name}</b><small>${r.desc}</small><div class="meta"><span>${t} stops · ${r.len}</span><span>${n===t?'Done ✦':n+'/'+t}</span></div></div></button>`}).join('');
+}
+$('#mfeat').addEventListener('click',e=>{const b=e.target.closest('[data-feat]');if(!b)return;buzz();const r=ROUTES.find(x=>x.id===b.dataset.feat);if(r.stops.every(k=>S.collected[k])){window.__afterAch=null;postcard(r.id)}else startRoute(r.id)});
+
+/* Christmas: Advent calendar */
+function openAdvent(){
+  S.advent=S.advent||{};const today=adventDay(),pre=new Date().getMonth()!==11;
+  const offers=Object.keys(SHOPS).filter(isShop);
+  openSheet(`<h4 style="font:800 20px 'Inter Tight';margin:0 0 2px">Advent calendar</h4><small style="color:var(--muted)">${pre?'Preview: Day 1 opens now for the demo. ':''}One door a day, each with a treat from a partner shop.</small>
+   <div class="advent">${Array.from({length:24},(_,i)=>{const d=i+1,open=S.advent[d],cls=d<today||open?'open':d===today?'today':'locked';return `<button class="door ${cls}" data-door="${d}">${open||d<today?'✦':d}</button>`}).join('')}</div>
+   <div id="adventOut"></div>`);
+  document.querySelectorAll('[data-door]').forEach(b=>b.onclick=()=>{const d=+b.dataset.door;
+    if(d>today){toast(`Door ${d} opens on ${d} December`);return}
+    if(S.advent[d]||d<today){toast('Already opened');return}
+    buzz();const shop=offers[d%offers.length],c=SHOPS[shop].coupons[d%2];S.advent[d]=true;addCoupon(shop,c);
+    b.classList.remove('today');b.classList.add('open','flip');b.textContent='✦';
+    $('#adventOut').innerHTML=`<div class="sh-row" style="margin-top:14px">${stampHTML(shop,'sm')}<div><span class="tagl">Day ${d}</span><h4>${c.v}</h4><small>${SHOPS[shop].name} · Condition: ${c.cond}</small><small class="st-ok" style="margin-top:4px">Added to Rewards</small></div></div>`;
+    renderFest()});
+}
+/* Halloween: ghost hunt on the map */
+function openGhost(){if(S.ghostGot){startRoute('ghost');return}toast('Look near Christmas Steps on the map…');S.filter='all';go('map')}
+function catchGhost(){
+  if(S.ghostGot)return;buzz();S.ghostGot=true;keepStamp('Ghost of Christmas Steps','st-ghost','#c8b6ff');
+  $('#ach').innerHTML=`<div class="stamp boo" style="--paper:#c8b6ff;width:42%;transform:rotate(-5deg)"><svg viewBox="0 0 120 156"><use href="#st-ghost"/></svg></div><h3>Boo! You caught it.</h3><p>The Ghost of Christmas Steps is now in your Collectibles. Brave enough for the Old Bristol Ghost Walk?</p><button class="btn" id="achOk">Start the Ghost Walk</button><button class="skip" id="achNo" style="color:#b3b5c2">Not tonight</button>`;
+  $('#ach').classList.add('on');setTimeout(buzz,200);
+  $('#achOk').onclick=()=>{$('#ach').classList.remove('on');startRoute('ghost')};
+  $('#achNo').onclick=()=>{$('#ach').classList.remove('on');renderMap()};
+}
+/* Spring Festival: red envelope */
+function openEnvelope(){
+  if(S.hongbao===todayKey()){toast('You’ve opened today’s envelope. Come back tomorrow ✦');return}
+  const P=$('#pick');
+  P.innerHTML=`<span class="tagl">Spring Festival</span><h3>Your red envelope</h3><p>Tap to open. One a day while the festival lasts.</p>
+   <button class="env" id="env"><span class="slip" id="slip"></span><span class="flap"></span><span class="eseal">✦</span></button>
+   <div id="envOut" style="width:100%;display:flex;flex-direction:column;align-items:center"></div>`;
+  P.classList.remove('on');void P.offsetWidth;P.classList.add('on');
+  $('#env').onclick=()=>{
+    if($('#env').classList.contains('open'))return;buzz();
+    const pool=[{shop:'roughtrade',c:SHOPS.roughtrade.coupons[0]},{shop:'cafe56',c:SHOPS.cafe56.coupons[1]},{shop:'hole',c:SHOPS.hole.coupons[0]},{lucky:true}];
+    const r=pool[Math.floor(Math.random()*pool.length)];
+    S.hongbao=todayKey();
+    if(r.lucky)keepStamp('Lucky No.888 stamp','st-cny','#f5cf6b');else addCoupon(r.shop,r.c);
+    $('#slip').innerHTML=r.lucky?`<b>Lucky No.888</b><small>Collectible stamp</small>`:`<b>${r.c.v}</b><small>${SHOPS[r.shop].short}</small>`;
+    $('#env').classList.add('open');
+    let coins='';for(let i=0;i<22;i++){const a=Math.random()*Math.PI*2,d=90+Math.random()*120;coins+=`<i class="coin" style="--x:${Math.cos(a)*d}px;--y:${Math.sin(a)*d}px;animation-delay:${.25+Math.random()*.15}s"></i>`}
+    $('#env').insertAdjacentHTML('beforeend',coins);
+    setTimeout(()=>{$('#envOut').innerHTML=`<p class="note" style="margin-top:22px">Added to Rewards ✦ Happy Spring Festival</p><button class="btn" id="envOk">Lovely</button>`;$('#envOk').onclick=()=>{P.classList.remove('on');renderPassport()}},900);
+    renderFest();
+  };
+}
+/* decorations per skin */
+function renderDeco(){
+  const d=$('#deco');if(!d)return;
+  if(S.skin==='christmas')d.innerHTML='<i class="lights"></i>';
+  else if(S.skin==='halloween')d.innerHTML=[0,1,2].map(i=>`<svg class="bat" style="--d:${i*3.2}s;--y:${60+i*70}px" viewBox="0 0 40 20"><path d="M20 8c-2-4-6-6-10-4 2 1 2 3 0 4-3-2-7-2-10 0 4 2 6 5 6 8 3-3 7-3 10-1 1-2 2-3 4-3s3 1 4 3c3-2 7-2 10 1 0-3 2-6 6-8-3-2-7-2-10 0-2-1-2-3 0-4-4-2-8 0-10 4z" fill="#1d1830"/></svg>`).join('');
+  else if(S.skin==='cny')d.innerHTML=[0,1].map(i=>`<button class="lantern" data-ln="${i}" style="right:${66+i*40}px;--s:${i*.6}s" aria-label="Lantern"><svg viewBox="0 0 30 60"><path d="M15 0v8" stroke="#a50e22" stroke-width="1.5"/><rect x="8" y="8" width="14" height="4" rx="1" fill="#f5cf6b"/><ellipse cx="15" cy="24" rx="13" ry="12" fill="#d4182f"/><path d="M9 14c-2 6-2 14 0 20M15 12v24M21 14c2 6 2 14 0 20" stroke="#a50e22" stroke-width="1"/><rect x="8" y="35" width="14" height="4" rx="1" fill="#f5cf6b"/><path d="M15 39v14" stroke="#f5cf6b" stroke-width="1.5"/></svg></button>`).join('');
+  else d.innerHTML='';
+  d.querySelectorAll('[data-ln]').forEach(b=>b.onclick=e=>{buzz();const r=b.getBoundingClientRect(),o=$('#scr').getBoundingClientRect();
+    let f='';for(let i=0;i<18;i++){const a=i/18*Math.PI*2,dist=40+Math.random()*30;f+=`<i class="spark" style="left:${r.left-o.left+r.width/2}px;top:${r.top-o.top+r.height}px;--x:${Math.cos(a)*dist}px;--y:${Math.sin(a)*dist}px;background:${i%2?'#f5cf6b':'#ff3b3b'}"></i>`}
+    d.insertAdjacentHTML('beforeend',f);setTimeout(()=>d.querySelectorAll('.spark').forEach(x=>x.remove()),1100);
+    b.classList.remove('swing2');void b.offsetWidth;b.classList.add('swing2');toast('Happy Spring Festival ✦')});
+}
 /* ---------- fill the real screen ---------- */
 function fitViewport(){try{
   let h=window.innerHeight;
