@@ -25,7 +25,8 @@ Open `index.html` in any browser. On a phone it runs full screen. Use "Add to Ho
 - Shop pages: enamel-style feature pins, owner story, signature items, sticky Collect Stamp button
 - Profile: series seals, pin badges, route postcards, seasonal skins (Christmas, Halloween, Lunar New Year)
 - Merchant back office: weekly check-ins, returning customers, redemptions, coupon editing, code check
-- Progress is saved in the browser; add to home screen to open full screen like an app
+- Progress is saved in the browser
+- Installable: "Add to Home Screen" (iPhone Safari) or "Install app" (Android / desktop Chrome) opens it full screen with its own icon, and it works offline after the first visit
 
 ## Editing content
 

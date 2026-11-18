@@ -509,7 +509,7 @@ body[data-skin=cny] .week{background:linear-gradient(90deg,#a50e22,#e3a82b)}
 .scanlist{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -24px 14px;padding:0 24px}
 .scanlist button{flex:none;font:600 11.5px Inter;background:rgba(255,255,255,.12);color:#fff;border-radius:99px;padding:8px 12px;border:1px solid rgba(255,255,255,.2)}
 .scanlist button.on{background:#fff;color:#111}
-.a2hs{position:absolute;left:12px;right:12px;bottom:96px;z-index:96;background:#111;color:#fff;border-radius:16px;padding:10px 12px;font-size:12px;display:flex;gap:10px;align-items:center}
+.a2hs{position:absolute;left:12px;right:12px;top:max(12px,env(safe-area-inset-top));z-index:96;background:#111;color:#fff;border-radius:16px;padding:10px 12px;font-size:12px;display:flex;gap:10px;align-items:center}
 .a2hs button{margin-left:auto;color:#fff;opacity:.7}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
@@ -918,7 +918,7 @@ body[data-skin=cny] .week{background:linear-gradient(90deg,#a50e22,#e3a82b)}
 
 <aside class="notes">
   <span class="k">SHOP PASSPORT · PROTOTYPE</span>
-  <h1>Tap around.<br><span>It's all live.</span></h1>
+  <h1>Tap around.<br><span>It’s all live.</span></h1>
   <ol>
     <li>Pick a role: customer or merchant. Answer one question per screen, then open your passport.</li>
     <li>Swipe the passport to turn through Landmarks, Street Art and Independent Shops.</li>
@@ -952,9 +952,9 @@ body[data-skin=cny] .week{background:linear-gradient(90deg,#a50e22,#e3a82b)}
     <div class="vpad">
       <span class="mono" style="font-size:10px;letter-spacing:.16em;color:var(--muted)">SHOP PASSPORT · BRISTOL</span>
       <h2>Who are you?</h2>
-      <p class="sub">我们会按你的身份准备不同的体验，之后可以随时切换。</p>
-      <button class="rolecard" data-role="customer"><div class="stamp" style="--paper:#ffb08f"><svg viewBox="0 0 120 156"><use href="#st-bridge"/></svg></div><div><b>我是顾客</b><small>去探索、集邮票、拿优惠</small></div></button>
-      <button class="rolecard" data-role="merchant"><div class="stamp" style="--paper:#b6e7c4"><svg viewBox="0 0 120 156"><use href="#st-cafe56"/></svg></div><div><b>我是商家</b><small>在 Bristol 开店，想要更多客人</small></div></button>
+      <p class="sub">We’ll set things up for you. You can switch any time.</p>
+      <button class="rolecard" data-role="customer"><div class="stamp" style="--paper:#ffb08f"><svg viewBox="0 0 120 156"><use href="#st-bridge"/></svg></div><div><b>I’m exploring</b><small>Explore, collect stamps, get rewards</small></div></button>
+      <button class="rolecard" data-role="merchant"><div class="stamp" style="--paper:#b6e7c4"><svg viewBox="0 0 120 156"><use href="#st-cafe56"/></svg></div><div><b>I run a shop</b><small>I have a shop in Bristol and want more customers</small></div></button>
     </div>
   </section>
 
@@ -963,24 +963,24 @@ body[data-skin=cny] .week{background:linear-gradient(90deg,#a50e22,#e3a82b)}
 
   <!-- Passport cover opening -->
   <section class="view" id="v-cover">
-    <button class="skipc" id="skipCover">跳过</button>
+    <button class="skipc" id="skipCover">Skip</button>
     <div class="book" id="book">
       <div class="inner">
-        <span class="k">PASSPORT · 护照持有人</span>
+        <span class="k">PASSPORT · HOLDER</span>
         <h4 id="cvName">Explorer</h4>
         <div class="meta" id="cvMeta"></div>
         <div class="wst"><div class="stamp" style="--paper:#e3c06b"><svg viewBox="0 0 120 156"><use href="#st-welcome"/></svg></div><svg class="pm" viewBox="0 0 120 120"><use href="#pm2"/></svg></div>
       </div>
       <div class="cover"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="54" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="60" cy="60" r="46" fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="3 4"/><path d="M36 70h48l-7 12H43z" fill="currentColor"/><path d="M59 34v36M59 36l17 28H59zM57 42l-14 22h14z" fill="currentColor"/></svg><b>SHOP PASSPORT</b><small>BRISTOL · VOL.01</small></div>
     </div>
-    <div class="tapopen" id="tapOpen">轻触封面，翻开护照</div>
-    <button class="btn coverbtn" id="coverGo">开始探索</button>
+    <div class="tapopen" id="tapOpen">Tap the cover to open your passport</div>
+    <button class="btn coverbtn" id="coverGo">Start exploring</button>
   </section>
 
   <!-- Rewards -->
   <section class="view" id="v-rewards">
     <div class="hd"><div><small id="rcount">Rewards</small><h3>Your Rewards</h3></div><span class="av"></span></div>
-    <div class="tabs2" id="rtabs"><button class="chip on" data-rt="live">可使用</button><button class="chip" data-rt="used">已使用</button><button class="chip" data-rt="keep">收藏邮票</button></div>
+    <div class="tabs2" id="rtabs"><button class="chip on" data-rt="live">Ready to use</button><button class="chip" data-rt="used">Used</button><button class="chip" data-rt="keep">Collectibles</button></div>
     <div class="rlist" id="rlist"></div>
   </section>
 
@@ -989,7 +989,7 @@ body[data-skin=cny] .week{background:linear-gradient(90deg,#a50e22,#e3a82b)}
 
   <!-- Merchant back office -->
   <section class="view" id="v-merchant">
-    <div class="mhd"><div><small>MERCHANT · 商家后台</small><h3 id="mName">My Shop</h3></div><button id="toCustomer">切换到顾客</button></div>
+    <div class="mhd"><div><small>MERCHANT · BACK OFFICE</small><h3 id="mName">My Shop</h3></div><button id="toCustomer">Switch to customer</button></div>
     <div class="mscroll" id="mBody"></div>
   </section>
 
@@ -1020,7 +1020,7 @@ body[data-skin=cny] .week{background:linear-gradient(90deg,#a50e22,#e3a82b)}
     <div class="msearch"><svg><use href="#i-search"/></svg>Search shops, routes, stamps</div>
     <div class="maptop">
       <button class="week" id="weekBanner"></button>
-      <div class="fchips" id="mfilter"><button class="on" data-f="all">全部</button><button data-f="landmark">景点</button><button data-f="shop">小店</button><button data-f="todo">未收集</button></div>
+      <div class="fchips" id="mfilter"><button class="on" data-f="all">All</button><button data-f="landmark">Landmarks</button><button data-f="shop">Shops</button><button data-f="todo">To collect</button></div>
       <div class="fchips" id="mroutes"></div>
     </div>
     <div class="me-dot" style="left:50%;top:62%"></div>
@@ -1035,7 +1035,7 @@ body[data-skin=cny] .week{background:linear-gradient(90deg,#a50e22,#e3a82b)}
     <div class="scan-top"><button class="cbtn" data-go="passport" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button><button class="cbtn" aria-label="Torch"><svg viewBox="0 0 24 24"><path d="M9 2h6l-1 8h4L9 22l2-9H7z" fill="currentColor"/></svg></button></div>
     <div class="vf"><i></i><i></i><i></i><i></i><div class="line"></div></div>
     <div class="scan-ui">
-      <h3>Scan the shop's code</h3>
+      <h3>Scan the shop’s code</h3>
       <p>Find the Shop Passport QR at the counter to collect its stamp.</p>
       <div class="scanlist" id="scanList"></div>
       <button class="btn" id="simScan">Simulate a scan</button>
@@ -1049,10 +1049,10 @@ body[data-skin=cny] .week{background:linear-gradient(90deg,#a50e22,#e3a82b)}
       <div class="mecard" id="mestats"></div>
       <div class="sec"><h4>Series<span>Complete one to earn a seal</span></h4><div id="mseries"></div></div>
       <div class="sec"><h4>Seals<span id="sealcount"></span></h4><div class="seals" id="mseals" style="padding-bottom:4px"></div></div>
-      <div class="sec"><h4>Pins 铭牌徽章<span>同类集 3 枚得主题徽章</span></h4><div class="badges2" id="mpins"></div></div>
-      <div class="sec"><h4>Routes 路线<span>走完生成城市明信片</span></h4><div id="mroutesMe"></div></div>
-      <div class="sec"><h4>Skin 节庆皮肤<span>换一套护照和地图</span></h4><div class="skins" id="mskins"></div></div>
-      <div class="sec mbtns"><button class="btn line sm" id="toMerchant">切换到商家后台</button><button class="btn line sm" id="loadDemo">载入演示进度</button></div>
+      <div class="sec"><h4>Pins<span>Collect 3 of a kind for a badge</span></h4><div class="badges2" id="mpins"></div></div>
+      <div class="sec"><h4>Routes<span>Finish one to get a city postcard</span></h4><div id="mroutesMe"></div></div>
+      <div class="sec"><h4>Skins<span>Restyle the passport and map</span></h4><div class="skins" id="mskins"></div></div>
+      <div class="sec mbtns"><button class="btn sm" id="installBtn">Add to Home Screen</button><button class="btn line sm" id="toMerchant">Switch to merchant back office</button><button class="btn line sm" id="loadDemo">Load demo progress</button></div>
       <button class="resetbtn" id="resetMe">Reset demo</button>
     </div>
   </section>
@@ -1079,56 +1079,56 @@ body[data-skin=cny] .week{background:linear-gradient(90deg,#a50e22,#e3a82b)}
 <script>
 const SHOPS = {
   /* ---- landmarks: check in by location, stamp only ---- */
-  cityhall:{type:'landmark',sym:'st-cityhall',paper:'#9ddcf0',name:'City Hall & College Green',short:'City Hall',area:'College Green',zone:'parkst',series:'landmarks',lat:51.4523,lng:-2.6003,story:'弧形立面的市政厅，正对 College Green，旁边就是 Bristol Cathedral。'},
-  bridge:{type:'landmark',sym:'st-bridge',paper:'#ffb08f',name:'Clifton Suspension Bridge',short:'Clifton Bridge',area:'Clifton',zone:'clifton',series:'landmarks',limited:'LIMITED · 042/500',lat:51.4549,lng:-2.6278,story:'Brunel 设计的悬索桥，横跨 Avon 峡谷。限定邮票只在日落时段发放（演示）。'},
-  cabot:{type:'landmark',sym:'st-cabot',paper:'#b6e7c4',name:'Cabot Tower',short:'Cabot Tower',area:'Brandon Hill',zone:'parkst',series:'landmarks',lat:51.4536,lng:-2.6061,story:'Brandon Hill 上的塔，登顶能看到全城。'},
-  steps:{type:'landmark',sym:'st-steps',paper:'#c9d3ff',name:'Christmas Steps',short:'Christmas Steps',area:'Old City',zone:'oldcity',series:'landmarks',lat:51.4560,lng:-2.5968,story:'老城里的石阶小巷，Café 56 就在顶端附近。'},
-  mshed:{type:'landmark',sym:'st-harbour',paper:'#ffe28a',name:'M Shed & Harbourside',short:'M Shed',area:'Harbourside',zone:'harbour',series:'landmarks',lat:51.4474,lng:-2.5983,story:'港口边的城市博物馆，门口就是老起重机。'},
-  frogmore:{type:'landmark',sym:'st-frogmore',paper:'#ffd2a8',name:'Well Hung Lover（Banksy）',short:'Well Hung Lover',area:'Frogmore Street',zone:'parkst',series:'streetart',lat:51.4535,lng:-2.5992,story:'Banksy 2006 年画在市政厅对面的作品，从 Park Street 底部的小桥上看最清楚。邮票是我们的原创插画，不复制原作。'},
-  stokes:{type:'landmark',sym:'st-stokes',paper:'#ffe28a',name:'Mild Mild West（Banksy）',short:'Mild Mild West',area:'Stokes Croft',zone:'stokes',series:'streetart',lat:51.4626,lng:-2.5899,story:'Stokes Croft 的 Banksy 壁画，在 Jamaica Street 路口看最好。邮票是我们的原创插画。'},
-  hanover:{type:'landmark',sym:'st-hanover',paper:'#d8ccff',name:'Girl with a Pierced Eardrum（Banksy）',short:'Pierced Eardrum',area:'Spike Island',zone:'harbour',series:'streetart',lat:51.4479,lng:-2.6090,story:'Hanover Place 的 Banksy 作品，改编自《戴珍珠耳环的少女》。邮票是我们的原创插画。'},
+  cityhall:{type:'landmark',sym:'st-cityhall',paper:'#9ddcf0',name:'City Hall & College Green',short:'City Hall',area:'College Green',zone:'parkst',series:'landmarks',lat:51.4523,lng:-2.6003,story:'City Hall’s long curved facade faces College Green, right next to Bristol Cathedral.'},
+  bridge:{type:'landmark',sym:'st-bridge',paper:'#ffb08f',name:'Clifton Suspension Bridge',short:'Clifton Bridge',area:'Clifton',zone:'clifton',series:'landmarks',limited:'LIMITED · 042/500',lat:51.4549,lng:-2.6278,story:'Brunel’s suspension bridge across the Avon Gorge. The limited stamp is only issued at sunset (demo).'},
+  cabot:{type:'landmark',sym:'st-cabot',paper:'#b6e7c4',name:'Cabot Tower',short:'Cabot Tower',area:'Brandon Hill',zone:'parkst',series:'landmarks',lat:51.4536,lng:-2.6061,story:'The tower on Brandon Hill. Climb it for a view over the whole city.'},
+  steps:{type:'landmark',sym:'st-steps',paper:'#c9d3ff',name:'Christmas Steps',short:'Christmas Steps',area:'Old City',zone:'oldcity',series:'landmarks',lat:51.4560,lng:-2.5968,story:'A stepped lane in the Old City. Café 56 is near the top.'},
+  mshed:{type:'landmark',sym:'st-harbour',paper:'#ffe28a',name:'M Shed & Harbourside',short:'M Shed',area:'Harbourside',zone:'harbour',series:'landmarks',lat:51.4474,lng:-2.5983,story:'The city museum on the harbourside, with the old cranes right outside.'},
+  frogmore:{type:'landmark',sym:'st-frogmore',paper:'#ffd2a8',name:'Well Hung Lover (Banksy)',short:'Well Hung Lover',area:'Frogmore Street',zone:'parkst',series:'streetart',lat:51.4535,lng:-2.5992,story:'Banksy painted this opposite City Hall in 2006. The best view is from the little bridge at the bottom of Park Street. Our stamp is an original illustration, not a copy of the artwork.'},
+  stokes:{type:'landmark',sym:'st-stokes',paper:'#ffe28a',name:'Mild Mild West (Banksy)',short:'Mild Mild West',area:'Stokes Croft',zone:'stokes',series:'streetart',lat:51.4626,lng:-2.5899,story:'Banksy’s mural in Stokes Croft, best seen from the Jamaica Street junction. Our stamp is an original illustration.'},
+  hanover:{type:'landmark',sym:'st-hanover',paper:'#d8ccff',name:'Girl with a Pierced Eardrum (Banksy)',short:'Pierced Eardrum',area:'Spike Island',zone:'harbour',series:'streetart',lat:51.4479,lng:-2.6090,story:'Banksy’s take on Girl with a Pearl Earring, on Hanover Place. Our stamp is an original illustration.'},
   /* ---- partner shops from our interviews ---- */
   cafe56:{type:'shop',sym:'st-cafe56',paper:'#b6e7c4',name:'Café 56',short:'Café 56',area:'Colston Street',zone:'oldcity',series:'indie',lat:51.4563,lng:-2.5975,pins:['fresh','handmade','vintage','taste'],
-    intro:'蛋糕每天现做、全部手作，靠一份别处吃不到的味道留住熟客的 vintage 小店。',
-    story:'一个人守着的小咖啡馆，就在 Christmas Steps 顶端附近。店主按过去的销量备货，当天剩下的点心交给 Too Good To Go，尽量不浪费。',
-    products:[['当日蛋糕','每天现做，卖完为止'],['手作甜点','从面糊到奶油都在店里做'],['咖啡','配蛋糕的那一杯']],
-    coupons:[{v:'免费加一份浓缩',cond:'购买任意咖啡',days:14,r:'common'},{v:'第二杯半价',cond:'同一笔订单',days:7,r:'rare'}],
-    mystery:{range:'店内小惊喜 · 约 £2–£4',pool:[{v:'16:00 后甜点免费一份',cond:'当日剩余甜点，送完即止',days:7,r:'rare'},{v:'No.056 编号邮票',cond:'收藏用，无货币价值',days:0,r:'limited',keep:true}]}},
+    intro:'A vintage café where every cake is baked fresh each day, all by hand, with a taste regulars can’t find anywhere else.',
+    story:'A one-person café near the top of Christmas Steps. The owner plans stock from past sales and passes leftover bakes to Too Good To Go so nothing goes to waste.',
+    products:[['Today’s cakes','Baked daily, until they sell out'],['Handmade bakes','Batter to buttercream, made in-house'],['Coffee','The cup that goes with the cake']],
+    coupons:[{v:'Free extra shot',cond:'With any coffee',days:14,r:'common'},{v:'Second cup half price',cond:'Same order',days:7,r:'rare'}],
+    mystery:{range:'In-shop surprise · worth about £2–£4',pool:[{v:'Free bake after 4pm',cond:'From the day’s leftovers, while they last',days:7,r:'rare'},{v:'No.056 numbered stamp',cond:'Collectible, no cash value',days:0,r:'limited',keep:true}]}},
   roughtrade:{type:'shop',sym:'st-records',paper:'#d8ccff',name:'Rough Trade Bristol',short:'Rough Trade',area:'Nelson Street',zone:'oldcity',series:'indie',lat:51.4568,lng:-2.5937,pins:['records','cafebar','live','multi'],
-    intro:'一个空间里，淘唱片、喝咖啡、看现场一次完成。',
-    story:'2017 年在 Nelson Street 开业，约 4,500 平方英尺，把唱片店、咖啡酒吧和小型演出厅合在一起，用活动把人留在店里。',
-    products:[['新品与二手黑胶','还有 CD、书和周边'],['咖啡酒吧','挑完唱片坐下喝一杯'],['店内演出','签售和小型现场']],
-    coupons:[{v:'咖啡吧饮品 9 折',cond:'任意饮品',days:14,r:'common'},{v:'二手黑胶区 9 折',cond:'满 £15',days:7,r:'rare'}],
-    mystery:{range:'音乐小惊喜 · 约 £3–£5',pool:[{v:'店内活动优先入场',cond:'限一次，以店内活动为准',days:30,r:'rare'}]}},
-  militaria:{type:'shop',sym:'st-medal',paper:'#c9e3cf',name:'Militaria（店名待确认）',short:'Militaria',area:'Lower Park Row（待确认）',zone:'oldcity',series:'indie',lat:51.4557,lng:-2.5986,pins:['collector','oldthings','bristolold'],
-    intro:'每件东西背后都有故事的收藏小店。',
-    story:'线上曝光少，疫情后停车政策变化影响了客流。最适合用步行路线把人带过来。',
-    products:[['勋章与徽章','店主的收藏'],['老物件','每件都有来历'],['Bristol 旧物','和这座城市有关']],
-    coupons:[{v:'听店主讲一件藏品',cond:'体验券，不花钱',days:30,r:'common'},{v:'免费小纪念品一份',cond:'任意消费',days:14,r:'rare'}],
-    mystery:{range:'收藏小惊喜',pool:[{v:'No.001 Founder 编号邮票',cond:'收藏用，无货币价值',days:0,r:'limited',keep:true}]}},
-  boutique:{type:'shop',sym:'st-hanger',paper:'#e3dcff',name:'Park Street 服装店（店名待补）',short:'Boutique',area:'Park Street',zone:'parkst',series:'indie',lat:51.4546,lng:-2.6018,pins:['jointdeal'],
-    intro:'凭 Boston Tea Party 小票八折的邻里小店。',
-    story:'隔壁的店接连关门，店主主动和 Boston Tea Party 合作“凭小票八折”。这正是联合券的原型。',
-    products:[['服装','特色待补'],['配饰','特色待补']],
-    coupons:[{v:'全场 8 折',cond:'出示 Boston Tea Party 当日小票',days:7,r:'rare'},{v:'£5 优惠',cond:'满 £40',days:14,r:'common'}],
-    mystery:{range:'约 £3–£8',pool:[{v:'免费改衣一次',cond:'以店内服务为准',days:30,r:'rare'}]}},
+    intro:'Dig for records, grab a coffee and catch a gig, all under one roof.',
+    story:'Opened on Nelson Street in 2017. Around 4,500 sq ft combining a record shop, café-bar and a small live room, using events to keep people coming back.',
+    products:[['New and used vinyl','Plus CDs, books and merch'],['Café-bar','Sit down with a drink after digging'],['In-store gigs','Signings and intimate shows']],
+    coupons:[{v:'10% off café-bar drinks',cond:'Any drink',days:14,r:'common'},{v:'10% off used vinyl',cond:'Spend £15+',days:7,r:'rare'}],
+    mystery:{range:'Music surprise · worth about £3–£5',pool:[{v:'Priority entry to an in-store event',cond:'Once only, subject to events',days:30,r:'rare'}]}},
+  militaria:{type:'shop',sym:'st-medal',paper:'#c9e3cf',name:'Militaria (name TBC)',short:'Militaria',area:'Lower Park Row (TBC)',zone:'oldcity',series:'indie',lat:51.4557,lng:-2.5986,pins:['collector','oldthings','bristolold'],
+    intro:'A collectors’ shop where every item has a story.',
+    story:'Little online presence, and footfall dropped after parking changes post-COVID. A walking route is the best way to bring people in.',
+    products:[['Medals and badges','From the owner’s collection'],['Old things','Each with a history'],['Bristol memorabilia','Tied to the city']],
+    coupons:[{v:'Hear the story of one item',cond:'Experience reward, free',days:30,r:'common'},{v:'Free small keepsake',cond:'With any purchase',days:14,r:'rare'}],
+    mystery:{range:'Collector’s surprise',pool:[{v:'No.001 Founder’s stamp',cond:'Collectible, no cash value',days:0,r:'limited',keep:true}]}},
+  boutique:{type:'shop',sym:'st-hanger',paper:'#e3dcff',name:'Park Street boutique (name TBC)',short:'Boutique',area:'Park Street',zone:'parkst',series:'indie',lat:51.4546,lng:-2.6018,pins:['jointdeal'],
+    intro:'A neighbourhood shop giving 20% off with a Boston Tea Party receipt.',
+    story:'Neighbouring shops keep closing, so the owner teamed up with Boston Tea Party: show a receipt, get 20% off. It’s the model for our joint offers.',
+    products:[['Clothing','Details TBC'],['Accessories','Details TBC']],
+    coupons:[{v:'20% off everything',cond:'Show a same-day Boston Tea Party receipt',days:7,r:'rare'},{v:'£5 off',cond:'Spend £40+',days:14,r:'common'}],
+    mystery:{range:'Worth about £3–£8',pool:[{v:'One free alteration',cond:'Subject to availability',days:30,r:'rare'}]}},
   hole:{type:'shop',sym:'st-pub',paper:'#cfe8d4',name:'The Hole in the Wall',short:'Hole in the Wall',area:'Queen Square',zone:'harbour',series:'indie',lat:51.4497,lng:-2.5952,pins:['historic','seasonal','local','garden'],
-    intro:'Queen Square 角上的老酒馆，吃得到本地当季食材。',
-    story:'历史酒吧餐厅，店名来自当年酒客从墙洞里观察抓壮丁队的到来。我们在这里参加过本地食材讨论会。注：属于 Mitchells & Butlers 集团。',
-    products:[['时令菜','跟着季节变'],['本地食材','来自本地供应商'],['户外花园','天气好时坐外面']],
-    coupons:[{v:'时令菜 9 折',cond:'堂食',days:14,r:'common'},{v:'本地食材试吃一份',cond:'点任意主菜',days:7,r:'rare'}],
-    mystery:{range:'约 £2–£5',pool:[{v:'饮品升级一次',cond:'任意饮品',days:14,r:'rare'}]}}
+    intro:'An old pub on the corner of Queen Square, cooking with local, seasonal produce.',
+    story:'A historic pub and restaurant, named after the hole drinkers used to watch for approaching press gangs. We joined a local-food panel here. Note: part of the Mitchells & Butlers group.',
+    products:[['Seasonal dishes','Changes with the season'],['Local produce','From local suppliers'],['Garden','Sit outside when it’s sunny']],
+    coupons:[{v:'10% off seasonal dishes',cond:'Dine in',days:14,r:'common'},{v:'Free local-produce tasting',cond:'With any main',days:7,r:'rare'}],
+    mystery:{range:'Worth about £2–£5',pool:[{v:'One drink upgrade',cond:'Any drink',days:14,r:'rare'}]}}
 };
-const PIN_TYPES={product:{n:'产品',c:'#ff6a3d',badge:'Taste Hunter'},craft:{n:'手艺',c:'#2f8a52',badge:'Handmade Hunter'},space:{n:'空间',c:'#2c44d6',badge:'Space Explorer'},story:{n:'故事',c:'#b8860b',badge:'Story Seeker'}};
-const PINS={fresh:{l:'每日新鲜蛋糕',t:'product',d:'蛋糕每天现做，卖完为止。'},handmade:{l:'全手作',t:'craft',d:'从面糊到奶油都在店里亲手做。'},vintage:{l:'Vintage 小店',t:'space',d:'老家具、旧瓷杯，坐下就不想走。'},taste:{l:'独家口味',t:'product',d:'一份别处吃不到的味道，熟客就是为它回来。'},
-  records:{l:'唱片店',t:'product',d:'新品与二手黑胶、CD 和书。'},cafebar:{l:'咖啡酒吧',t:'space',d:'挑完唱片坐下来喝一杯。'},live:{l:'现场演出',t:'space',d:'店里有小型演出厅，常有签售和现场。'},multi:{l:'多功能空间',t:'space',d:'唱片店、咖啡酒吧、演出厅合在一起。'},
-  jointdeal:{l:'联合优惠',t:'story',d:'凭 Boston Tea Party 小票可享八折。'},collector:{l:'店主收藏',t:'story',d:'店主多年收集的藏品。'},oldthings:{l:'老物件',t:'product',d:'勋章、徽章、旧书和纪念品。'},bristolold:{l:'Bristol 旧物',t:'story',d:'和这座城市有关的老物件。'},
-  historic:{l:'历史老店',t:'story',d:'店名来自当年酒客从墙洞里观察抓壮丁队。'},seasonal:{l:'时令菜单',t:'product',d:'菜单跟着季节和本地食材变。'},local:{l:'本地食材',t:'craft',d:'和本地供应商合作。'},garden:{l:'户外花园',t:'space',d:'天气好时可以坐在外面。'}};
+const PIN_TYPES={product:{n:'Product',c:'#ff6a3d',badge:'Taste Hunter'},craft:{n:'Craft',c:'#2f8a52',badge:'Handmade Hunter'},space:{n:'Space',c:'#2c44d6',badge:'Space Explorer'},story:{n:'Story',c:'#b8860b',badge:'Story Seeker'}};
+const PINS={fresh:{l:'Fresh cakes daily',t:'product',d:'Cakes baked every day, until they sell out.'},handmade:{l:'All handmade',t:'craft',d:'Everything from batter to buttercream is made by hand.'},vintage:{l:'Vintage vibe',t:'space',d:'Old furniture and mismatched china. Once you sit down you won’t want to leave.'},taste:{l:'Signature taste',t:'product',d:'A flavour you won’t find elsewhere. It’s why regulars come back.'},
+  records:{l:'Record shop',t:'product',d:'New and used vinyl, CDs and books.'},cafebar:{l:'Café-bar',t:'space',d:'Grab a drink after digging through the crates.'},live:{l:'Live music',t:'space',d:'A small live room with regular gigs and signings.'},multi:{l:'All-in-one space',t:'space',d:'Record shop, café-bar and live room in one.'},
+  jointdeal:{l:'Joint offer',t:'story',d:'20% off with a Boston Tea Party receipt.'},collector:{l:'Owner’s collection',t:'story',d:'Pieces the owner has collected over many years.'},oldthings:{l:'Old things',t:'product',d:'Medals, badges, old books and souvenirs.'},bristolold:{l:'Bristol memorabilia',t:'story',d:'Old objects connected to the city.'},
+  historic:{l:'Historic',t:'story',d:'Named after the hole drinkers used to watch for press gangs.'},seasonal:{l:'Seasonal menu',t:'product',d:'The menu follows the seasons and local produce.'},local:{l:'Local produce',t:'craft',d:'Works with local suppliers.'},garden:{l:'Garden',t:'space',d:'Sit outside when the weather’s good.'}};
 const SERIES=[{id:'landmarks',name:'Landmarks',seal:'Bristol Seal',paper:'#f3f8fc'},{id:'streetart',name:'Street Art',seal:'Spray Can Seal',paper:'#f1f2f5'},{id:'indie',name:'Independent Shops',seal:'Local Hero Seal',paper:'#fdf3f5'}];
-const ROUTES=[{id:'banksy',name:'Banksy 与 Park Street',len:'一天',stops:['stokes','roughtrade','steps','cafe56','militaria','boutique','frogmore','cityhall']},
-  {id:'harbour',name:'Harbourside',len:'半天',stops:['cityhall','hole','mshed','hanover']},
-  {id:'clifton',name:'Clifton 午后',len:'半天',stops:['cabot','bridge']}];
-const WEEK={name:'Old City & Park Street 探索周',zones:['oldcity','parkst'],need:3};
+const ROUTES=[{id:'banksy',name:'Banksy & Park Street',len:'Full day',stops:['stokes','roughtrade','steps','cafe56','militaria','boutique','frogmore','cityhall']},
+  {id:'harbour',name:'Harbourside',len:'Half day',stops:['cityhall','hole','mshed','hanover']},
+  {id:'clifton',name:'Clifton afternoon',len:'Half day',stops:['cabot','bridge']}];
+const WEEK={name:'Old City & Park Street Explorer Week',zones:['oldcity','parkst'],need:3};
 const HOME={lat:51.4527,lng:-2.6005};/* default “you are here”: College Green */
 const POS=[{l:6,t:17,r:-6},{l:37,t:14,r:5},{l:68,t:18,r:-3},{l:14,t:50,r:4},{l:54,t:48,r:-4}];
 const INITIAL={};
@@ -1145,7 +1145,7 @@ const hadSave=load();
 /* fallback-map positions (x/y %) worked out from real coordinates */
 (function(){const la=[51.4465,51.4635],lo=[-2.6120,-2.5880],cl=(v,a,b)=>Math.max(a,Math.min(b,v));Object.values(SHOPS).forEach(s=>{s.x=+cl(8+(s.lng-lo[0])/(lo[1]-lo[0])*84,7,93).toFixed(1);s.y=+cl(30+(la[1]-s.lat)/(la[1]-la[0])*56,30,88).toFixed(1)})})();
 function meters(a,b){const R=6371e3,t=Math.PI/180,dl=(b.lat-a.lat)*t,dn=(b.lng-a.lng)*t,x=Math.sin(dl/2)**2+Math.cos(a.lat*t)*Math.cos(b.lat*t)*Math.sin(dn/2)**2;return 2*R*Math.asin(Math.sqrt(x))}
-function walk(id,from){const m=meters(from||S.here||HOME,SHOPS[id]);return Math.max(1,Math.round(m/75))+' min 步行'}
+function walk(id,from){const m=meters(from||S.here||HOME,SHOPS[id]);return Math.max(1,Math.round(m/75))+' min walk'}
 Object.keys(SHOPS).forEach(k=>Object.defineProperty(SHOPS[k],'dist',{get(){return walk(k)}}));
 
 const $=s=>document.querySelector(s);
@@ -1203,8 +1203,8 @@ function pageHTML(){
 function paintPage(){const pg=$('#ppage');pg.style.background=`repeating-radial-gradient(circle at 110% -10%,transparent 0 7px,rgba(44,68,214,.055) 7px 8px),repeating-radial-gradient(circle at -10% 110%,transparent 0 7px,rgba(255,106,61,.055) 7px 8px),${SERIES[S.page].paper}`}
 function renderNext(){
   const n=nearestTodo();const el=$('#nextbar');
-  if(!n){el.innerHTML='<b>全部收集完成 ✦</b>';return}
-  el.innerHTML=`<span class="q">?</span><div><b>下一枚：${SHOPS[n].short}</b><small>${SHOPS[n].area} · ${walk(n)}</small></div><span class="go">去看看 →</span>`;
+  if(!n){el.innerHTML='<b>All stamps collected ✦</b>';return}
+  el.innerHTML=`<span class="q">?</span><div><b>Next: ${SHOPS[n].short}</b><small>${SHOPS[n].area} · ${walk(n)}</small></div><span class="go">Show me →</span>`;
   el.onclick=()=>{buzz();S.sel=n;go('map')};
 }
 function renderPassport(){renderChips();paintPage();$('#ppage').innerHTML=pageHTML();renderNext();S.newId=null}
@@ -1235,13 +1235,13 @@ function openShop(id){
     <div style="text-align:center">${s.limited?`<span class="tagl">✦ ${s.limited}</span>`:''}<h4 style="font:800 21px 'Inter Tight';letter-spacing:-.02em;margin:2px 0 2px">${s.name}</h4><small style="color:var(--muted);font-size:12px">${s.area} · <span class="st-ok">Collected ${c}</span></small></div>
     ${s.pins?`<div class="pins" style="justify-content:center;margin-top:12px">${s.pins.map(pinHTML).join('')}</div>`:''}
     <p class="sh-story" style="text-align:center">${s.intro||s.story}</p>
-    <div class="mono" style="font-size:10px;color:var(--muted);text-align:center;margin:-6px 0 14px">稀有度 ${s.limited?'限定':'普通'} · 历次邮戳 ${(S.visits[id]||[c]).join(' / ')}</div>
-    <div class="sh-actions"><button class="btn ghost sm" data-act="share">Share</button>${isShop(id)?`<button class="btn sm" data-act="detail" data-id="${id}">店铺详情</button>`:`<button class="btn sm" data-act="close">Done</button>`}</div>`);
+    <div class="mono" style="font-size:10px;color:var(--muted);text-align:center;margin:-6px 0 14px">Rarity ${s.limited?'Limited':'Common'} · Postmarks ${(S.visits[id]||[c]).join(' / ')}</div>
+    <div class="sh-actions"><button class="btn ghost sm" data-act="share">Share</button>${isShop(id)?`<button class="btn sm" data-act="detail" data-id="${id}">Shop details</button>`:`<button class="btn sm" data-act="close">Done</button>`}</div>`);
   }else{
     openSheet(`<div class="sh-row"><div class="qslot">?</div><div>${s.limited?`<span class="tagl">✦ ${s.limited}</span>`:''}<h4>${s.name}</h4><small>${s.area} · ${s.dist}</small><small style="margin-top:4px">Not collected yet</small></div></div>
     ${s.pins?`<div class="pins" style="margin-top:12px">${s.pins.map(pinHTML).join('')}</div>`:''}
-    <p class="sh-story">${s.intro||s.story} ${isShop(id)?'到店扫码即可解锁这枚邮票。':'到了现场用定位签到即可解锁。'}</p>
-    <div class="sh-actions"><button class="btn ghost sm" data-act="${isShop(id)?'detail':'map'}" data-id="${id}">${isShop(id)?'店铺详情':'Show on map'}</button><button class="btn sm" data-act="checkin" data-id="${id}">${isShop(id)?'到店 · 扫码签到':'我在这里 · 签到'}</button></div>`);
+    <p class="sh-story">${s.intro||s.story} ${isShop(id)?'Scan the code in the shop to unlock this stamp.':'Check in by location when you’re there to unlock it.'}</p>
+    <div class="sh-actions"><button class="btn ghost sm" data-act="${isShop(id)?'detail':'map'}" data-id="${id}">${isShop(id)?'Shop details':'Show on map'}</button><button class="btn sm" data-act="checkin" data-id="${id}">${isShop(id)?'In the shop · Scan to check in':'I’m here · Check in'}</button></div>`);
   }
 }
 $('#sheet').addEventListener('click',e=>{
@@ -1271,11 +1271,11 @@ function renderMap(){
 }
 $('#mfilter').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(!b)return;buzz();S.filter=b.dataset.f;document.querySelectorAll('#mfilter button').forEach(x=>x.classList.toggle('on',x===b));renderMap()});
 /* weekly district event */
-function weekLeft(){const d=new Date(),n=(7-d.getDay())%7;return n===0?'今天结束':`剩 ${n} 天`}
+function weekLeft(){const d=new Date(),n=(7-d.getDay())%7;return n===0?'Ends today':`${n} days left`}
 function weekCount(){return Object.keys(S.collected).filter(k=>WEEK.zones.includes(SHOPS[k].zone)).length}
 function renderWeek(){const n=Math.min(weekCount(),WEEK.need);
-  $('#weekBanner').innerHTML=`<div class="stamp sm" style="--paper:#f2d38a;${S.weekGot?'':'filter:grayscale(.6)'}"><svg viewBox="0 0 120 156"><use href="#st-week"/></svg></div><div><b>本周 · ${WEEK.name}</b><small>${S.weekGot?'已获得本周限定邮票 ✦':'在这一片集 3 枚邮票，得本周限定邮票'}</small></div><span class="cnt">${n}/${WEEK.need} · ${weekLeft()}</span>`;
-  $('#weekBanner').onclick=()=>{buzz();S.filter='todo';document.querySelectorAll('#mfilter button').forEach(x=>x.classList.toggle('on',x.dataset.f==='todo'));toast('已筛选出还没收集的地点');renderMap()};
+  $('#weekBanner').innerHTML=`<div class="stamp sm" style="--paper:#f2d38a;${S.weekGot?'':'filter:grayscale(.6)'}"><svg viewBox="0 0 120 156"><use href="#st-week"/></svg></div><div><b>This week · ${WEEK.name}</b><small>${S.weekGot?'This week’s limited stamp is yours ✦':'Collect 3 stamps in this area for this week’s limited stamp'}</small></div><span class="cnt">${n}/${WEEK.need} · ${weekLeft()}</span>`;
+  $('#weekBanner').onclick=()=>{buzz();S.filter='todo';document.querySelectorAll('#mfilter button').forEach(x=>x.classList.toggle('on',x.dataset.f==='todo'));toast('Showing places you haven’t collected yet');renderMap()};
 }
 /* routes */
 function renderRouteChips(){
@@ -1289,10 +1289,10 @@ function drawRoute(){
   $('#routeline').innerHTML=`<polyline points="${pts.map(p=>p.x+','+(p.y-2)).join(' ')}" fill="none" stroke="var(--accent2)" stroke-width=".9" stroke-dasharray="1.6 1.4" stroke-linecap="round" vector-effect="non-scaling-stroke" style="stroke-width:3px"/>`;
   setRealRoute(r);
   const n=r.stops.filter(k=>S.collected[k]).length,next=r.stops.find(k=>!S.collected[k]);
-  card.innerHTML=`<b>${r.name}</b> · ${r.len} · ${n}/${r.stops.length}<div class="tr"><i style="width:${n/r.stops.length*100}%"></i></div><div class="mstops">${r.stops.map(k=>`<span class="${S.collected[k]?'ok':''}">${S.collected[k]?'✓ ':''}${SHOPS[k].short}</span>`).join('')}</div>${next?`<div style="margin-top:6px;color:var(--muted)">下一站：${SHOPS[next].short} · ${walk(next)}</div>`:'<div style="margin-top:6px">路线已完成，去 Profile 看明信片 ✦</div>'}`;
+  card.innerHTML=`<b>${r.name}</b> · ${r.len} · ${n}/${r.stops.length}<div class="tr"><i style="width:${n/r.stops.length*100}%"></i></div><div class="mstops">${r.stops.map(k=>`<span class="${S.collected[k]?'ok':''}">${S.collected[k]?'✓ ':''}${SHOPS[k].short}</span>`).join('')}</div>${next?`<div style="margin-top:6px;color:var(--muted)">Next stop: ${SHOPS[next].short} · ${walk(next)}</div>`:'<div style="margin-top:6px">Route complete. See your postcard in Profile ✦</div>'}`;
   card.classList.add('on');
 }
-/* real cartoon map: MapLibre + OpenFreeMap (no key). Falls back to the illustrated map above if it can't load. */
+/* real cartoon map: MapLibre + OpenFreeMap (no key). Falls back to the illustrated map above if it can’t load. */
 let RM=null,RMstate='idle',RMmarks=[];
 const SKIN_MAP={default:{land:'#f3efe2',water:'#8fd3f0',park:'#bfe6a8',bld:'#e9dfcf',road:'#ffffff',rail:'#d9cfbd'},
   christmas:{land:'#f4f7fb',water:'#9cc9e6',park:'#cfe6d2',bld:'#e6e9f0',road:'#ffffff',rail:'#d5dbe6'},
@@ -1348,17 +1348,17 @@ $('#pins').addEventListener('click',e=>{const p=e.target.closest('[data-pin]');i
 function mapSheet(id){
   const s=SHOPS[id],c=S.collected[id];
   document.querySelectorAll('.pin').forEach(p=>p.classList.toggle('sel',p.dataset.pin===id));
-  openSheet(`<div class="sh-row">${c?stampHTML(id,'sm'):'<div class="qslot">?</div>'}<div>${s.limited?`<span class="tagl">✦ ${s.limited}</span>`:`<span class="tagl">${s.type==='shop'?'合作小店':'景点'}</span>`}<h4>${s.name}</h4><small>${s.area} · ${s.dist}</small><small class="${c?'st-ok':''}" style="margin-top:4px">${c?'✓ Collected '+c:(s.type==='shop'?'● 到店扫码可收集':'● 到现场定位签到可收集')}</small></div></div>
+  openSheet(`<div class="sh-row">${c?stampHTML(id,'sm'):'<div class="qslot">?</div>'}<div>${s.limited?`<span class="tagl">✦ ${s.limited}</span>`:`<span class="tagl">${s.type==='shop'?'Partner shop':'Landmarks'}</span>`}<h4>${s.name}</h4><small>${s.area} · ${s.dist}</small><small class="${c?'st-ok':''}" style="margin-top:4px">${c?'✓ Collected '+c:(s.type==='shop'?'● Scan in the shop to collect':'● Check in by location to collect')}</small></div></div>
   ${s.pins?`<div class="pins" style="margin-top:12px">${s.pins.slice(0,2).map(pinHTML).join('')}</div>`:''}
   <p class="sh-story" style="margin:10px 0 0">${s.intro||s.story}</p>
-  <div class="sh-actions" style="margin-top:16px">${s.type==='shop'?`<button class="btn ghost sm" data-act="detail" data-id="${id}">查看店铺</button>`:''}${c?`<button class="btn sm" data-act="passport" data-id="${id}">View in passport</button>`:`<button class="btn sm" data-act="checkin" data-id="${id}">前往收集 · 签到</button>`}</div>`);
+  <div class="sh-actions" style="margin-top:16px">${s.type==='shop'?`<button class="btn ghost sm" data-act="detail" data-id="${id}">View shop</button>`:''}${c?`<button class="btn sm" data-act="passport" data-id="${id}">View in passport</button>`:`<button class="btn sm" data-act="checkin" data-id="${id}">Collect · Check in</button>`}</div>`);
 }
 
 /* ---------- scan ---------- */
 function renderScan(){
   const ids=Object.keys(SHOPS).filter(isShop).sort((a,b)=>meters(S.here||HOME,SHOPS[a])-meters(S.here||HOME,SHOPS[b]));
   if(!S.scanFor||!SHOPS[S.scanFor])S.scanFor=ids.find(k=>!S.collected[k])||ids[0];
-  $('#scanList').innerHTML='<span style="font-size:11px;color:#a9acb8;align-self:center;flex:none">演示 · 我在：</span>'+ids.map(k=>`<button class="${k===S.scanFor?'on':''}" data-sf="${k}">${SHOPS[k].short}${S.collected[k]?' ✓':''}</button>`).join('');
+  $('#scanList').innerHTML='<span style="font-size:11px;color:#a9acb8;align-self:center;flex:none">Demo · I’m at:</span>'+ids.map(k=>`<button class="${k===S.scanFor?'on':''}" data-sf="${k}">${SHOPS[k].short}${S.collected[k]?' ✓':''}</button>`).join('');
 }
 $('#scanList').addEventListener('click',e=>{const b=e.target.closest('[data-sf]');if(b){buzz();S.scanFor=b.dataset.sf;renderScan()}});
 $('#simScan').addEventListener('click',()=>{
@@ -1383,8 +1383,8 @@ function unlock(id){
   $('#unlock').innerHTML=`<div class="burst"></div>${conf}
    <div class="ul-stamp"><div class="drop">${s.limited?`<div class="holo">${stampHTML(id)}</div>`:stampHTML(id)}</div><i class="ink"></i>${pmHTML()}</div>
    <div class="ul-txt">${s.limited?`<span class="tagl">✦ ${s.limited}</span>`:`<span class="tagl">${si.name.toUpperCase()} · ${got(sid).length}/${items(sid).length}</span>`}
-   <h3>${first?'New stamp collected!':`第 ${nv} 次到访！`}</h3><p>${first?`${s.name} · ${s.area}`:(nv===3?'解锁常客版邮戳 · 护照上多了一个新日期的邮戳':'护照上多了一个新日期的邮戳')}</p>
-   <div class="sh-actions"><button class="btn ghost" id="ulShare">Share</button><button class="btn" id="ulAdd">${isShop(id)?'领取奖励 →':'继续 →'}</button></div></div>`;
+   <h3>${first?'New stamp collected!':`Visit #${nv}!`}</h3><p>${first?`${s.name} · ${s.area}`:(nv===3?'Regular’s postmark unlocked · a new dated postmark in your passport':'A new dated postmark in your passport')}</p>
+   <div class="sh-actions"><button class="btn ghost" id="ulShare">Share</button><button class="btn" id="ulAdd">${isShop(id)?'Get your reward →':'Continue →'}</button></div></div>`;
   const u=$('#unlock');u.classList.remove('on');void u.offsetWidth;u.classList.add('on');
   setTimeout(buzz,820);
   $('#ulShare').onclick=()=>toast('Share card copied ✓');
@@ -1397,8 +1397,8 @@ function unlock(id){
       const q=[];
       if(complete)q.push(()=>achievement(si));
       ROUTES.filter(r=>r.stops.every(k=>S.collected[k])&&!before.routes.includes(r.id)).forEach(r=>q.push(()=>postcard(r.id)));
-      if(!S.weekGot&&before.week<WEEK.need&&weekCount()>=WEEK.need){S.weekGot=true;S.keep.push({name:'Explorer Week 限定邮票',sym:'st-week',paper:'#f2d38a',at:TODAY});save();q.push(()=>weekStamp())}
-      const pc=pinCounts();Object.keys(PIN_TYPES).forEach(t=>{if((before.pins[t]||0)<3&&(pc[t]||0)>=3)setTimeout(()=>toast(`获得主题徽章：${PIN_TYPES[t].badge} ✦`),600)});
+      if(!S.weekGot&&before.week<WEEK.need&&weekCount()>=WEEK.need){S.weekGot=true;S.keep.push({name:'Explorer Week limited stamp',sym:'st-week',paper:'#f2d38a',at:TODAY});save();q.push(()=>weekStamp())}
+      const pc=pinCounts();Object.keys(PIN_TYPES).forEach(t=>{if((before.pins[t]||0)<3&&(pc[t]||0)>=3)setTimeout(()=>toast(`Theme badge unlocked: ${PIN_TYPES[t].badge} ✦`),600)});
       const run=()=>{const f=q.shift();if(f){f();window.__afterAch=run}};
       setTimeout(run,1100);
     };
@@ -1411,37 +1411,37 @@ function showPick(id,next){
   const s=SHOPS[id],cs=s.coupons.slice(0,2),firstVisit=(S.visits[id]||[]).length===1;
   const myst=s.mystery.pool[Math.floor(Math.random()*s.mystery.pool.length)];
   const rarity={common:'COMMON',rare:'RARE',limited:'LIMITED'};
-  const card=(c,i,rot)=>`<button class="ccard ${c.r}" data-i="${i}" style="--rr:${rot}deg"><span class="rar">${rarity[c.r]}</span><div class="v">${c.v}</div><div class="c">门槛：${c.cond}</div><div class="e">有效期至 ${addDays(c.days)}</div></button>`;
-  $('#pick').innerHTML=`<span class="tagl">${s.short} · 签到奖励</span><h3>三张里挑一张</h3><p>两张写明了条件；第三张是神秘奖励，翻开前也告诉你大概价值。</p>
-   <div class="cards">${card(cs[0],0,-4)}${card(cs[1],1,0)}<button class="ccard mys" data-i="2" style="--rr:4deg"><div class="q">?</div><div class="c">神秘奖励<br>${s.mystery.range}</div></button></div>
-   <p class="note">${firstVisit?'第一次来这家店，保证至少有一张稀有券。':'不需要抽奖，也不会催你重选。'}</p><div id="pickOut" style="width:100%;display:flex;flex-direction:column;align-items:center"></div>`;
+  const card=(c,i,rot)=>`<button class="ccard ${c.r}" data-i="${i}" style="--rr:${rot}deg"><span class="rar">${rarity[c.r]}</span><div class="v">${c.v}</div><div class="c">Condition: ${c.cond}</div><div class="e">Valid until ${addDays(c.days)}</div></button>`;
+  $('#pick').innerHTML=`<span class="tagl">${s.short} · Check-in reward</span><h3>Pick one of three</h3><p>Two show their terms up front. The third is a mystery reward, and you can see roughly what it’s worth before you pick.</p>
+   <div class="cards">${card(cs[0],0,-4)}${card(cs[1],1,0)}<button class="ccard mys" data-i="2" style="--rr:4deg"><div class="q">?</div><div class="c">Mystery reward<br>${s.mystery.range}</div></button></div>
+   <p class="note">${firstVisit?'First visit here, so at least one card is rare.':'No spinning wheels, no re-rolls.'}</p><div id="pickOut" style="width:100%;display:flex;flex-direction:column;align-items:center"></div>`;
   const P=$('#pick');P.classList.remove('on');void P.offsetWidth;P.classList.add('on');$('#unlock').classList.remove('on');
   P.querySelectorAll('.ccard').forEach(b=>b.onclick=()=>{
     if(P.dataset.done==='1')return;P.dataset.done='1';buzz();
     const i=+b.dataset.i,c=i===2?myst:cs[i];
-    if(i===2){b.classList.remove('mys');b.classList.add(c.r);b.innerHTML=`<span class="rar">${rarity[c.r]}</span><div class="v">${c.v}</div><div class="c">${c.cond}</div><div class="e">${c.days?'有效期至 '+addDays(c.days):'永久收藏'}</div>`}
+    if(i===2){b.classList.remove('mys');b.classList.add(c.r);b.innerHTML=`<span class="rar">${rarity[c.r]}</span><div class="v">${c.v}</div><div class="c">${c.cond}</div><div class="e">${c.days?'Valid until '+addDays(c.days):'Keep forever'}</div>`}
     P.querySelectorAll('.ccard').forEach(x=>x.classList.add(x===b?'chosen':'gone'));
     if(c.keep)S.keep.push({name:c.v,sym:s.sym,paper:s.paper,at:TODAY,shop:id});
     else S.coupons.unshift({id:uid(),shop:id,v:c.v,cond:c.cond,exp:addDays(c.days),r:c.r,used:null});
     save();
-    setTimeout(()=>{$('#pickOut').innerHTML=`<p class="note" style="margin-top:28px">${c.keep?'已放进 Rewards · 收藏邮票':'已放进 Rewards，下次到店出示即可使用'}</p><button class="btn" id="pickNext">继续</button>`;$('#pickNext').onclick=()=>{buzz();P.dataset.done='';next()}},700);
+    setTimeout(()=>{$('#pickOut').innerHTML=`<p class="note" style="margin-top:28px">${c.keep?'Added to Rewards · Collectibles':'Added to Rewards. Show it on your next visit.'}</p><button class="btn" id="pickNext">Continue</button>`;$('#pickNext').onclick=()=>{buzz();P.dataset.done='';next()}},700);
   });
 }
-/* ---------- “there's another stamp nearby” ---------- */
+/* ---------- “there’s another stamp nearby” ---------- */
 function showNearby(id,next){
   const n=nearestTodo(id),P=$('#pick');
   if(!n){next();return}
   const m=Math.max(1,Math.round(meters(SHOPS[id],SHOPS[n])/75));
-  P.innerHTML=`<span class="tagl">附近还有一枚邮票</span><h3>再走 ${m} 分钟</h3><p>从 ${SHOPS[id].short} 出发，下一枚就在附近。</p>
-   <div class="near">${stampHTML(n,'sm')}<div><b>${SHOPS[n].name}</b><small>${SHOPS[n].area} · ${m} min 步行</small>${SHOPS[n].pins?`<div class="pins">${SHOPS[n].pins.slice(0,2).map(pinHTML).join('')}</div>`:`<small>${SHOPS[n].story.slice(0,34)}…</small>`}</div></div>
-   <button class="btn" id="nearGo">带我去</button><button class="skip" id="nearSkip" style="margin-top:10px">回到护照</button>`;
+  P.innerHTML=`<span class="tagl">Another stamp nearby</span><h3>Just ${m} min away</h3><p>Your next stamp is a short walk from ${SHOPS[id].short}.</p>
+   <div class="near">${stampHTML(n,'sm')}<div><b>${SHOPS[n].name}</b><small>${SHOPS[n].area} · ${m} min walk</small>${SHOPS[n].pins?`<div class="pins">${SHOPS[n].pins.slice(0,2).map(pinHTML).join('')}</div>`:`<small>${SHOPS[n].story.slice(0,34)}…</small>`}</div></div>
+   <button class="btn" id="nearGo">Take me there</button><button class="skip" id="nearSkip" style="margin-top:10px">Back to passport</button>`;
   P.classList.remove('on');void P.offsetWidth;P.classList.add('on');
   $('#nearGo').onclick=()=>{buzz();next();setTimeout(()=>{S.sel=n;go('map')},50)};
   $('#nearSkip').onclick=()=>{buzz();next()};
 }
 function pinCounts(){const c={};Object.keys(S.collected).forEach(k=>(SHOPS[k].pins||[]).forEach(p=>{const t=PINS[p].t;c[t]=(c[t]||0)+1}));return c}
 function weekStamp(){
-  $('#ach').innerHTML=`<div class="stamp" style="--paper:#f2d38a;width:40%;transform:rotate(-5deg)"><svg viewBox="0 0 120 156"><use href="#st-week"/></svg></div><h3>本周限定邮票！</h3><p>你在 ${WEEK.name} 集齐了 ${WEEK.need} 枚邮票。错过这周就没有了。</p><button class="btn" id="achOk">收进护照</button>`;
+  $('#ach').innerHTML=`<div class="stamp" style="--paper:#f2d38a;width:40%;transform:rotate(-5deg)"><svg viewBox="0 0 120 156"><use href="#st-week"/></svg></div><h3>This week’s limited stamp!</h3><p>You collected ${WEEK.need} stamps in ${WEEK.name}. Miss this week and it’s gone.</p><button class="btn" id="achOk">Add to passport</button>`;
   $('#ach').classList.add('on');buzz();
   $('#achOk').onclick=()=>{$('#ach').classList.remove('on');window.__afterAch&&window.__afterAch()};
 }
@@ -1450,13 +1450,13 @@ function postcard(rid){
   const r=ROUTES.find(x=>x.id===rid),pts=r.stops.map(k=>SHOPS[k]);
   const xs=pts.map(p=>p.lng),ys=pts.map(p=>p.lat),x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys);
   const px=p=>10+(p.lng-x0)/((x1-x0)||1)*80,py=p=>10+(y1-p.lat)/((y1-y0)||1)*80;
-  $('#pick').innerHTML=`<span class="tagl">路线完成</span><h3>你的城市明信片</h3><p>适合发 Instagram Story</p>
+  $('#pick').innerHTML=`<span class="tagl">Route complete</span><h3>Your city postcard</h3><p>Sized for Instagram Stories</p>
    <div class="postcard"><span class="k">SHOP PASSPORT · BRISTOL</span><h4>${r.name}</h4><span class="k">${TODAY} · ${r.stops.length} STOPS · ${r.len}</span>
    <div class="mini"><svg viewBox="0 0 100 100" style="width:100%;height:100%"><rect width="100" height="100" fill="#e8f1e4"/><polyline points="${pts.map(p=>px(p)+','+py(p)).join(' ')}" fill="none" stroke="#ff6a3d" stroke-width="2" stroke-dasharray="2 2" stroke-linecap="round"/>${pts.map(p=>`<circle cx="${px(p)}" cy="${py(p)}" r="3" fill="#1f2a5c"/>`).join('')}</svg></div>
    <div class="grid">${r.stops.map(k=>stampHTML(k,'sm')).join('')}</div><svg class="pmk pm" viewBox="0 0 120 120"><use href="#pm2"/></svg></div>
-   <div class="sh-actions" style="width:100%;max-width:300px;margin-top:18px"><button class="btn ghost" id="pcShare">分享</button><button class="btn" id="pcOk">完成</button></div>`;
+   <div class="sh-actions" style="width:100%;max-width:300px;margin-top:18px"><button class="btn ghost" id="pcShare">Share</button><button class="btn" id="pcOk">Done</button></div>`;
   const P=$('#pick');P.classList.remove('on');void P.offsetWidth;P.classList.add('on');
-  $('#pcShare').onclick=()=>toast('明信片已生成（演示）');
+  $('#pcShare').onclick=()=>toast('Postcard created (demo)');
   $('#pcOk').onclick=()=>{P.classList.remove('on');window.__afterAch&&window.__afterAch()};
 }
 function achievement(si){
@@ -1474,25 +1474,26 @@ function renderMe(){
     return `<button class="prow" style="width:100%;text-align:left" data-sp="${i}">${stampHTML(first,'sm')}<div class="t"><b>${s.name}<em>${n}/${t}</em></b><div class="tr"><i style="width:${n/t*100}%"></i></div></div></button>`}).join('');
   $('#mseals').innerHTML=SERIES.map(s=>{const ok=got(s.id).length===items(s.id).length;return `<div class="seal ${ok?'':'off'}"><svg viewBox="0 0 160 200"><use href="#seal"/></svg>${s.seal}</div>`}).join('');
   $('#sealcount').textContent=`${sealsDone} / ${SERIES.length}`;
+  $('#installBtn').style.display=isStandalone()?'none':'';
   /* pin theme badges */
   const pc=pinCounts();
   $('#mpins').innerHTML=Object.keys(PIN_TYPES).map(t=>{const T=PIN_TYPES[t],n=pc[t]||0;return `<div class="badge2 ${n>=3?'':'off'}" style="--pc:${T.c}"><span class="dot"><svg viewBox="0 0 24 24"><use href="#i-pin"/></svg></span>${T.badge}<span class="mono" style="font-size:10px;color:var(--muted)">${T.n} ${Math.min(n,3)}/3</span></div>`}).join('');
   /* routes + postcards */
-  $('#mroutesMe').innerHTML=ROUTES.map(r=>{const n=r.stops.filter(k=>S.collected[k]).length,t=r.stops.length;return `<div class="prow"><span class="stamp sm" style="--paper:${SHOPS[r.stops[0]].paper}"><svg viewBox="0 0 120 156"><use href="#${SHOPS[r.stops[0]].sym}"/></svg></span><div class="t"><b>${r.name}<em>${n}/${t}</em></b><div class="tr"><i style="width:${n/t*100}%"></i></div></div><button class="chip ${n===t?'on':''}" data-route="${r.id}" style="flex:none">${n===t?'明信片':'去走走'}</button></div>`}).join('');
+  $('#mroutesMe').innerHTML=ROUTES.map(r=>{const n=r.stops.filter(k=>S.collected[k]).length,t=r.stops.length;return `<div class="prow"><span class="stamp sm" style="--paper:${SHOPS[r.stops[0]].paper}"><svg viewBox="0 0 120 156"><use href="#${SHOPS[r.stops[0]].sym}"/></svg></span><div class="t"><b>${r.name}<em>${n}/${t}</em></b><div class="tr"><i style="width:${n/t*100}%"></i></div></div><button class="chip ${n===t?'on':''}" data-route="${r.id}" style="flex:none">${n===t?'Postcard':'Walk it'}</button></div>`}).join('');
   /* skins */
-  const SK=[['default','经典','linear-gradient(135deg,#2c3a7a,#1f2a5c)'],['christmas','圣诞','linear-gradient(135deg,#c8102e,#2f6b3a)'],['halloween','万圣节','linear-gradient(135deg,#ff7a1a,#141118)'],['cny','春节','linear-gradient(135deg,#d4182f,#f5cf6b)']];
+  const SK=[['default','Classic','linear-gradient(135deg,#2c3a7a,#1f2a5c)'],['christmas','Christmas','linear-gradient(135deg,#c8102e,#2f6b3a)'],['halloween','Halloween','linear-gradient(135deg,#ff7a1a,#141118)'],['cny','Lunar New Year','linear-gradient(135deg,#d4182f,#f5cf6b)']];
   $('#mskins').innerHTML=SK.map(([k,n,g])=>`<button class="${S.skin===k?'on':''}" data-skin="${k}"><i style="background:${g}"></i>${n}</button>`).join('');
 }
 $('#mroutesMe').addEventListener('click',e=>{const b=e.target.closest('[data-route]');if(!b)return;buzz();const r=ROUTES.find(x=>x.id===b.dataset.route);if(r.stops.every(k=>S.collected[k])){window.__afterAch=null;postcard(r.id)}else{S.route=r.id;go('map')}});
-$('#mskins').addEventListener('click',e=>{const b=e.target.closest('[data-skin]');if(!b)return;buzz();S.skin=b.dataset.skin;applySkin();save();renderMe();toast({default:'经典皮肤',christmas:'圣诞皮肤：地图下雪了',halloween:'万圣节皮肤：天黑模式',cny:'春节皮肤：红金配色'}[S.skin])});
+$('#mskins').addEventListener('click',e=>{const b=e.target.closest('[data-skin]');if(!b)return;buzz();S.skin=b.dataset.skin;applySkin();save();renderMe();toast({default:'Classic skin',christmas:'Christmas skin: it’s snowing on the map',halloween:'Halloween skin: after-dark mode',cny:'Lunar New Year skin: red and gold'}[S.skin])});
 function applySkin(){document.body.dataset.skin=S.skin;$('#sb').classList.toggle('light',S.view==='scan'||S.view==='cover'||S.skin==='halloween');try{document.querySelector('meta[name=theme-color]').content=getComputedStyle(document.body).getPropertyValue('--cover').trim()}catch(e){}cartoonize()}
 $('#toMerchant').onclick=()=>{buzz();S.role='merchant';save();if(S.merchant)go('merchant');else startQuiz('merchant')};
-$('#loadDemo').onclick=()=>{buzz();seedDemo();toast('已载入演示进度');renderMe()};
+$('#loadDemo').onclick=()=>{buzz();seedDemo();toast('Demo progress loaded');renderMe()};
 function seedDemo(){
   const d=['02·XI·26','05·XI·26','09·XI·26','11·XI·26','14·XI·26'];
   ['cityhall','frogmore','roughtrade','cafe56','steps'].forEach((k,i)=>{S.collected[k]=d[i];S.visits[k]=[d[i]]});
   S.visits.cafe56=['14·XI·26','15·XI·26'];
-  if(!S.coupons.length)S.coupons=[{id:uid(),shop:'cafe56',v:'第二杯半价',cond:'同一笔订单',exp:addDays(5),r:'rare',used:null},{id:uid(),shop:'roughtrade',v:'咖啡吧饮品 9 折',cond:'任意饮品',exp:addDays(12),r:'common',used:null},{id:uid(),shop:'cafe56',v:'免费加一份浓缩',cond:'购买任意咖啡',exp:'10/11',r:'common',used:{at:'10·XI·26',code:'4821'}}];
+  if(!S.coupons.length)S.coupons=[{id:uid(),shop:'cafe56',v:'Second cup half price',cond:'Same order',exp:addDays(5),r:'rare',used:null},{id:uid(),shop:'roughtrade',v:'10% off café-bar drinks',cond:'Any drink',exp:addDays(12),r:'common',used:null},{id:uid(),shop:'cafe56',v:'Free extra shot',cond:'With any coffee',exp:'10/11',r:'common',used:{at:'10·XI·26',code:'4821'}}];
   if(!S.nick)S.nick='Explorer';S.role='customer';S.seenCover=true;save();
 }
 
@@ -1501,20 +1502,20 @@ let RT='live';
 $('#rtabs').addEventListener('click',e=>{const b=e.target.closest('[data-rt]');if(!b)return;buzz();RT=b.dataset.rt;document.querySelectorAll('#rtabs .chip').forEach(x=>x.classList.toggle('on',x===b));renderRewards()});
 function renderRewards(){
   const live=S.coupons.filter(c=>!c.used),used=S.coupons.filter(c=>c.used);
-  $('#rcount').textContent=`${live.length} 张可用 · ${S.keep.length} 枚收藏邮票`;
-  const tk=c=>`<button class="ticket ${c.used?'used':''}" data-cp="${c.id}"><div class="l">${stampHTML(c.shop,'sm')}</div><div class="r"><small>${SHOPS[c.shop].short}</small><b>${c.v}</b><small>门槛：${c.cond}</small><small>${c.used?`已于 ${c.used.at} 使用 · 码 ${c.used.code}`:`有效期至 ${c.exp}`}</small></div><span class="tag ${c.r}">${({common:'普通',rare:'稀有',limited:'限定'})[c.r]}</span></button>`;
+  $('#rcount').textContent=`${live.length} ready to use · ${S.keep.length} collectible stamps`;
+  const tk=c=>`<button class="ticket ${c.used?'used':''}" data-cp="${c.id}"><div class="l">${stampHTML(c.shop,'sm')}</div><div class="r"><small>${SHOPS[c.shop].short}</small><b>${c.v}</b><small>Condition: ${c.cond}</small><small>${c.used?`Used ${c.used.at} · code ${c.used.code}`:`Valid until ${c.exp}`}</small></div><span class="tag ${c.r}">${({common:'Common',rare:'Rare',limited:'Limited'})[c.r]}</span></button>`;
   let h='';
-  if(RT==='live')h=live.length?live.map(tk).join(''):'<div class="empty">还没有优惠券。<br>到合作小店签到，就能三选一拿一张。</div>';
-  if(RT==='used')h=used.length?used.map(tk).join(''):'<div class="empty">还没有用过的券。</div>';
-  if(RT==='keep')h=S.keep.length?`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">${S.keep.map(k=>`<div style="text-align:center"><div class="stamp sm" style="--paper:${k.paper};transform:rotate(-3deg)"><svg viewBox="0 0 120 156"><use href="#${k.sym}"/></svg></div><small style="font-size:10.5px;display:block;margin-top:6px">${k.name}</small><small class="mono" style="font-size:9px;color:var(--muted)">${k.at}</small></div>`).join('')}</div>`:'<div class="empty">编号邮票和限定邮票会放在这里。<br>它们有收藏价值，但没有货币价值。</div>';
+  if(RT==='live')h=live.length?live.map(tk).join(''):'<div class="empty">No rewards yet.<br>Check in at a partner shop and pick one of three.</div>';
+  if(RT==='used')h=used.length?used.map(tk).join(''):'<div class="empty">Nothing used yet.</div>';
+  if(RT==='keep')h=S.keep.length?`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">${S.keep.map(k=>`<div style="text-align:center"><div class="stamp sm" style="--paper:${k.paper};transform:rotate(-3deg)"><svg viewBox="0 0 120 156"><use href="#${k.sym}"/></svg></div><small style="font-size:10.5px;display:block;margin-top:6px">${k.name}</small><small class="mono" style="font-size:9px;color:var(--muted)">${k.at}</small></div>`).join('')}</div>`:'<div class="empty">Numbered and limited stamps live here.<br>They’re worth collecting, but have no cash value.</div>';
   $('#rlist').innerHTML=h;
 }
 $('#rlist').addEventListener('click',e=>{const b=e.target.closest('[data-cp]');if(!b)return;buzz();const c=S.coupons.find(x=>x.id===b.dataset.cp);if(c)couponSheet(c)});
 function couponSheet(c){
   const s=SHOPS[c.shop];
-  openSheet(`<div class="sh-row">${stampHTML(c.shop,'sm')}<div><span class="tagl">${s.short}</span><h4>${c.v}</h4><small>门槛：${c.cond}</small><small>有效期至 ${c.exp}</small></div></div>
-  ${c.used?`<div class="usedbox"><span class="u">USED</span><div class="code">${c.used.code}</div><small style="color:var(--muted)">已于 ${c.used.at} 使用</small></div>`:
-  `<p class="sh-story" style="margin-bottom:0">请在店员面前滑动核销。核销后会显示 4 位码，店员看一眼屏幕即可。</p><div class="slide" id="slide"><div class="fill"></div><span>向右滑动 · 当面核销</span><div class="knob">→</div></div>`}`);
+  openSheet(`<div class="sh-row">${stampHTML(c.shop,'sm')}<div><span class="tagl">${s.short}</span><h4>${c.v}</h4><small>Condition: ${c.cond}</small><small>Valid until ${c.exp}</small></div></div>
+  ${c.used?`<div class="usedbox"><span class="u">USED</span><div class="code">${c.used.code}</div><small style="color:var(--muted)">Used ${c.used.at}</small></div>`:
+  `<p class="sh-story" style="margin-bottom:0">Swipe in front of staff. A 4-digit code appears, and staff just glance at the screen.</p><div class="slide" id="slide"><div class="fill"></div><span>Swipe right to redeem in person</span><div class="knob">→</div></div>`}`);
   if(c.used)return;
   const sl=$('#slide'),kn=sl.querySelector('.knob'),fl=sl.querySelector('.fill');let x0=null,max=0;
   kn.addEventListener('pointerdown',e=>{x0=e.clientX;max=sl.clientWidth-56;kn.setPointerCapture(e.pointerId)});
@@ -1528,16 +1529,16 @@ function couponSheet(c){
 function openShopPage(id){
   const s=SHOPS[id],c=S.collected[id];
   const near=nearestTodo(id);
-  $('#shopBody').innerHTML=`<div class="hero" style="background:${s.paper}"><div class="art"><svg viewBox="0 0 120 156" preserveAspectRatio="xMidYMid slice"><use href="#${s.sym}"/></svg></div><button class="back" id="shopBack"><svg viewBox="0 0 24 24"><use href="#i-back"/></svg></button><div class="big">${stampHTML(id)}</div><span class="ph">实拍照片待补 · 需店主同意</span></div>
-   <div class="sblock"><h3>${s.name}</h3><div class="loc">${s.area} · ${walk(id)} · 营业时间待确认</div>
+  $('#shopBody').innerHTML=`<div class="hero" style="background:${s.paper}"><div class="art"><svg viewBox="0 0 120 156" preserveAspectRatio="xMidYMid slice"><use href="#${s.sym}"/></svg></div><button class="back" id="shopBack"><svg viewBox="0 0 24 24"><use href="#i-back"/></svg></button><div class="big">${stampHTML(id)}</div><span class="ph">Real photos to come · with owner’s permission</span></div>
+   <div class="sblock"><h3>${s.name}</h3><div class="loc">${s.area} · ${walk(id)} · Opening hours TBC</div>
    <div class="pins">${(s.pins||[]).map(pinHTML).join('')}</div></div>
    <div class="sblock"><div class="card2"><p style="font-weight:600;opacity:1">${s.intro}</p></div></div>
-   <div class="sblock"><h4>店主故事</h4><div class="card2"><p>${s.story}</p></div></div>
-   <div class="sblock"><h4>招牌</h4><div class="prods">${(s.products||[]).map(p=>`<div><b>${p[0]}</b><small>${p[1]||''}</small></div>`).join('')}</div></div>
-   <div class="sblock"><h4>本店邮票与签到奖励</h4><div class="card2" style="display:flex;gap:12px;align-items:center"><div style="width:62px;flex:none">${c?stampHTML(id,'sm'):'<div class="qslot" style="width:62px">?</div>'}</div><div class="cpv" style="flex:1">${s.coupons.map(x=>`<div><b>${x.v}</b>${x.cond}</div>`).join('')}<div class="my"><b>神秘奖励</b>${s.mystery.range}</div></div></div></div>
-   ${near?`<div class="sblock"><h4>附近还有一枚邮票</h4><button class="card2" data-near="${near}" style="display:flex;gap:10px;align-items:center;width:100%;text-align:left;color:inherit"><div style="width:40px;flex:none;filter:grayscale(.9);opacity:.6">${stampHTML(near,'sm')}</div><div><b style="font-size:13px">${SHOPS[near].name}</b><div style="font-size:11px;color:var(--muted)">${Math.max(1,Math.round(meters(s,SHOPS[near])/75))} min 步行 · ${SHOPS[near].area}</div></div></button></div>`:''}
-   <div class="sblock mono" style="font-size:9.5px;color:var(--muted);padding-bottom:10px">位置为近似值 · 店铺信息来自我们的实地访谈，需店主确认后上线</div>`;
-  $('#shopCta').innerHTML=`<button class="btn" id="shopCollect">${c?'再次到店 · Collect Stamp':'Collect Stamp · 到店扫码'}</button>`;
+   <div class="sblock"><h4>Owner’s story</h4><div class="card2"><p>${s.story}</p></div></div>
+   <div class="sblock"><h4>Signature</h4><div class="prods">${(s.products||[]).map(p=>`<div><b>${p[0]}</b><small>${p[1]||''}</small></div>`).join('')}</div></div>
+   <div class="sblock"><h4>Stamp and check-in rewards</h4><div class="card2" style="display:flex;gap:12px;align-items:center"><div style="width:62px;flex:none">${c?stampHTML(id,'sm'):'<div class="qslot" style="width:62px">?</div>'}</div><div class="cpv" style="flex:1">${s.coupons.map(x=>`<div><b>${x.v}</b>${x.cond}</div>`).join('')}<div class="my"><b>Mystery reward</b>${s.mystery.range}</div></div></div></div>
+   ${near?`<div class="sblock"><h4>Another stamp nearby</h4><button class="card2" data-near="${near}" style="display:flex;gap:10px;align-items:center;width:100%;text-align:left;color:inherit"><div style="width:40px;flex:none;filter:grayscale(.9);opacity:.6">${stampHTML(near,'sm')}</div><div><b style="font-size:13px">${SHOPS[near].name}</b><div style="font-size:11px;color:var(--muted)">${Math.max(1,Math.round(meters(s,SHOPS[near])/75))} min walk · ${SHOPS[near].area}</div></div></button></div>`:''}
+   <div class="sblock mono" style="font-size:9.5px;color:var(--muted);padding-bottom:10px">Locations are approximate · Shop details come from our field interviews and need the owner’s approval before launch</div>`;
+  $('#shopCta').innerHTML=`<button class="btn" id="shopCollect">${c?'Visit again · Collect Stamp':'Collect Stamp · Scan in the shop'}</button>`;
   $('#shopBack').onclick=()=>{buzz();go(S.lastView||'map')};
   $('#shopCollect').onclick=()=>{buzz();S.scanFor=id;go('scan')};
   const nb=$('#shopBody').querySelector('[data-near]');if(nb)nb.onclick=()=>{buzz();S.sel=near;go('map')};
@@ -1548,42 +1549,42 @@ function openShopPage(id){
 /* ---------- role + one-question-per-screen onboarding ---------- */
 const FLOWS={
   customer:[
-    {q:'你对什么感兴趣？',sub:'可以多选，我们会优先推荐这些店。',key:'interests',multi:true,opts:['咖啡与甜点','唱片与音乐','古着与服装','街头艺术','美食与酒馆','收藏与老物件']},
-    {q:'你常去哪一带？',sub:'可以多选。',key:'areas',multi:true,opts:['Park Street','Old City','Harbourside','Clifton','Stokes Croft']},
-    {q:'开启定位，看看附近的店？',sub:'只用来计算步行距离，也用于景点签到。可以跳过。',type:'loc'},
-    {q:'护照上写什么名字？',sub:'会印在护照的个人信息页上。',type:'text',key:'nick',ph:'比如 Christal'}],
+    {q:'What are you into?',sub:'Pick as many as you like. We’ll show these first.',key:'interests',multi:true,opts:['Coffee & cake','Records & music','Vintage & fashion','Street art','Food & pubs','Collectibles & curios']},
+    {q:'Where do you usually hang out?',sub:'Pick as many as you like.',key:'areas',multi:true,opts:['Park Street','Old City','Harbourside','Clifton','Stokes Croft']},
+    {q:'Turn on location to see what’s nearby?',sub:'Only used for walking times and landmark check-ins. You can skip this.',type:'loc'},
+    {q:'What name goes in your passport?',sub:'It’s printed on your passport’s details page.',type:'text',key:'nick',ph:'e.g. Christal'}],
   merchant:[
-    {q:'你的店叫什么？',sub:'会印在你的专属邮票上。',type:'text',key:'name',ph:'比如 Café 56'},
-    {q:'店铺类别',key:'cat',opts:['咖啡与甜点','唱片与书','服装与古着','餐厅与酒馆','收藏与古董','其他']},
-    {q:'你最想要什么？',sub:'我们会据此推荐优惠券和活动。',key:'goal',opts:['更多新客','更多回头客','闲时也有客流']},
-    {q:'这是你的专属邮票（示意稿）',sub:'正式版由我们的设计师按店铺特色画 2–3 稿给你选。',type:'stamp'},
-    {q:'选 3 种券放进“三选一”',sub:'顾客签到后会从中挑一张。',key:'coupons',multi:true,max:3,opts:['免费升级','9 折','第二件半价','免费小样','小礼物','店主体验券']},
-    {q:'你的台卡已经准备好',sub:'打印出来放在收银台，顾客扫码就能签到。',type:'card'}]
+    {q:'What’s your shop called?',sub:'It’ll be printed on your own stamp.',type:'text',key:'name',ph:'e.g. Café 56'},
+    {q:'What kind of shop?',key:'cat',opts:['Coffee & cake','Records & books','Fashion & vintage','Restaurant & pub','Collectibles & antiques','Other']},
+    {q:'What do you want most?',sub:'We’ll suggest rewards and campaigns to match.',key:'goal',opts:['New customers','More regulars','Footfall in quiet hours']},
+    {q:'Here’s your stamp (draft)',sub:'Our designers will draw 2–3 versions based on your shop for you to choose from.',type:'stamp'},
+    {q:'Pick 3 rewards for pick-one-of-three',sub:'Customers choose one after checking in.',key:'coupons',multi:true,max:3,opts:['Free upgrade','10% off','Second item half price','Free sample','Small gift','Meet-the-owner experience']},
+    {q:'Your counter card is ready',sub:'Print it and put it by the till. Customers scan it to check in.',type:'card'}]
 };
 let QF='customer',QI=0,QA={};
 function startQuiz(flow){QF=flow;QI=0;QA=flow==='merchant'?{coupons:[]}:{interests:[],areas:[]};go('quiz');renderQuiz()}
-function mStamp(name){const n=(name||'MY SHOP').toUpperCase().slice(0,16),cols={'咖啡与甜点':['#f7c9d4','#2f6b52'],'唱片与书':['#d8ccff','#2b2d6e'],'服装与古着':['#b9a8ff','#6b5ad6'],'餐厅与酒馆':['#cfe8d4','#2f4a3a'],'收藏与古董':['#c9e3cf','#2f4a3a']}[QA.cat||(S.merchant&&S.merchant.cat)]||['#ffd2a8','#c8553d'];
+function mStamp(name){const n=(name||'MY SHOP').toUpperCase().slice(0,16),cols={'Coffee & cake':['#f7c9d4','#2f6b52'],'Records & books':['#d8ccff','#2b2d6e'],'Fashion & vintage':['#b9a8ff','#6b5ad6'],'Restaurant & pub':['#cfe8d4','#2f4a3a'],'Collectibles & antiques':['#c9e3cf','#2f4a3a']}[QA.cat||(S.merchant&&S.merchant.cat)]||['#ffd2a8','#c8553d'];
   return `<div class="stamp" style="--paper:${cols[0]}"><svg viewBox="0 0 120 156"><rect width="120" height="156" fill="${cols[0]}"/><circle cx="60" cy="62" r="40" fill="#fff" opacity=".6"/><text x="60" y="80" text-anchor="middle" font-family="Alfa Slab One" font-size="48" fill="${cols[1]}">${n[0]||'S'}</text><rect y="126" width="120" height="30" fill="#fff"/><text x="60" y="146" text-anchor="middle" font-family="Alfa Slab One" font-size="${n.length>10?9:12}" fill="${cols[1]}">${n.replace(/[<&>]/g,'')}</text></svg></div>`}
 function renderQuiz(){
   const F=FLOWS[QF],st=F[QI],pct=(QI+1)/(F.length+1)*100;
   let body='';
   if(st.opts)body=`<div class="opts">${st.opts.map(o=>{const on=st.multi?(QA[st.key]||[]).includes(o):QA[st.key]===o;return `<button class="opt ${on?'on':''}" data-o="${o}">${o}</button>`}).join('')}</div>`;
   if(st.type==='text')body=`<input class="qinput" id="qin" maxlength="24" placeholder="${st.ph}" value="${(QA[st.key]||'').replace(/"/g,'')}">`;
-  if(st.type==='loc')body=`<div class="qart"><div style="text-align:center"><svg viewBox="0 0 24 24" style="width:80px;height:80px;color:var(--accent)"><use href="#i-pin-loc"/></svg><p class="sub" style="margin-top:10px">原型里用 College Green 作为你的位置。</p></div></div>`;
+  if(st.type==='loc')body=`<div class="qart"><div style="text-align:center"><svg viewBox="0 0 24 24" style="width:80px;height:80px;color:var(--accent)"><use href="#i-pin-loc"/></svg><p class="sub" style="margin-top:10px">The prototype uses College Green as your location.</p></div></div>`;
   if(st.type==='stamp')body=`<div class="qart"><div class="mstamp">${mStamp(QA.name)}</div></div>`;
-  if(st.type==='card')body=`<div class="qart"><div class="tcard"><small>SHOP PASSPORT · 在这里盖章</small><div class="qr"></div><b>${(QA.name||'My Shop').replace(/[<&>]/g,'')}</b><small>扫码签到 · 三选一拿奖励</small></div></div>`;
+  if(st.type==='card')body=`<div class="qart"><div class="tcard"><small>SHOP PASSPORT · GET STAMPED HERE</small><div class="qr"></div><b>${(QA.name||'My Shop').replace(/[<&>]/g,'')}</b><small>Scan to check in · pick a reward</small></div></div>`;
   const ok=st.opts?(st.multi?(QA[st.key]||[]).length>0:!!QA[st.key]):st.type==='text'?!!(QA[st.key]||'').trim():true;
   $('#quiz').innerHTML=`<div class="qtop"><button class="x" id="qBack"><svg viewBox="0 0 24 24" width="18"><use href="${QI?'#i-back':'#i-close'}"/></svg></button><div class="qbar"><i style="width:${pct}%"></i></div></div>
-   <h2>${st.q}</h2><p class="sub">${st.sub||(st.max?`选 ${st.max} 个`:'')}</p>${body}
-   <div class="qfoot">${st.type==='loc'?`<button class="btn" id="qLoc">允许定位</button><button class="skip" id="qNext">跳过</button>`:`<button class="btn" id="qNext" ${ok?'':'disabled'}>${QI===F.length-1?(QF==='merchant'?'进入商家后台':'完成'):'继续'}</button>`}</div>`;
+   <h2>${st.q}</h2><p class="sub">${st.sub||(st.max?`Pick ${st.max}`:'')}</p>${body}
+   <div class="qfoot">${st.type==='loc'?`<button class="btn" id="qLoc">Allow location</button><button class="skip" id="qNext">Skip</button>`:`<button class="btn" id="qNext" ${ok?'':'disabled'}>${QI===F.length-1?(QF==='merchant'?'Go to back office':'Done'):'Continue'}</button>`}</div>`;
   $('#quiz').querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{buzz();const o=b.dataset.o;
     if(st.multi){const a=QA[st.key]||(QA[st.key]=[]);const i=a.indexOf(o);if(i>=0)a.splice(i,1);else{if(st.max&&a.length>=st.max)a.shift();a.push(o)}}else QA[st.key]=o;renderQuiz()});
   const qi=$('#qin');if(qi){qi.oninput=()=>{QA[st.key]=qi.value;$('#qNext').disabled=!qi.value.trim()};setTimeout(()=>qi.focus(),50)}
   $('#qBack').onclick=()=>{buzz();if(QI){QI--;renderQuiz()}else go('role')};
-  if($('#qLoc'))$('#qLoc').onclick=()=>{buzz();try{navigator.geolocation&&navigator.geolocation.getCurrentPosition(p=>{S.here={lat:p.coords.latitude,lng:p.coords.longitude};save()},()=>{},{timeout:5000})}catch(e){}toast('已开启（原型里用 College Green 作为你的位置）');QI++;renderQuiz()};
+  if($('#qLoc'))$('#qLoc').onclick=()=>{buzz();try{navigator.geolocation&&navigator.geolocation.getCurrentPosition(p=>{S.here={lat:p.coords.latitude,lng:p.coords.longitude};save()},()=>{},{timeout:5000})}catch(e){}toast('On (the prototype uses College Green as your location)');QI++;renderQuiz()};
   $('#qNext').onclick=()=>{buzz();if(QI<F.length-1){QI++;renderQuiz();return}
     if(QF==='customer'){S.interests=QA.interests;S.areas=QA.areas;S.nick=(QA.nick||'Explorer').trim();S.role='customer';save();openCover()}
-    else{S.merchant={name:(QA.name||'My Shop').trim(),cat:QA.cat,goal:QA.goal};S.mcoupons=(QA.coupons.length?QA.coupons:['免费升级','9 折','小礼物']).map(n=>({n,on:true,limit:20}));S.role='merchant';save();go('merchant')}};
+    else{S.merchant={name:(QA.name||'My Shop').trim(),cat:QA.cat,goal:QA.goal};S.mcoupons=(QA.coupons.length?QA.coupons:['Free upgrade','10% off','Small gift']).map(n=>({n,on:true,limit:20}));S.role='merchant';save();go('merchant')}};
 }
 document.querySelectorAll('[data-role]').forEach(b=>b.onclick=()=>{buzz();const r=b.dataset.role;if(r==='merchant'&&S.merchant){S.role='merchant';save();go('merchant')}else startQuiz(r)});
 $('#demoStart').onclick=()=>{buzz();seedDemo();go('passport')};
@@ -1591,32 +1592,32 @@ $('#demoStart').onclick=()=>{buzz();seedDemo();go('passport')};
 /* ---------- passport cover (first time only) ---------- */
 function openCover(){
   $('#cvName').textContent=S.nick||'Explorer';
-  $('#cvMeta').innerHTML=`签发 ISSUED · ${TODAY}<br>编号 NO. SP-${String(Math.floor(Math.random()*9000)+1000)}<br>城市 CITY · BRISTOL`;
+  $('#cvMeta').innerHTML=`ISSUED · ${TODAY}<br>NO. SP-${String(Math.floor(Math.random()*9000)+1000)}<br>CITY · BRISTOL`;
   $('#book').classList.remove('open');$('#v-cover').classList.remove('coverdone');$('#tapOpen').style.display='';
   go('cover');
 }
 $('#book').onclick=()=>{if($('#book').classList.contains('open'))return;buzz();$('#book').classList.add('open');$('#tapOpen').style.display='none';$('#v-cover').classList.add('coverdone');setTimeout(buzz,1100);setTimeout(buzz,1800)};
-const coverDone=()=>{S.seenCover=true;S.keep.find(k=>k.sym==='st-welcome')||S.keep.push({name:'Welcome 欢迎章',sym:'st-welcome',paper:'#e3c06b',at:TODAY});save();go('passport')};
+const coverDone=()=>{S.seenCover=true;S.keep.find(k=>k.sym==='st-welcome')||S.keep.push({name:'Welcome stamp',sym:'st-welcome',paper:'#e3c06b',at:TODAY});save();go('passport')};
 $('#coverGo').onclick=()=>{buzz();coverDone()};$('#skipCover').onclick=()=>{buzz();coverDone()};
 
 /* ---------- merchant back office (no gamification) ---------- */
 function renderMerchant(){
   const m=S.merchant||{name:'My Shop'};$('#mName').textContent=m.name;
   const used=S.coupons.filter(c=>c.used).length;
-  $('#mBody').innerHTML=`<div class="kpis"><div><b>46</b><small>本周签到</small> <em>+12%</em></div><div><b>18</b><small>回头客</small> <em>+4</em></div><div><b>${21+used}/34</b><small>优惠券核销</small></div><div><b style="font-size:15px;line-height:1.3;padding-top:6px">Old City 探索周</b><small>进行中的活动 · ${weekLeft()}</small></div></div>
-   <div class="macts"><button id="mRedeem">核销优惠券<small>输入顾客屏幕上的 4 位码</small></button><button class="alt" id="mEdit">编辑优惠<small>三选一里放哪几张</small></button></div>
-   <div class="mh">今天</div><div class="mlist"><div>14:05 · 签到<em>选了：第二杯半价</em></div><div>13:20 · 核销<em>免费加一份浓缩 · 4821</em></div><div>11:48 · 签到<em>新客 · 选了神秘奖励</em></div></div>
-   <div class="mh">我的物料</div><div class="mlist"><div style="gap:12px;justify-content:flex-start"><span style="width:44px">${mStamp(m.name)}</span>专属邮票（示意稿）<em style="margin-left:auto">待设计师出稿</em></div><div>收银台台卡 · 二维码<em>下载 PDF（演示）</em></div></div>
-   <p class="mono" style="font-size:9.5px;color:#999">演示数据 · 正式版需要后端同步签到和核销</p>`;
+  $('#mBody').innerHTML=`<div class="kpis"><div><b>46</b><small>Check-ins this week</small> <em>+12%</em></div><div><b>18</b><small>Regulars</small> <em>+4</em></div><div><b>${21+used}/34</b><small>Rewards redeemed</small></div><div><b style="font-size:15px;line-height:1.3;padding-top:6px">Old City Explorer Week</b><small>Live campaign · ${weekLeft()}</small></div></div>
+   <div class="macts"><button id="mRedeem">Redeem a reward<small>Enter the 4-digit code on the customer’s screen</small></button><button class="alt" id="mEdit">Edit rewards<small>Choose what’s in pick-one-of-three</small></button></div>
+   <div class="mh">Today</div><div class="mlist"><div>14:05 · Check-in<em>Picked: second cup half price</em></div><div>13:20 · Redeemed<em>Free extra shot · 4821</em></div><div>11:48 · Check-in<em>New customer · picked the mystery reward</em></div></div>
+   <div class="mh">My materials</div><div class="mlist"><div style="gap:12px;justify-content:flex-start"><span style="width:44px">${mStamp(m.name)}</span>My stamp (draft)<em style="margin-left:auto">Awaiting designer</em></div><div>Counter card · QR code<em>Download PDF (demo)</em></div></div>
+   <p class="mono" style="font-size:9.5px;color:#999">Demo data · the real version needs a backend to sync check-ins and redemptions</p>`;
   $('#mRedeem').onclick=()=>{
-    openSheet(`<h4 style="font:800 19px 'Inter Tight';margin:0 0 4px">核销优惠券</h4><small style="color:var(--muted)">输入顾客屏幕上的 4 位码</small><div class="codein">${[0,1,2,3].map(()=>'<input inputmode="numeric" maxlength="1">').join('')}</div><button class="btn" id="mCheck">确认核销</button><div id="mRes" style="text-align:center;margin-top:10px;font-size:13px"></div>`);
+    openSheet(`<h4 style="font:800 19px 'Inter Tight';margin:0 0 4px">Redeem a reward</h4><small style="color:var(--muted)">Enter the 4-digit code on the customer’s screen</small><div class="codein">${[0,1,2,3].map(()=>'<input inputmode="numeric" maxlength="1">').join('')}</div><button class="btn" id="mCheck">Confirm</button><div id="mRes" style="text-align:center;margin-top:10px;font-size:13px"></div>`);
     const ins=[...document.querySelectorAll('.codein input')];ins.forEach((x,i)=>x.oninput=()=>{if(x.value&&ins[i+1])ins[i+1].focus()});ins[0].focus();
-    $('#mCheck').onclick=()=>{const code=ins.map(x=>x.value).join('');if(code.length<4){$('#mRes').textContent='请输入 4 位码';return}
-      const c=S.coupons.find(x=>x.used&&x.used.code===code);$('#mRes').innerHTML=c?`<b style="color:#1f9d5c">✓ 有效</b> · ${c.v} · ${c.used.at}`:'<b style="color:#1f9d5c">✓ 核销成功（演示）</b>'};
+    $('#mCheck').onclick=()=>{const code=ins.map(x=>x.value).join('');if(code.length<4){$('#mRes').textContent='Enter all 4 digits';return}
+      const c=S.coupons.find(x=>x.used&&x.used.code===code);$('#mRes').innerHTML=c?`<b style="color:#1f9d5c">✓ Valid</b> · ${c.v} · ${c.used.at}`:'<b style="color:#1f9d5c">✓ Redeemed (demo)</b>'};
   };
   $('#mEdit').onclick=()=>{
-    const list=S.mcoupons||(S.mcoupons=[{n:'免费升级',on:true,limit:20},{n:'9 折',on:true,limit:30},{n:'小礼物',on:true,limit:10}]);
-    const draw=()=>openSheet(`<h4 style="font:800 19px 'Inter Tight';margin:0 0 4px">编辑优惠</h4><small style="color:var(--muted)">顾客签到后，从开启的券里抽两张写明条件，再加一张神秘奖励</small><div class="mlist" style="margin-top:12px;padding:4px 0">${list.map((c,i)=>`<div><span>${c.n}<em style="display:block">每日上限 ${c.limit} 张</em></span><span class="tog ${c.on?'on':''}" data-t="${i}"></span></div>`).join('')}</div><button class="btn" data-act="close">保存</button>`);
+    const list=S.mcoupons||(S.mcoupons=[{n:'Free upgrade',on:true,limit:20},{n:'10% off',on:true,limit:30},{n:'Small gift',on:true,limit:10}]);
+    const draw=()=>openSheet(`<h4 style="font:800 19px 'Inter Tight';margin:0 0 4px">Edit rewards</h4><small style="color:var(--muted)">After check-in, customers see two of your active rewards with terms shown, plus one mystery reward</small><div class="mlist" style="margin-top:12px;padding:4px 0">${list.map((c,i)=>`<div><span>${c.n}<em style="display:block">Daily limit: ${c.limit}</em></span><span class="tog ${c.on?'on':''}" data-t="${i}"></span></div>`).join('')}</div><button class="btn" data-act="close">Save</button>`);
     draw();document.getElementById('sheet').onclick=e=>{const t=e.target.closest('[data-t]');if(t){list[+t.dataset.t].on=!list[+t.dataset.t].on;save();draw()}};
   };
 }
@@ -1634,7 +1635,23 @@ else if(hadSave&&S.role==='customer'&&S.seenCover)go(S.lastView||'passport');
 else go('onb');
 /* “add to home screen” hint when opened in a mobile browser tab */
 function maybeA2HS(){try{if(window.__a2)return;const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
-  if(!standalone&&innerWidth<=760&&!S.a2hs){const d=document.createElement('div');d.className='a2hs';d.innerHTML='<span>添加到主屏幕，像 App 一样全屏打开：Safari 点「分享」→「添加到主屏幕」</span><button>✕</button>';d.querySelector('button').onclick=()=>{d.remove();S.a2hs=true;save()};window.__a2=1;$('#scr').appendChild(d);setTimeout(()=>d.remove(),9000)}}catch(e){}}
+  if(!standalone&&innerWidth<=760&&!S.a2hs){const d=document.createElement('div');d.className='a2hs';d.innerHTML='<span><b>Add Shop Passport to your Home Screen</b><br>Opens full screen, like an app.</span><button class="add" style="opacity:1;background:#fff;color:#111;border-radius:99px;padding:6px 12px;font:600 11px Inter">Add</button><button class="x">✕</button>';d.querySelector('.x').onclick=()=>{d.remove();S.a2hs=true;save()};d.querySelector('.add').onclick=()=>{d.remove();S.a2hs=true;save();installApp()};window.__a2=1;$('#scr').appendChild(d);setTimeout(()=>d.remove(),12000)}}catch(e){}}
+/* ---------- add to Home Screen / install ---------- */
+function isStandalone(){try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(e){return false}}
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();window.__bip=e});
+window.addEventListener('appinstalled',()=>{window.__bip=null;toast('Installed ✦ Open it from your Home Screen')});
+try{if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(()=>{})}catch(e){}
+function installApp(){
+  if(isStandalone()){toast('You’re already using the Home Screen app ✦');return}
+  if(window.__bip){window.__bip.prompt();window.__bip.userChoice.finally(()=>{window.__bip=null});return}
+  const ua=navigator.userAgent,ios=/iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&'ontouchend' in document),android=/Android/.test(ua);
+  const step=(n,t)=>`<div style="display:flex;gap:12px;align-items:flex-start;margin:10px 0"><span style="width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font:700 12px Inter;flex:none">${n}</span><span style="font-size:13.5px;padding-top:2px">${t}</span></div>`;
+  const how=ios?step(1,'Open this page in <b>Safari</b>.')+step(2,'Tap the <b>Share</b> button (the square with an arrow).')+step(3,'Scroll down and tap <b>Add to Home Screen</b>, then <b>Add</b>.')+step(4,'Open <b>Passport</b> from your Home Screen. No address bar, full screen.')
+    :android?step(1,'Open this page in <b>Chrome</b>.')+step(2,'Tap the <b>⋮</b> menu at the top right.')+step(3,'Tap <b>Install app</b> or <b>Add to Home screen</b>.')+step(4,'Open <b>Passport</b> from your Home Screen.')
+    :step(1,'In Chrome or Edge, click the <b>install icon</b> at the right end of the address bar.')+step(2,'Or on your phone, open this link and add it to your Home Screen.');
+  openSheet(`<h4 style="font:800 20px 'Inter Tight';margin:0 0 2px">Add to Home Screen</h4><small style="color:var(--muted)">Shop Passport opens full screen, with its own icon, like a real app.</small>${how}<button class="btn" data-act="close" style="margin-top:8px">Got it</button>`);
+}
+$('#installBtn').onclick=()=>{buzz();installApp()};
 </script>
 </body>
 </html>
