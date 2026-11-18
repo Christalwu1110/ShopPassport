@@ -4,6 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Shop Passport — Interactive Prototype</title>
+<meta name="theme-color" content="#1f2a5c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Shop Passport">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
@@ -250,6 +258,259 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 
 .toast{position:absolute;left:50%;top:60px;transform:translate(-50%,-20px);background:#111;color:#fff;font:500 12px Inter;padding:10px 16px;border-radius:99px;z-index:95;opacity:0;transition:all .3s;white-space:nowrap;pointer-events:none}
 .toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* ===================== v2 additions ===================== */
+/* skins */
+body{--accent:#2c44d6;--accent2:#ff6a3d;--cover:#1f2a5c;--cover2:#2c3a7a;--gold:#e3c06b;--pm:#1d1b3a;--app:#f4f5f7;--card:#fff;--ink2:#111}
+body[data-skin=christmas]{--accent:#c8102e;--accent2:#2f8a52;--cover:#7a0a1f;--cover2:#9c1028;--gold:#f2d38a;--pm:#2f6b3a}
+body[data-skin=halloween]{--accent:#ff7a1a;--accent2:#8a4fff;--cover:#141118;--cover2:#2a1d10;--gold:#ff9a3d;--pm:#c2410c;--app:#17151d;--card:#24212c;--ink2:#f4f1ea}
+body[data-skin=cny]{--accent:#d4182f;--accent2:#e3a82b;--cover:#a50e22;--cover2:#c8102e;--gold:#f5cf6b;--pm:#a50e22}
+.scr{background:var(--app)}
+body[data-skin=halloween] .view{color:var(--ink2)}
+body[data-skin=halloween] .chip,body[data-skin=halloween] .mecard,body[data-skin=halloween] .prow,body[data-skin=halloween] .seal,body[data-skin=halloween] .nav,body[data-skin=halloween] .sheet,body[data-skin=halloween] .card2{background:var(--card);color:var(--ink2)}
+body[data-skin=halloween] .chip.on,body[data-skin=halloween] .nav button.on{background:var(--accent);color:#111}
+body[data-skin=halloween] .nav button{color:var(--ink2)}
+.snow{position:absolute;inset:0;pointer-events:none;z-index:50;display:none;background-image:radial-gradient(2px 2px at 20px 30px,#fff,transparent),radial-gradient(2px 2px at 80px 120px,#fff,transparent),radial-gradient(3px 3px at 150px 60px,#fff,transparent),radial-gradient(2px 2px at 240px 200px,#fff,transparent),radial-gradient(3px 3px at 300px 20px,#fff,transparent);background-size:320px 260px;animation:snow 9s linear infinite;opacity:.9;filter:drop-shadow(0 0 1px rgba(0,0,0,.25))}
+body[data-skin=christmas] .snow{display:block}
+@keyframes snow{to{background-position:40px 260px}}
+.pm{color:var(--pm)}
+
+/* nav: 5 items, scan in the middle */
+.nav{gap:2px}
+.nav button{width:44px;height:44px}
+.nav button.scanbtn{width:54px;height:54px;margin:-14px 4px 0;background:var(--accent);color:#fff;box-shadow:0 8px 18px rgba(0,0,0,.22)}
+.nav button.scanbtn.on{background:var(--accent);color:#fff;outline:3px solid rgba(255,255,255,.7)}
+@media (max-width:760px){.nav{bottom:max(18px,env(safe-area-inset-bottom))}}
+
+/* full-screen passport page */
+.ppwrap{padding:4px 14px 92px 12px;align-items:stretch}
+.ppage{aspect-ratio:auto;height:100%;max-height:none;transition:transform .32s cubic-bezier(.4,0,.2,1),opacity .32s,background .3s}
+.pst{width:30%}.slot{width:28%}
+.nextbar{margin:0 20px 8px;display:flex;align-items:center;gap:10px;background:var(--card);border-radius:16px;padding:8px 12px;text-align:left;width:calc(100% - 40px);box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.nextbar .q{width:26px;aspect-ratio:120/156;border:1.5px dashed #c7c9d2;border-radius:4px;display:grid;place-items:center;font:700 10px Inter;color:#a2a4af;flex:none}
+.nextbar b{font:600 12px Inter;display:block}.nextbar small{font-size:10.5px;color:var(--muted)}
+.nextbar .go{margin-left:auto;font:600 11px Inter;color:var(--accent)}
+
+/* role + quiz (Duolingo-like) */
+.vpad{padding:56px 22px 30px;display:flex;flex-direction:column;height:100%}
+@media (max-width:760px){.vpad{padding-top:max(20px,env(safe-area-inset-top))}}
+.vpad h2{font:800 28px/1.05 'Inter Tight';letter-spacing:-.03em;margin:6px 0 6px}
+.vpad .sub{color:var(--muted);font-size:13px;margin:0 0 18px}
+.rolecard{display:flex;gap:14px;align-items:center;background:var(--card);border-radius:24px;padding:16px;margin-bottom:12px;border:2px solid transparent;text-align:left;width:100%;box-shadow:0 4px 0 #e2e3e8;transition:transform .15s,border-color .15s}
+.rolecard:active{transform:translateY(3px);box-shadow:0 1px 0 #e2e3e8}
+.rolecard .stamp{width:58px;flex:none}
+.rolecard b{font:800 18px 'Inter Tight';display:block}.rolecard small{color:var(--muted);font-size:12px}
+.qtop{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.qtop .x{width:30px;height:30px;display:grid;place-items:center;color:#9a9caa}
+.qbar{flex:1;height:12px;border-radius:12px;background:#e4e5ea;overflow:hidden}
+.qbar i{display:block;height:100%;border-radius:12px;background:var(--accent2);transition:width .4s cubic-bezier(.3,1.3,.5,1)}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-content:start}
+.opt{background:var(--card);border:2px solid #e2e3e8;border-radius:18px;padding:16px 12px;font:600 14px Inter;text-align:left;box-shadow:0 3px 0 #e2e3e8;transition:all .15s}
+.opt.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--card));box-shadow:0 3px 0 var(--accent)}
+.opt small{display:block;font-weight:500;color:var(--muted);font-size:11px;margin-top:3px}
+.qinput{width:100%;border:2px solid #e2e3e8;border-radius:16px;padding:16px;font:600 18px Inter;background:var(--card);color:inherit;outline:none}
+.qinput:focus{border-color:var(--accent)}
+.qfoot{margin-top:auto;padding-top:16px}
+.btn:disabled{opacity:.35}
+.qart{display:flex;justify-content:center;align-items:center;flex:1}
+.mstamp{width:150px;transform:rotate(-4deg);animation:float 5s ease-in-out infinite}
+.tcard{width:210px;background:#fff;border-radius:16px;padding:16px;box-shadow:0 20px 40px -18px rgba(0,0,0,.35);text-align:center;color:#111}
+.tcard .qr{width:120px;height:120px;margin:10px auto;background:conic-gradient(from 90deg at 25% 25%,#111 25%,transparent 0) 0 0/20% 20%,conic-gradient(from 0deg at 75% 75%,#111 25%,transparent 0) 0 0/16% 16%;border:6px solid #111;border-radius:6px}
+.tcard b{font:800 16px 'Inter Tight';display:block}.tcard small{font-size:10px;color:#666}
+
+/* passport cover */
+#v-cover{background:radial-gradient(120% 80% at 50% 30%,#2d3448,#0d0f16);padding-top:0;align-items:center;justify-content:center;perspective:1400px}
+.book{position:relative;width:72%;aspect-ratio:3/4.2}
+.inner{position:absolute;inset:0;border-radius:6px 16px 16px 6px;background:repeating-radial-gradient(circle at 110% -10%,transparent 0 7px,rgba(44,68,214,.06) 7px 8px),#fff;padding:22px 18px 18px 26px;color:#111;display:flex;flex-direction:column}
+.inner .k{font:500 8px 'JetBrains Mono';letter-spacing:.16em;color:#9a9cab}
+.inner h4{font:800 22px/1.1 'Inter Tight';margin:8px 0 2px}
+.inner .meta{font:500 10px 'JetBrains Mono';color:#666;line-height:1.7}
+.inner .wst{width:46%;margin:14px auto 0;position:relative;transform:translateY(-60px) rotate(-14deg) scale(1.3);opacity:0}
+.book.open .inner .wst{animation:wdrop .6s cubic-bezier(.3,1.4,.5,1) 1.1s forwards}
+@keyframes wdrop{to{transform:rotate(-4deg);opacity:1}}
+.inner .wst .pm{width:70%;right:-34%;top:-10%;transform:rotate(-14deg) scale(1.8);opacity:0}
+.book.open .inner .wst .pm{animation:stampin .22s ease-in 1.75s forwards}
+.cover{position:absolute;inset:0;border-radius:6px 16px 16px 6px;background:linear-gradient(135deg,var(--cover2),var(--cover));transform-origin:left center;transition:transform 1.1s cubic-bezier(.6,.05,.25,1);transform-style:preserve-3d;box-shadow:0 30px 60px -20px rgba(0,0,0,.7),inset 6px 0 0 rgba(0,0,0,.25);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:var(--gold);overflow:hidden;z-index:2}
+.cover::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.35) 45%,transparent 60%);background-size:250% 100%;animation:sweep 3s ease-in-out infinite;mix-blend-mode:overlay}
+@keyframes sweep{0%{background-position:150% 0}60%,100%{background-position:-60% 0}}
+.cover svg{width:44%}
+.cover b{font:400 22px 'Alfa Slab One';letter-spacing:.06em}
+.cover small{font:500 9px 'JetBrains Mono';letter-spacing:.3em}
+.book.open .cover{transform:rotateY(-170deg)}
+.tapopen{color:#c9cbd6;font-size:12px;margin-top:26px;animation:float 2.4s ease-in-out infinite}
+.coverbtn{position:absolute;left:24px;right:24px;bottom:40px;opacity:0;pointer-events:none;transition:opacity .4s 2.2s}
+.coverdone .coverbtn{opacity:1;pointer-events:auto}
+.skipc{position:absolute;top:54px;right:20px;color:#9a9caa;font-size:12px;z-index:5}
+
+/* real map */
+.realmap{position:absolute;inset:0;display:none}
+#v-map.real .realmap{display:block}
+#v-map.real .mapbg,#v-map.real #pins,#v-map.real>.me-dot,#v-map.real .routeline{display:none}
+.realmap .maplibregl-ctrl-attrib{font-size:9px}
+.mk{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}
+.mk .lm{width:40px;height:40px;border-radius:50%;overflow:hidden;border:3px solid #fff;box-shadow:0 4px 12px rgba(0,0,0,.25);background:#fff}
+.mk .lm svg{width:100%;height:130%;margin-top:-4%}
+.mk .stamp{width:34px}
+.mk .lk2{width:30px;height:30px;border-radius:8px;background:#fff;border:2px dashed #111;display:grid;place-items:center;transform:rotate(-4deg)}
+.mk .lk2 svg{width:14px;height:14px}
+.mk i{font:600 9px Inter;font-style:normal;background:#111;color:#fff;border-radius:99px;padding:2px 7px;white-space:nowrap}
+.mk.done i{background:#fff;color:#111}
+.mk.hidden,.pin.hidden{display:none}
+.maptop{position:absolute;top:100px;left:12px;right:12px;z-index:6;display:flex;flex-direction:column;gap:8px}
+@media (max-width:760px){.maptop{top:calc(max(16px,env(safe-area-inset-top)) + 50px)}}
+.week{display:flex;align-items:center;gap:10px;background:linear-gradient(90deg,#1f2a5c,#2c44d6);color:#fff;border-radius:16px;padding:9px 12px;box-shadow:0 8px 20px rgba(0,0,0,.18);text-align:left}
+body[data-skin=christmas] .week{background:linear-gradient(90deg,#7a0a1f,#2f6b3a)}
+body[data-skin=halloween] .week{background:linear-gradient(90deg,#2a1d10,#ff7a1a)}
+body[data-skin=cny] .week{background:linear-gradient(90deg,#a50e22,#e3a82b)}
+.week .stamp{width:26px;flex:none}
+.week b{font:700 12px 'Inter Tight';display:block}.week small{font-size:10px;opacity:.85}
+.week .cnt{margin-left:auto;font:600 11px 'JetBrains Mono';background:rgba(255,255,255,.18);padding:4px 8px;border-radius:99px;white-space:nowrap}
+.fchips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.fchips button{font:600 11px Inter;background:#fff;color:#111;padding:7px 11px;border-radius:99px;white-space:nowrap;box-shadow:0 3px 10px rgba(0,0,0,.08)}
+.fchips button.on{background:#111;color:#fff}
+.fchips button.rt.on{background:var(--accent2)}
+.routeline{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3}
+.routecard{position:absolute;left:12px;right:12px;bottom:96px;z-index:7;background:var(--card);border-radius:18px;padding:10px 14px;box-shadow:0 8px 24px rgba(0,0,0,.15);display:none;font-size:12px}
+.routecard.on{display:block}
+.routecard b{font:700 13px 'Inter Tight'}
+.routecard .tr{margin:6px 0}
+.mstops{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
+.mstops span{font:500 10px Inter;padding:3px 7px;border-radius:99px;background:#f0f1f4;color:#444}
+.mstops span.ok{background:#dff3e6;color:#1f7a45}
+
+/* pins (enamel badges) */
+.pins{display:flex;flex-wrap:wrap;gap:6px}
+.epin{display:inline-flex;align-items:center;gap:5px;font:600 11px Inter;padding:5px 10px 5px 6px;border-radius:99px;background:color-mix(in srgb,var(--pc) 12%,#fff);color:#1a1a24;border:1.5px solid color-mix(in srgb,var(--pc) 55%,#fff);box-shadow:inset 0 -2px 0 color-mix(in srgb,var(--pc) 25%,#fff)}
+.epin i{width:16px;height:16px;border-radius:50%;background:var(--pc);display:grid;place-items:center;box-shadow:inset 0 -2px 0 rgba(0,0,0,.2)}
+.epin i svg{width:10px;height:10px;color:#fff}
+
+/* shop detail */
+#v-shop{padding-top:0;background:var(--app)}
+.shopscroll{flex:1;overflow-y:auto;scrollbar-width:none;padding-bottom:110px}
+.hero{height:260px;position:relative;display:flex;align-items:flex-end;justify-content:center;overflow:hidden}
+.hero .art{position:absolute;inset:-10%;filter:blur(18px) saturate(1.3);opacity:.9}
+.hero .art svg,.hero .big svg{width:100%;height:100%}
+.hero .big{position:relative;width:118px;margin-bottom:-26px;transform:rotate(-4deg)}
+.hero .ph{position:absolute;right:12px;bottom:12px;font:500 9px 'JetBrains Mono';background:rgba(0,0,0,.45);color:#fff;padding:4px 8px;border-radius:99px;letter-spacing:.06em}
+.hero .back{position:absolute;top:52px;left:14px;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.9);display:grid;place-items:center;z-index:2}
+@media (max-width:760px){.hero .back{top:max(14px,env(safe-area-inset-top))}}
+.hero .back svg{width:16px;height:16px;color:#111}
+.sblock{padding:16px 20px 0}
+.sblock h3{font:800 24px/1.1 'Inter Tight';letter-spacing:-.02em;margin:34px 0 4px}
+.sblock .loc{font-size:12px;color:var(--muted);margin-bottom:12px}
+.sblock h4{font:700 14px 'Inter Tight';margin:0 0 8px}
+.sblock p{font-size:13.5px;color:inherit;opacity:.85;margin:0}
+.card2{background:var(--card);border-radius:18px;padding:14px}
+.prods{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.prods div{flex:none;width:130px;background:var(--card);border-radius:16px;padding:12px}
+.prods b{font:600 12.5px Inter;display:block}.prods small{font-size:11px;color:var(--muted)}
+.cpv{display:flex;gap:8px}
+.cpv div{flex:1;border-radius:12px;padding:10px;background:#f6f7f9;color:#111;font-size:11px}
+.cpv b{display:block;font:700 12px Inter}
+.cpv .my{background:#1f2a5c;color:#fff}
+.sticky{position:absolute;left:16px;right:16px;bottom:24px;z-index:9}
+@media (max-width:760px){.sticky{bottom:max(18px,env(safe-area-inset-bottom))}}
+
+/* three-choose-one + nearby + postcard overlays */
+.pick{position:absolute;inset:0;z-index:82;background:var(--app);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 18px 40px;text-align:center;opacity:0;pointer-events:none;transition:opacity .3s;color:inherit}
+.pick.on{opacity:1;pointer-events:auto}
+.pick h3{font:800 24px/1.1 'Inter Tight';letter-spacing:-.02em;margin:6px 0 4px}
+.pick>p{color:var(--muted);font-size:12.5px;margin:0 0 18px}
+.cards{display:flex;gap:8px;width:100%;justify-content:center;perspective:900px}
+.ccard{flex:1;max-width:110px;aspect-ratio:3/4.4;border-radius:14px;background:#fff;color:#111;position:relative;padding:10px 8px;display:flex;flex-direction:column;text-align:left;box-shadow:0 10px 24px -10px rgba(0,0,0,.35);border:2px solid #e8e9ee;transition:transform .5s cubic-bezier(.3,1.2,.5,1),opacity .4s;transform:translateY(40px) rotate(var(--rr));opacity:0}
+.pick.on .ccard{transform:rotate(var(--rr));opacity:1}
+.pick.on .ccard:nth-child(2){transition-delay:.08s}.pick.on .ccard:nth-child(3){transition-delay:.16s}
+.ccard .rar{font:600 8px 'JetBrains Mono';letter-spacing:.1em;padding:3px 6px;border-radius:99px;align-self:flex-start;background:#eef0f4}
+.ccard.rare{border-color:#8ab4ff;background:linear-gradient(160deg,#fff,#eef4ff)}.ccard.rare .rar{background:#2c44d6;color:#fff}
+.ccard.limited{border-color:#e3b23c;background:linear-gradient(160deg,#fff,#fff6dc)}.ccard.limited .rar{background:#e3b23c;color:#111}
+.ccard .v{font:800 15px/1.15 'Inter Tight';margin:10px 0 6px}
+.ccard .c{font-size:10px;color:#555;line-height:1.35}
+.ccard .e{margin-top:auto;font:500 9px 'JetBrains Mono';color:#777}
+.ccard.mys{background:linear-gradient(150deg,var(--cover2),var(--cover));color:#fff;border-color:var(--cover);align-items:center;justify-content:center;text-align:center}
+.ccard.mys .q{font:400 40px 'Alfa Slab One';color:var(--gold)}
+.ccard.mys .c{color:#d9dbe6}
+.ccard.gone{opacity:0!important;transform:translateY(-80px) scale(.6) rotate(20deg)!important}
+.ccard.chosen{transform:scale(1.25) rotate(0)!important;z-index:2}
+.pick .btn{max-width:300px;margin-top:22px}
+.pick .note{font-size:10.5px;color:var(--muted);margin-top:12px}
+.near{background:var(--card);border-radius:22px;padding:14px;display:flex;gap:12px;align-items:center;text-align:left;width:100%;max-width:320px;margin-top:6px}
+.near .stamp{width:62px;flex:none;filter:grayscale(.9) opacity(.5)}
+.near b{font:700 15px 'Inter Tight';display:block}.near small{font-size:11.5px;color:var(--muted);display:block;margin:2px 0 6px}
+.postcard{width:min(260px,72%);aspect-ratio:9/16;border-radius:18px;background:linear-gradient(170deg,#fff,#eef3ff);color:#111;padding:16px;display:flex;flex-direction:column;box-shadow:0 30px 60px -24px rgba(0,0,0,.45);text-align:left;position:relative;overflow:hidden}
+.postcard .k{font:500 8px 'JetBrains Mono';letter-spacing:.16em;color:#777}
+.postcard h4{font:400 22px/1.05 'Alfa Slab One';margin:6px 0 2px;color:var(--cover)}
+.postcard .mini{flex:1;margin:10px 0;border-radius:12px;background:#e8f1e4;position:relative;overflow:hidden}
+.postcard .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.postcard .grid .stamp{--r:1.8px}
+.postcard .pmk{position:absolute;right:-10px;top:40px;width:90px;transform:rotate(-12deg);mix-blend-mode:multiply}
+
+/* rewards */
+.tabs2{display:flex;gap:6px;padding:12px 20px 8px}
+.rlist{flex:1;overflow-y:auto;padding:4px 20px 110px;scrollbar-width:none}
+.ticket{display:flex;background:var(--card);border-radius:16px;margin-bottom:10px;position:relative;overflow:hidden;text-align:left;width:100%;color:inherit}
+.ticket .l{width:74px;display:grid;place-items:center;background:#f2f3f6;border-right:2px dashed #dcdde3;position:relative}
+.ticket .l .stamp{width:40px}
+.ticket .r{flex:1;padding:12px 14px}
+.ticket b{font:800 16px 'Inter Tight';display:block}
+.ticket small{display:block;font-size:11px;color:var(--muted)}
+.ticket .tag{position:absolute;top:10px;right:10px;font:600 8px 'JetBrains Mono';padding:3px 6px;border-radius:99px;background:#eef0f4;color:#333}
+.ticket .tag.rare{background:#2c44d6;color:#fff}.ticket .tag.limited{background:#e3b23c;color:#111}
+.ticket.used{opacity:.5}
+.ticket.used::after{content:"USED";position:absolute;right:18px;top:50%;transform:translateY(-50%) rotate(-14deg);font:400 20px 'Alfa Slab One';color:#c8102e;border:3px solid #c8102e;padding:0 8px;border-radius:6px;opacity:.85}
+.empty{text-align:center;color:var(--muted);font-size:13px;padding:40px 10px}
+.slide{position:relative;height:56px;border-radius:99px;background:#eceef2;margin-top:16px;overflow:hidden;touch-action:none;user-select:none}
+.slide span{position:absolute;inset:0;display:grid;place-items:center;font:600 12.5px Inter;color:#666}
+.slide .knob{position:absolute;left:4px;top:4px;width:48px;height:48px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;cursor:grab;z-index:2}
+.slide .fill{position:absolute;left:0;top:0;bottom:0;background:color-mix(in srgb,var(--accent) 20%,transparent)}
+.usedbox{text-align:center;padding:14px 0 4px}
+.usedbox .u{display:inline-block;font:400 30px 'Alfa Slab One';color:#c8102e;border:4px solid #c8102e;padding:2px 14px;border-radius:8px;transform:rotate(-8deg);animation:stampin .25s ease-in}
+.usedbox .code{font:500 28px 'JetBrains Mono';letter-spacing:.3em;margin-top:12px}
+
+/* me extras */
+.badges2{display:flex;gap:8px;flex-wrap:wrap}
+.badge2{display:flex;align-items:center;gap:8px;background:var(--card);border-radius:14px;padding:8px 10px;font:600 11.5px Inter}
+.badge2.off{opacity:.4}
+.badge2 .dot{width:22px;height:22px;border-radius:50%;background:var(--pc);display:grid;place-items:center;color:#fff;box-shadow:inset 0 -2px 0 rgba(0,0,0,.2)}
+.badge2 .dot svg{width:12px;height:12px}
+.skins{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.skins button{border-radius:14px;padding:10px 4px;font:600 11px Inter;background:var(--card);border:2px solid transparent}
+.skins button.on{border-color:var(--accent)}
+.skins i{display:block;height:26px;border-radius:8px;margin-bottom:6px}
+.mbtns{display:flex;flex-direction:column;gap:8px;padding-bottom:20px}
+.btn.line{background:transparent;color:inherit;box-shadow:inset 0 0 0 1.5px currentColor}
+
+/* merchant (de-gamified) */
+#v-merchant{background:#f6f7f9;color:#111}
+.mhd{padding:56px 20px 6px;display:flex;justify-content:space-between;align-items:flex-start}
+@media (max-width:760px){.mhd{padding-top:max(18px,env(safe-area-inset-top))}}
+.mhd small{font:500 10px 'JetBrains Mono';letter-spacing:.12em;color:#888}
+.mhd h3{font:800 22px 'Inter Tight';margin:2px 0 0;letter-spacing:-.02em}
+.mhd button{font:600 11px Inter;border:1.5px solid #111;border-radius:99px;padding:7px 11px}
+.mscroll{flex:1;overflow-y:auto;padding:8px 20px 30px;scrollbar-width:none}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.kpis div{background:#fff;border-radius:16px;padding:12px}
+.kpis b{font:800 26px 'Inter Tight';display:block;letter-spacing:-.02em}
+.kpis small{font-size:11px;color:#777}
+.kpis em{font-style:normal;font-size:10.5px;color:#1f9d5c;font-weight:600}
+.macts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.macts button{background:#111;color:#fff;border-radius:16px;padding:16px 12px;font:700 14px 'Inter Tight';text-align:left}
+.macts button small{display:block;font:500 10.5px Inter;opacity:.7;margin-top:2px}
+.macts button.alt{background:#fff;color:#111;border:1.5px solid #e2e3e8}
+.mlist{background:#fff;border-radius:16px;padding:4px 14px;margin-bottom:14px}
+.mlist div{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f0f1f4;font-size:12.5px}
+.mlist div:last-child{border:0}
+.mlist em{font-style:normal;color:#888;font-size:11px}
+.mh{font:700 13px 'Inter Tight';margin:6px 2px 8px}
+.tog{width:38px;height:22px;border-radius:99px;background:#d5d6dd;position:relative;flex:none}
+.tog::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .2s}
+.tog.on{background:#1f9d5c}.tog.on::after{left:19px}
+.codein{display:flex;gap:8px;justify-content:center;margin:14px 0}
+.codein input{width:52px;height:60px;text-align:center;font:600 26px 'JetBrains Mono';border:2px solid #e2e3e8;border-radius:12px}
+.scanlist{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -24px 14px;padding:0 24px}
+.scanlist button{flex:none;font:600 11.5px Inter;background:rgba(255,255,255,.12);color:#fff;border-radius:99px;padding:8px 12px;border:1px solid rgba(255,255,255,.2)}
+.scanlist button.on{background:#fff;color:#111}
+.a2hs{position:absolute;left:12px;right:12px;bottom:96px;z-index:96;background:#111;color:#fff;border-radius:16px;padding:10px 12px;font-size:12px;display:flex;gap:10px;align-items:center}
+.a2hs button{margin-left:auto;color:#fff;opacity:.7}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
@@ -473,15 +734,197 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
   </symbol>
 </svg>
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+  <pattern id="brick" width="16" height="8" patternUnits="userSpaceOnUse"><rect width="16" height="8" fill="#c8553d"/><path d="M0 0h16M0 4h16M4 0v4M12 4v4" stroke="#a8432f" stroke-width="1"/></pattern>
+  <linearGradient id="skyE" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9fd8f0"/><stop offset="1" stop-color="#fff4dc"/></linearGradient>
+</defs>
+
+<!-- Welcome -->
+<symbol id="st-welcome" viewBox="0 0 120 156">
+  <rect width="120" height="156" fill="#1f2a5c"/>
+  <circle cx="60" cy="62" r="40" fill="none" stroke="#e3c06b" stroke-width="2"/>
+  <circle cx="60" cy="62" r="33" fill="none" stroke="#e3c06b" stroke-width="1" stroke-dasharray="2 3"/>
+  <path d="M40 72h40l-6 10H46z" fill="#e3c06b"/>
+  <path d="M59 38v34M59 40l15 26H59zM57 46l-12 20h12z" fill="#e3c06b"/>
+  <path d="M30 88c10 4 20 4 30 0s20-4 30 0" stroke="#e3c06b" stroke-width="1.5" fill="none"/>
+  <text x="60" y="112" text-anchor="middle" font-family="JetBrains Mono" font-size="7" fill="#e3c06b" letter-spacing="2">BRISTOL · VOL.01</text>
+  <rect width="120" height="128" fill="url(#grain)"/>
+  <rect y="126" width="120" height="30" fill="#fff"/>
+  <text x="60" y="147" text-anchor="middle" font-family="Alfa Slab One" font-size="14" fill="#1f2a5c">WELCOME</text>
+</symbol>
+
+<!-- City Hall -->
+<symbol id="st-cityhall" viewBox="0 0 120 156">
+  <rect width="120" height="156" fill="url(#skyE)"/>
+  <circle cx="96" cy="24" r="9" fill="#ffd23a"/>
+  <path d="M84 30v-14l4-8 4 8v14z" fill="#8a7a6a"/><rect x="82" y="30" width="12" height="40" fill="#a89580"/>
+  <path d="M6 66Q60 52 114 66V102Q60 92 6 102z" fill="#e9d3a8"/>
+  <path d="M6 66Q60 52 114 66" stroke="#c9a978" stroke-width="3" fill="none"/>
+  <g fill="#7a6a5a"><rect x="14" y="72" width="5" height="9"/><rect x="26" y="69" width="5" height="9"/><rect x="38" y="67" width="5" height="9"/><rect x="50" y="66" width="5" height="9"/><rect x="65" y="66" width="5" height="9"/><rect x="77" y="67" width="5" height="9"/><rect x="89" y="69" width="5" height="9"/><rect x="101" y="72" width="5" height="9"/>
+  <rect x="14" y="86" width="5" height="9"/><rect x="26" y="83" width="5" height="9"/><rect x="38" y="81" width="5" height="9"/><rect x="50" y="80" width="5" height="9"/><rect x="65" y="80" width="5" height="9"/><rect x="77" y="81" width="5" height="9"/><rect x="89" y="83" width="5" height="9"/><rect x="101" y="86" width="5" height="9"/></g>
+  <path d="M10 60l4-6 3 6zM103 60l4-6 3 6z" fill="#e3b23c"/>
+  <rect x="0" y="100" width="120" height="10" fill="#7ad0f0"/>
+  <path d="M30 98v-6M60 96v-8M90 98v-6" stroke="#cdeefa" stroke-width="2"/>
+  <rect x="0" y="110" width="120" height="18" fill="#5cc47e"/>
+  <g fill="#3fae68"><circle cx="16" cy="112" r="7"/><circle cx="104" cy="112" r="7"/></g>
+  <rect width="120" height="128" fill="url(#grain)"/>
+  <rect y="126" width="120" height="30" fill="#fff"/>
+  <text x="60" y="147" text-anchor="middle" font-family="Alfa Slab One" font-size="14" fill="#b8673d">CITY HALL</text>
+</symbol>
+
+<!-- Christmas Steps -->
+<symbol id="st-steps" viewBox="0 0 120 156">
+  <rect width="120" height="156" fill="#2b3a67"/>
+  <circle cx="92" cy="22" r="8" fill="#fff3c2"/>
+  <rect x="0" y="20" width="30" height="108" fill="url(#brick)"/>
+  <rect x="90" y="40" width="30" height="88" fill="url(#brick)"/>
+  <g fill="#d8cfc0" stroke="#a89f90" stroke-width="1">
+    <rect x="30" y="112" width="60" height="16"/><rect x="34" y="98" width="56" height="14"/><rect x="38" y="84" width="52" height="14"/><rect x="42" y="70" width="48" height="14"/><rect x="46" y="56" width="44" height="14"/><rect x="50" y="42" width="40" height="14"/>
+  </g>
+  <path d="M34 30v40" stroke="#1a1a24" stroke-width="2"/><path d="M28 30h12l-2 10h-8z" fill="#1a1a24"/><rect x="30" y="31" width="8" height="8" fill="#ffd23a"/>
+  <g fill="#ffd23a" opacity=".9"><rect x="6" y="40" width="8" height="10"/><rect x="98" y="58" width="8" height="10"/></g>
+  <rect width="120" height="128" fill="url(#grain)"/>
+  <rect y="126" width="120" height="30" fill="#fff"/>
+  <text x="60" y="146" text-anchor="middle" font-family="Alfa Slab One" font-size="10" fill="#2b3a67">CHRISTMAS STEPS</text>
+</symbol>
+
+<!-- Café 56 -->
+<symbol id="st-cafe56" viewBox="0 0 120 156">
+  <rect width="120" height="156" fill="#f7c9d4"/>
+  <path d="M0 0h120v16H0z" fill="#2f6b52"/>
+  <path d="M0 16c5 6 10 6 15 0 5 6 10 6 15 0 5 6 10 6 15 0 5 6 10 6 15 0 5 6 10 6 15 0 5 6 10 6 15 0 5 6 10 6 15 0 5 6 10 6 15 0z" fill="#2f6b52"/>
+  <g fill="#d8cfc0" stroke="#b5aa98"><rect x="0" y="108" width="120" height="20"/><rect x="0" y="96" width="70" height="12"/></g>
+  <path d="M20 96l30-22v22z" fill="#fff4e0"/><path d="M20 96l30-22v6L20 96" fill="#ff7aa8"/><path d="M23 92l27-14" stroke="#e3a24a" stroke-width="3"/><circle cx="46" cy="72" r="4" fill="#e2302c"/>
+  <path d="M74 70h26v16a10 10 0 0 1-10 10h-6a10 10 0 0 1-10-10z" fill="#fff"/><path d="M100 74h4a5 5 0 0 1 0 10h-4" stroke="#fff" stroke-width="3" fill="none"/>
+  <ellipse cx="87" cy="71" rx="13" ry="2.5" fill="#8a4b2a"/>
+  <path d="M82 60c-3 4 3 5 0 9M92 58c-3 4 3 5 0 10" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+  <circle cx="16" cy="40" r="10" fill="#fff" opacity=".6"/><text x="16" y="44" text-anchor="middle" font-family="Alfa Slab One" font-size="10" fill="#2f6b52">56</text>
+  <rect width="120" height="128" fill="url(#grain)"/>
+  <rect y="126" width="120" height="30" fill="#fff"/>
+  <text x="60" y="147" text-anchor="middle" font-family="Alfa Slab One" font-size="14" fill="#2f6b52">CAFÉ 56</text>
+</symbol>
+
+<!-- Street art: Frogmore Street -->
+<symbol id="st-frogmore" viewBox="0 0 120 156">
+  <rect width="120" height="128" fill="url(#brick)"/>
+  <rect x="58" y="16" width="44" height="40" fill="#fff" stroke="#1a1a24" stroke-width="2"/>
+  <path d="M80 16v40M58 36h44" stroke="#1a1a24" stroke-width="2"/>
+  <rect x="62" y="20" width="14" height="12" fill="#9fd8f0"/><rect x="84" y="40" width="14" height="12" fill="#9fd8f0"/>
+  <path d="M8 70c20-6 40 4 60-2s30 4 44 0" stroke="#ffd23a" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <path d="M30 70v14M52 70v10" stroke="#ffd23a" stroke-width="3" stroke-linecap="round"/>
+  <g transform="translate(18 82) rotate(-18)"><rect width="18" height="34" rx="3" fill="#2c44d6"/><rect x="4" y="-6" width="10" height="7" rx="2" fill="#1a1a24"/><rect y="10" width="18" height="6" fill="#fff"/></g>
+  <circle cx="44" cy="96" r="2" fill="#ffd23a"/><circle cx="50" cy="90" r="1.5" fill="#ffd23a"/>
+  <rect width="120" height="128" fill="url(#grain)"/>
+  <rect y="126" width="120" height="30" fill="#fff"/>
+  <text x="60" y="146" text-anchor="middle" font-family="Alfa Slab One" font-size="11" fill="#c8553d">FROGMORE ST</text>
+</symbol>
+
+<!-- Street art: Stokes Croft -->
+<symbol id="st-stokes" viewBox="0 0 120 156">
+  <rect width="120" height="128" fill="#ffd23a"/>
+  <path d="M0 0h50l-20 60H0z" fill="#ff5fa8"/><path d="M120 20v60l-50 20 20-60z" fill="#2c44d6"/><circle cx="70" cy="46" r="20" fill="#3fae68"/>
+  <path d="M10 92c18-10 30 8 48-2s32 6 52-6" stroke="#1a1a24" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <path d="M18 104h84" stroke="#fff" stroke-width="3" stroke-dasharray="6 6"/>
+  <g transform="translate(88 70) rotate(16)"><rect width="16" height="30" rx="3" fill="#e2302c"/><rect x="3" y="-5" width="10" height="6" rx="2" fill="#1a1a24"/></g>
+  <rect width="120" height="128" fill="url(#grain)"/>
+  <rect y="126" width="120" height="30" fill="#fff"/>
+  <text x="60" y="146" text-anchor="middle" font-family="Alfa Slab One" font-size="11" fill="#e2302c">STOKES CROFT</text>
+</symbol>
+
+<!-- Street art: Hanover Place -->
+<symbol id="st-hanover" viewBox="0 0 120 156">
+  <rect width="120" height="128" fill="#d8dce6"/>
+  <path d="M0 96h120v32H0z" fill="#9aa3b5"/>
+  <rect x="24" y="18" width="72" height="80" fill="#c99a2e"/>
+  <rect x="30" y="24" width="60" height="68" fill="#1f2a5c"/>
+  <path d="M44 80c0-20 8-38 22-40 10-2 16 8 12 18" stroke="#e3c06b" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <circle cx="72" cy="66" r="5" fill="#fff"/>
+  <path d="M34 28l18 0-18 22z" fill="#fff" opacity=".18"/>
+  <rect width="120" height="128" fill="url(#grain)"/>
+  <rect y="126" width="120" height="30" fill="#fff"/>
+  <text x="60" y="146" text-anchor="middle" font-family="Alfa Slab One" font-size="11" fill="#1f2a5c">HANOVER PL</text>
+</symbol>
+
+<!-- Militaria -->
+<symbol id="st-medal" viewBox="0 0 120 156">
+  <rect width="120" height="128" fill="#2f4a3a"/>
+  <path d="M42 14h36l-6 44H48z" fill="#c8102e"/><path d="M52 14h4l-2 44h-2zM64 14h4l-2 44h-2z" fill="#fff"/><path d="M58 14h4v44h-4z" fill="#1f2a5c"/>
+  <circle cx="60" cy="80" r="24" fill="#e3b23c" stroke="#a87a1a" stroke-width="3"/>
+  <path d="M60 64l5 10 11 1-8 8 2 11-10-5-10 5 2-11-8-8 11-1z" fill="#a87a1a"/>
+  <rect x="14" y="104" width="22" height="16" rx="2" fill="#d8cfc0"/><rect x="84" y="102" width="22" height="18" rx="2" fill="#b5aa98"/>
+  <rect width="120" height="128" fill="url(#grain)"/>
+  <rect y="126" width="120" height="30" fill="#fff"/>
+  <text x="60" y="147" text-anchor="middle" font-family="Alfa Slab One" font-size="13" fill="#2f4a3a">MILITARIA</text>
+</symbol>
+
+<!-- Clothing shop -->
+<symbol id="st-hanger" viewBox="0 0 120 156">
+  <rect width="120" height="128" fill="#b9a8ff"/>
+  <rect x="10" y="10" width="100" height="100" fill="#fff" opacity=".35"/>
+  <path d="M60 22a6 6 0 1 1 6 6v6" stroke="#1a1a24" stroke-width="2.4" fill="none"/>
+  <path d="M28 52l38-18 38 18" stroke="#1a1a24" stroke-width="2.4" fill="none"/>
+  <path d="M40 50h40l8 14-8 4v40H40V68l-8-4z" fill="#ff7a3d"/>
+  <path d="M56 50l4 8 4-8" fill="#fff"/>
+  <path d="M0 112L120 96v32H0z" fill="#6b5ad6"/>
+  <rect width="120" height="128" fill="url(#grain)"/>
+  <rect y="126" width="120" height="30" fill="#fff"/>
+  <text x="60" y="147" text-anchor="middle" font-family="Alfa Slab One" font-size="13" fill="#6b5ad6">BOUTIQUE</text>
+</symbol>
+
+<!-- Hole in the Wall -->
+<symbol id="st-pub" viewBox="0 0 120 156">
+  <rect width="120" height="128" fill="url(#skyE)"/>
+  <rect x="10" y="30" width="100" height="98" fill="#2f4a3a"/>
+  <path d="M6 30h108l-6-10H12z" fill="#1d2f25"/>
+  <rect x="18" y="40" width="84" height="12" fill="#e3c06b"/>
+  <text x="60" y="49" text-anchor="middle" font-family="JetBrains Mono" font-size="7" fill="#1d2f25" letter-spacing="1">PUB · DINING</text>
+  <circle cx="40" cy="78" r="13" fill="#7ad0f0" stroke="#e3c06b" stroke-width="3"/>
+  <path d="M30 82q10-4 20 0" stroke="#fff" stroke-width="2" fill="none"/><path d="M36 76h8l-2-6z" fill="#fff"/>
+  <rect x="66" y="64" width="30" height="64" fill="#1d2f25"/><circle cx="90" cy="98" r="2" fill="#e3c06b"/>
+  <path d="M100 60h14" stroke="#1a1a24" stroke-width="2"/><rect x="104" y="62" width="12" height="16" fill="#c8102e"/>
+  <g fill="#5cc47e"><circle cx="16" cy="122" r="7"/><circle cx="58" cy="124" r="6"/></g>
+  <rect width="120" height="128" fill="url(#grain)"/>
+  <rect y="126" width="120" height="30" fill="#fff"/>
+  <text x="60" y="146" text-anchor="middle" font-family="Alfa Slab One" font-size="9.5" fill="#2f4a3a">HOLE IN THE WALL</text>
+</symbol>
+
+<!-- Weekly limited -->
+<symbol id="st-week" viewBox="0 0 120 156">
+  <rect width="120" height="156" fill="#e3b23c"/>
+  <circle cx="60" cy="62" r="40" fill="#f2d38a"/>
+  <path d="M60 30l8 18 20 2-15 13 5 20-18-10-18 10 5-20-15-13 20-2z" fill="#a8432f"/>
+  <text x="60" y="114" text-anchor="middle" font-family="JetBrains Mono" font-size="7" fill="#5a3a10" letter-spacing="1.5">EXPLORER WEEK</text>
+  <rect width="120" height="128" fill="url(#grain)"/>
+  <rect y="126" width="120" height="30" fill="#fff"/>
+  <text x="60" y="147" text-anchor="middle" font-family="Alfa Slab One" font-size="12" fill="#a8432f">OLD CITY</text>
+</symbol>
+
+<!-- Postmark using currentColor -->
+<symbol id="pm2" viewBox="0 0 120 120">
+  <g fill="none" stroke="currentColor" stroke-width="2.2" opacity=".85"><circle cx="44" cy="60" r="34"/><circle cx="44" cy="60" r="27" stroke-width="1.2"/><path d="M82 44c8-5 14 5 22 0s14 5 22 0M82 56c8-5 14 5 22 0s14 5 22 0M82 68c8-5 14 5 22 0s14 5 22 0M82 80c8-5 14 5 22 0s14 5 22 0"/></g>
+  <text x="44" y="56" text-anchor="middle" font-family="JetBrains Mono" font-weight="500" font-size="8" fill="currentColor">BRISTOL</text>
+  <text x="44" y="69" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="currentColor">SHOP PASSPORT</text>
+</symbol>
+
+<!-- enamel pin base -->
+<symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 2l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 15.4 6.7 18.4l1.2-6L3.4 8.3l6-.7z" fill="currentColor"/></symbol>
+<symbol id="i-gift" viewBox="0 0 24 24"><path d="M4 10h16v10H4zM3 7h18v3H3zM12 7v13M12 7c-2-4-6-3-5 0M12 7c2-4 6-3 5 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="6" y="11" width="12" height="9" rx="2" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M9 11V8a3 3 0 0 1 6 0v3" fill="none" stroke="currentColor" stroke-width="2.2"/></symbol>
+<symbol id="i-walk" viewBox="0 0 24 24"><circle cx="13" cy="4" r="2" fill="currentColor"/><path d="M11 8l-3 5 3 2-1 6M11 8l3 3 3 1M11 15l3 2 1 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+<symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+<symbol id="i-pin-loc" viewBox="0 0 24 24"><path d="M12 22s7-7 7-12a7 7 0 0 0-14 0c0 5 7 12 7 12z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="10" r="2.5" fill="currentColor"/></symbol>
+</svg>
+
 <aside class="notes">
   <span class="k">SHOP PASSPORT · PROTOTYPE</span>
   <h1>Tap around.<br><span>It's all live.</span></h1>
   <ol>
-    <li>Start your passport, then swipe the page to turn through each series.</li>
-    <li>Tap a stamp to see its story. Tap a dashed slot to find where to collect it.</li>
-    <li>Open the map and tap a locked pin, then check in.</li>
-    <li>Or use Scan to simulate a shop's QR code.</li>
-    <li>Collect Cabot Tower to complete Landmarks and earn the Bristol Seal.</li>
+    <li>Pick a role: customer or merchant. Answer one question per screen, then open your passport.</li>
+    <li>Swipe the passport to turn through Landmarks, Street Art and Independent Shops.</li>
+    <li>Explore the map: landmarks are round, shops are stamps, locked ones are dashed. Try a route.</li>
+    <li>Check in at a shop, then choose one of three rewards and use it in Rewards.</li>
+    <li>Profile: switch skins (Christmas, Halloween, Lunar New Year), see routes and postcards, or switch to the merchant side.</li>
   </ol>
   <button class="rst" id="resetSide">Restart prototype</button>
 </aside>
@@ -499,9 +942,55 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
     <div class="onb-t">
       <h2>Collect Stamps.<br><span>Explore Bristol.</span></h2>
       <p>Visit independent shops and landmarks, earn their stamps and fill your city passport.</p>
-      <button class="btn" data-go="passport">Start my passport</button>
-      <button class="skip" data-go="map">Explore the map first</button>
+      <button class="btn" data-go="role">Get started</button>
+      <button class="skip" id="demoStart">Skip and load a demo passport</button>
     </div>
+  </section>
+
+  <!-- Role choice -->
+  <section class="view" id="v-role">
+    <div class="vpad">
+      <span class="mono" style="font-size:10px;letter-spacing:.16em;color:var(--muted)">SHOP PASSPORT · BRISTOL</span>
+      <h2>Who are you?</h2>
+      <p class="sub">我们会按你的身份准备不同的体验，之后可以随时切换。</p>
+      <button class="rolecard" data-role="customer"><div class="stamp" style="--paper:#ffb08f"><svg viewBox="0 0 120 156"><use href="#st-bridge"/></svg></div><div><b>我是顾客</b><small>去探索、集邮票、拿优惠</small></div></button>
+      <button class="rolecard" data-role="merchant"><div class="stamp" style="--paper:#b6e7c4"><svg viewBox="0 0 120 156"><use href="#st-cafe56"/></svg></div><div><b>我是商家</b><small>在 Bristol 开店，想要更多客人</small></div></button>
+    </div>
+  </section>
+
+  <!-- One-question-per-screen onboarding (customer & merchant) -->
+  <section class="view" id="v-quiz"><div class="vpad" id="quiz"></div></section>
+
+  <!-- Passport cover opening -->
+  <section class="view" id="v-cover">
+    <button class="skipc" id="skipCover">跳过</button>
+    <div class="book" id="book">
+      <div class="inner">
+        <span class="k">PASSPORT · 护照持有人</span>
+        <h4 id="cvName">Explorer</h4>
+        <div class="meta" id="cvMeta"></div>
+        <div class="wst"><div class="stamp" style="--paper:#e3c06b"><svg viewBox="0 0 120 156"><use href="#st-welcome"/></svg></div><svg class="pm" viewBox="0 0 120 120"><use href="#pm2"/></svg></div>
+      </div>
+      <div class="cover"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="54" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="60" cy="60" r="46" fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="3 4"/><path d="M36 70h48l-7 12H43z" fill="currentColor"/><path d="M59 34v36M59 36l17 28H59zM57 42l-14 22h14z" fill="currentColor"/></svg><b>SHOP PASSPORT</b><small>BRISTOL · VOL.01</small></div>
+    </div>
+    <div class="tapopen" id="tapOpen">轻触封面，翻开护照</div>
+    <button class="btn coverbtn" id="coverGo">开始探索</button>
+  </section>
+
+  <!-- Rewards -->
+  <section class="view" id="v-rewards">
+    <div class="hd"><div><small id="rcount">Rewards</small><h3>Your Rewards</h3></div><span class="av"></span></div>
+    <div class="tabs2" id="rtabs"><button class="chip on" data-rt="live">可使用</button><button class="chip" data-rt="used">已使用</button><button class="chip" data-rt="keep">收藏邮票</button></div>
+    <div class="rlist" id="rlist"></div>
+  </section>
+
+  <!-- Shop detail -->
+  <section class="view" id="v-shop"><div class="shopscroll" id="shopBody"></div><div class="sticky" id="shopCta"></div></section>
+
+  <!-- Merchant back office -->
+  <section class="view" id="v-merchant">
+    <div class="mhd"><div><small>MERCHANT · 商家后台</small><h3 id="mName">My Shop</h3></div><button id="toCustomer">切换到顾客</button></div>
+    <div class="mscroll" id="mBody"></div>
   </section>
 
   <!-- Passport -->
@@ -511,6 +1000,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
       <button class="av" data-go="me" aria-label="Profile"></button>
     </div>
     <div class="chips" id="chips"></div>
+    <button class="nextbar" id="nextbar"></button>
     <div class="ppwrap" id="ppwrap"><div class="ppage" id="ppage"></div></div>
   </section>
 
@@ -525,9 +1015,17 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
       <g fill="#b7dfa9"><circle cx="230" cy="80" r="11"/><circle cx="250" cy="100" r="9"/><circle cx="30" cy="430" r="10"/><circle cx="135" cy="300" r="10"/></g>
       <text x="40" y="560" font-family="JetBrains Mono" font-size="8" fill="#7aa7b8" letter-spacing="2">RIVER AVON</text>
     </svg>
+    <div class="realmap" id="realmap"></div>
+    <svg class="routeline" id="routeline" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
     <div class="msearch"><svg><use href="#i-search"/></svg>Search shops, routes, stamps</div>
+    <div class="maptop">
+      <button class="week" id="weekBanner"></button>
+      <div class="fchips" id="mfilter"><button class="on" data-f="all">全部</button><button data-f="landmark">景点</button><button data-f="shop">小店</button><button data-f="todo">未收集</button></div>
+      <div class="fchips" id="mroutes"></div>
+    </div>
     <div class="me-dot" style="left:50%;top:62%"></div>
     <div id="pins"></div>
+    <div class="routecard" id="routecard"></div>
   </section>
 
   <!-- Scan -->
@@ -539,6 +1037,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
     <div class="scan-ui">
       <h3>Scan the shop's code</h3>
       <p>Find the Shop Passport QR at the counter to collect its stamp.</p>
+      <div class="scanlist" id="scanList"></div>
       <button class="btn" id="simScan">Simulate a scan</button>
     </div>
   </section>
@@ -549,7 +1048,11 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
     <div class="me-scroll">
       <div class="mecard" id="mestats"></div>
       <div class="sec"><h4>Series<span>Complete one to earn a seal</span></h4><div id="mseries"></div></div>
-      <div class="sec"><h4>Seals<span id="sealcount"></span></h4><div class="seals" id="mseals"></div></div>
+      <div class="sec"><h4>Seals<span id="sealcount"></span></h4><div class="seals" id="mseals" style="padding-bottom:4px"></div></div>
+      <div class="sec"><h4>Pins 铭牌徽章<span>同类集 3 枚得主题徽章</span></h4><div class="badges2" id="mpins"></div></div>
+      <div class="sec"><h4>Routes 路线<span>走完生成城市明信片</span></h4><div id="mroutesMe"></div></div>
+      <div class="sec"><h4>Skin 节庆皮肤<span>换一套护照和地图</span></h4><div class="skins" id="mskins"></div></div>
+      <div class="sec mbtns"><button class="btn line sm" id="toMerchant">切换到商家后台</button><button class="btn line sm" id="loadDemo">载入演示进度</button></div>
       <button class="resetbtn" id="resetMe">Reset demo</button>
     </div>
   </section>
@@ -557,9 +1060,12 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
   <nav class="nav hide" id="nav">
     <button data-go="passport" aria-label="Passport"><svg viewBox="0 0 24 24"><use href="#i-book"/></svg></button>
     <button data-go="map" aria-label="Map"><svg viewBox="0 0 24 24"><use href="#i-map"/></svg></button>
-    <button data-go="scan" aria-label="Scan"><svg viewBox="0 0 24 24"><use href="#i-scan"/></svg></button>
-    <button data-go="me" aria-label="Me"><svg viewBox="0 0 24 24"><use href="#i-user"/></svg></button>
+    <button data-go="scan" aria-label="Scan" class="scanbtn"><svg viewBox="0 0 24 24"><use href="#i-scan"/></svg></button>
+    <button data-go="rewards" aria-label="Rewards"><svg viewBox="0 0 24 24"><use href="#i-gift"/></svg></button>
+    <button data-go="me" aria-label="Profile"><svg viewBox="0 0 24 24"><use href="#i-user"/></svg></button>
   </nav>
+  <div class="pick" id="pick"></div>
+  <div class="snow"></div>
 
   <div class="backdrop" id="backdrop"></div>
   <div class="sheet" id="sheet"></div>
@@ -572,30 +1078,88 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 
 <script>
 const SHOPS = {
-  clifton:{sym:'st-bridge',paper:'#ffb08f',name:'Clifton Suspension Bridge',short:'Clifton',area:'Clifton Down',series:'landmarks',limited:'LIMITED · 042/500',dist:'18 min walk',x:16,y:36,story:'Brunel’s bridge over the Avon Gorge. This limited stamp is only issued on autumn sunset walks.'},
-  harbour:{sym:'st-harbour',paper:'#ffe28a',name:'Harbourside',short:'Harbourside',area:'Floating Harbour',series:'landmarks',dist:'9 min walk',x:58,y:72,story:'Cranes, steamships and colourful warehouses along the old floating harbour.'},
-  park:{sym:'st-park',paper:'#9ddcf0',name:'Park Street',short:'Park Street',area:'City Centre',series:'landmarks',dist:'4 min walk',x:48,y:50,story:'One of Bristol’s steepest shopping streets, crowned by a gothic tower.'},
-  cabot:{sym:'st-cabot',paper:'#b6e7c4',name:'Cabot Tower',short:'Cabot Tower',area:'Brandon Hill',series:'landmarks',dist:'7 min walk',x:30,y:60,story:'Climb the tower on Brandon Hill for the best view over the whole city.'},
-  records:{sym:'st-records',paper:'#d8ccff',name:'Vinyl Records',short:'Vinyl Records',area:'Nelson Street',series:'music',dist:'6 min walk',x:60,y:34,story:'Crates of new and second-hand vinyl, plus free in-store gigs on Fridays.'},
-  guitar:{sym:'st-guitar',paper:'#ffc1d6',name:'Croft Guitars',short:'Croft Guitars',area:'Stokes Croft',series:'music',dist:'12 min walk',x:82,y:25,story:'A tiny workshop that repairs, builds and sells guitars. Say hi to the shop dog.'},
-  cafe:{sym:'st-cafe',paper:'#b6e7c4',name:'Café 56',short:'Café 56',area:'Gloucester Road',series:'coffee',dist:'4 min walk',x:72,y:48,story:'Small-batch roasts and the best window seat on Gloucester Road.'},
-  bakery:{sym:'st-bakery',paper:'#ffd2a8',name:'Corner Bakery',short:'Corner Bakery',area:'Gloucester Road',series:'coffee',dist:'5 min walk',x:88,y:39,story:'Croissants out of the oven at 8am. Get there early.'},
-  fiesta:{sym:'st-balloon',paper:'#8fd3e8',name:'Balloon Fiesta',short:'Balloon Fiesta',area:'Ashton Court',series:'events',limited:'SEASONAL',dist:'25 min walk',x:16,y:90,story:'Hundreds of hot air balloons rise over the city every August.'}
+  /* ---- landmarks: check in by location, stamp only ---- */
+  cityhall:{type:'landmark',sym:'st-cityhall',paper:'#9ddcf0',name:'City Hall & College Green',short:'City Hall',area:'College Green',zone:'parkst',series:'landmarks',lat:51.4523,lng:-2.6003,story:'弧形立面的市政厅，正对 College Green，旁边就是 Bristol Cathedral。'},
+  bridge:{type:'landmark',sym:'st-bridge',paper:'#ffb08f',name:'Clifton Suspension Bridge',short:'Clifton Bridge',area:'Clifton',zone:'clifton',series:'landmarks',limited:'LIMITED · 042/500',lat:51.4549,lng:-2.6278,story:'Brunel 设计的悬索桥，横跨 Avon 峡谷。限定邮票只在日落时段发放（演示）。'},
+  cabot:{type:'landmark',sym:'st-cabot',paper:'#b6e7c4',name:'Cabot Tower',short:'Cabot Tower',area:'Brandon Hill',zone:'parkst',series:'landmarks',lat:51.4536,lng:-2.6061,story:'Brandon Hill 上的塔，登顶能看到全城。'},
+  steps:{type:'landmark',sym:'st-steps',paper:'#c9d3ff',name:'Christmas Steps',short:'Christmas Steps',area:'Old City',zone:'oldcity',series:'landmarks',lat:51.4560,lng:-2.5968,story:'老城里的石阶小巷，Café 56 就在顶端附近。'},
+  mshed:{type:'landmark',sym:'st-harbour',paper:'#ffe28a',name:'M Shed & Harbourside',short:'M Shed',area:'Harbourside',zone:'harbour',series:'landmarks',lat:51.4474,lng:-2.5983,story:'港口边的城市博物馆，门口就是老起重机。'},
+  frogmore:{type:'landmark',sym:'st-frogmore',paper:'#ffd2a8',name:'Well Hung Lover（Banksy）',short:'Well Hung Lover',area:'Frogmore Street',zone:'parkst',series:'streetart',lat:51.4535,lng:-2.5992,story:'Banksy 2006 年画在市政厅对面的作品，从 Park Street 底部的小桥上看最清楚。邮票是我们的原创插画，不复制原作。'},
+  stokes:{type:'landmark',sym:'st-stokes',paper:'#ffe28a',name:'Mild Mild West（Banksy）',short:'Mild Mild West',area:'Stokes Croft',zone:'stokes',series:'streetart',lat:51.4626,lng:-2.5899,story:'Stokes Croft 的 Banksy 壁画，在 Jamaica Street 路口看最好。邮票是我们的原创插画。'},
+  hanover:{type:'landmark',sym:'st-hanover',paper:'#d8ccff',name:'Girl with a Pierced Eardrum（Banksy）',short:'Pierced Eardrum',area:'Spike Island',zone:'harbour',series:'streetart',lat:51.4479,lng:-2.6090,story:'Hanover Place 的 Banksy 作品，改编自《戴珍珠耳环的少女》。邮票是我们的原创插画。'},
+  /* ---- partner shops from our interviews ---- */
+  cafe56:{type:'shop',sym:'st-cafe56',paper:'#b6e7c4',name:'Café 56',short:'Café 56',area:'Colston Street',zone:'oldcity',series:'indie',lat:51.4563,lng:-2.5975,pins:['fresh','handmade','vintage','taste'],
+    intro:'蛋糕每天现做、全部手作，靠一份别处吃不到的味道留住熟客的 vintage 小店。',
+    story:'一个人守着的小咖啡馆，就在 Christmas Steps 顶端附近。店主按过去的销量备货，当天剩下的点心交给 Too Good To Go，尽量不浪费。',
+    products:[['当日蛋糕','每天现做，卖完为止'],['手作甜点','从面糊到奶油都在店里做'],['咖啡','配蛋糕的那一杯']],
+    coupons:[{v:'免费加一份浓缩',cond:'购买任意咖啡',days:14,r:'common'},{v:'第二杯半价',cond:'同一笔订单',days:7,r:'rare'}],
+    mystery:{range:'店内小惊喜 · 约 £2–£4',pool:[{v:'16:00 后甜点免费一份',cond:'当日剩余甜点，送完即止',days:7,r:'rare'},{v:'No.056 编号邮票',cond:'收藏用，无货币价值',days:0,r:'limited',keep:true}]}},
+  roughtrade:{type:'shop',sym:'st-records',paper:'#d8ccff',name:'Rough Trade Bristol',short:'Rough Trade',area:'Nelson Street',zone:'oldcity',series:'indie',lat:51.4568,lng:-2.5937,pins:['records','cafebar','live','multi'],
+    intro:'一个空间里，淘唱片、喝咖啡、看现场一次完成。',
+    story:'2017 年在 Nelson Street 开业，约 4,500 平方英尺，把唱片店、咖啡酒吧和小型演出厅合在一起，用活动把人留在店里。',
+    products:[['新品与二手黑胶','还有 CD、书和周边'],['咖啡酒吧','挑完唱片坐下喝一杯'],['店内演出','签售和小型现场']],
+    coupons:[{v:'咖啡吧饮品 9 折',cond:'任意饮品',days:14,r:'common'},{v:'二手黑胶区 9 折',cond:'满 £15',days:7,r:'rare'}],
+    mystery:{range:'音乐小惊喜 · 约 £3–£5',pool:[{v:'店内活动优先入场',cond:'限一次，以店内活动为准',days:30,r:'rare'}]}},
+  militaria:{type:'shop',sym:'st-medal',paper:'#c9e3cf',name:'Militaria（店名待确认）',short:'Militaria',area:'Lower Park Row（待确认）',zone:'oldcity',series:'indie',lat:51.4557,lng:-2.5986,pins:['collector','oldthings','bristolold'],
+    intro:'每件东西背后都有故事的收藏小店。',
+    story:'线上曝光少，疫情后停车政策变化影响了客流。最适合用步行路线把人带过来。',
+    products:[['勋章与徽章','店主的收藏'],['老物件','每件都有来历'],['Bristol 旧物','和这座城市有关']],
+    coupons:[{v:'听店主讲一件藏品',cond:'体验券，不花钱',days:30,r:'common'},{v:'免费小纪念品一份',cond:'任意消费',days:14,r:'rare'}],
+    mystery:{range:'收藏小惊喜',pool:[{v:'No.001 Founder 编号邮票',cond:'收藏用，无货币价值',days:0,r:'limited',keep:true}]}},
+  boutique:{type:'shop',sym:'st-hanger',paper:'#e3dcff',name:'Park Street 服装店（店名待补）',short:'Boutique',area:'Park Street',zone:'parkst',series:'indie',lat:51.4546,lng:-2.6018,pins:['jointdeal'],
+    intro:'凭 Boston Tea Party 小票八折的邻里小店。',
+    story:'隔壁的店接连关门，店主主动和 Boston Tea Party 合作“凭小票八折”。这正是联合券的原型。',
+    products:[['服装','特色待补'],['配饰','特色待补']],
+    coupons:[{v:'全场 8 折',cond:'出示 Boston Tea Party 当日小票',days:7,r:'rare'},{v:'£5 优惠',cond:'满 £40',days:14,r:'common'}],
+    mystery:{range:'约 £3–£8',pool:[{v:'免费改衣一次',cond:'以店内服务为准',days:30,r:'rare'}]}},
+  hole:{type:'shop',sym:'st-pub',paper:'#cfe8d4',name:'The Hole in the Wall',short:'Hole in the Wall',area:'Queen Square',zone:'harbour',series:'indie',lat:51.4497,lng:-2.5952,pins:['historic','seasonal','local','garden'],
+    intro:'Queen Square 角上的老酒馆，吃得到本地当季食材。',
+    story:'历史酒吧餐厅，店名来自当年酒客从墙洞里观察抓壮丁队的到来。我们在这里参加过本地食材讨论会。注：属于 Mitchells & Butlers 集团。',
+    products:[['时令菜','跟着季节变'],['本地食材','来自本地供应商'],['户外花园','天气好时坐外面']],
+    coupons:[{v:'时令菜 9 折',cond:'堂食',days:14,r:'common'},{v:'本地食材试吃一份',cond:'点任意主菜',days:7,r:'rare'}],
+    mystery:{range:'约 £2–£5',pool:[{v:'饮品升级一次',cond:'任意饮品',days:14,r:'rare'}]}}
 };
-const SERIES=[{id:'landmarks',name:'Landmarks',seal:'Bristol Seal'},{id:'music',name:'Music',seal:'Encore Seal'},{id:'coffee',name:'Coffee Trail',seal:'Barista Seal'},{id:'events',name:'Events',seal:'Fiesta Seal'}];
-const POS=[{l:9,t:17,r:-6},{l:54,t:15,r:5},{l:12,t:47,r:4},{l:55,t:45,r:-4}];
-const INITIAL={clifton:'02·XI·26',harbour:'05·XI·26',park:'09·XI·26',records:'11·XI·26',cafe:'14·XI·26'};
-const TODAY='16·XI·26';
+const PIN_TYPES={product:{n:'产品',c:'#ff6a3d',badge:'Taste Hunter'},craft:{n:'手艺',c:'#2f8a52',badge:'Handmade Hunter'},space:{n:'空间',c:'#2c44d6',badge:'Space Explorer'},story:{n:'故事',c:'#b8860b',badge:'Story Seeker'}};
+const PINS={fresh:{l:'每日新鲜蛋糕',t:'product',d:'蛋糕每天现做，卖完为止。'},handmade:{l:'全手作',t:'craft',d:'从面糊到奶油都在店里亲手做。'},vintage:{l:'Vintage 小店',t:'space',d:'老家具、旧瓷杯，坐下就不想走。'},taste:{l:'独家口味',t:'product',d:'一份别处吃不到的味道，熟客就是为它回来。'},
+  records:{l:'唱片店',t:'product',d:'新品与二手黑胶、CD 和书。'},cafebar:{l:'咖啡酒吧',t:'space',d:'挑完唱片坐下来喝一杯。'},live:{l:'现场演出',t:'space',d:'店里有小型演出厅，常有签售和现场。'},multi:{l:'多功能空间',t:'space',d:'唱片店、咖啡酒吧、演出厅合在一起。'},
+  jointdeal:{l:'联合优惠',t:'story',d:'凭 Boston Tea Party 小票可享八折。'},collector:{l:'店主收藏',t:'story',d:'店主多年收集的藏品。'},oldthings:{l:'老物件',t:'product',d:'勋章、徽章、旧书和纪念品。'},bristolold:{l:'Bristol 旧物',t:'story',d:'和这座城市有关的老物件。'},
+  historic:{l:'历史老店',t:'story',d:'店名来自当年酒客从墙洞里观察抓壮丁队。'},seasonal:{l:'时令菜单',t:'product',d:'菜单跟着季节和本地食材变。'},local:{l:'本地食材',t:'craft',d:'和本地供应商合作。'},garden:{l:'户外花园',t:'space',d:'天气好时可以坐在外面。'}};
+const SERIES=[{id:'landmarks',name:'Landmarks',seal:'Bristol Seal',paper:'#f3f8fc'},{id:'streetart',name:'Street Art',seal:'Spray Can Seal',paper:'#f1f2f5'},{id:'indie',name:'Independent Shops',seal:'Local Hero Seal',paper:'#fdf3f5'}];
+const ROUTES=[{id:'banksy',name:'Banksy 与 Park Street',len:'一天',stops:['stokes','roughtrade','steps','cafe56','militaria','boutique','frogmore','cityhall']},
+  {id:'harbour',name:'Harbourside',len:'半天',stops:['cityhall','hole','mshed','hanover']},
+  {id:'clifton',name:'Clifton 午后',len:'半天',stops:['cabot','bridge']}];
+const WEEK={name:'Old City & Park Street 探索周',zones:['oldcity','parkst'],need:3};
+const HOME={lat:51.4527,lng:-2.6005};/* default “you are here”: College Green */
+const POS=[{l:6,t:17,r:-6},{l:37,t:14,r:5},{l:68,t:18,r:-3},{l:14,t:50,r:4},{l:54,t:48,r:-4}];
+const INITIAL={};
+const ROMAN=['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
+const _d=new Date();
+const TODAY=`${String(_d.getDate()).padStart(2,'0')}·${ROMAN[_d.getMonth()]}·${String(_d.getFullYear()).slice(2)}`;
 let S;
-function reset(){S={collected:{...INITIAL},page:0,view:'onb',newId:null,sel:null};}
+const STORE='sp_v2';
+function reset(){S={collected:{...INITIAL},visits:{},coupons:[],keep:[],page:0,view:'onb',newId:null,sel:null,role:null,nick:'',interests:[],areas:[],seenCover:false,skin:'default',lastView:'passport',merchant:null,mcoupons:null,weekGot:false,route:null,filter:'all',a2hs:false};}
+function save(){try{localStorage.setItem(STORE,JSON.stringify(S))}catch(e){}}
+function load(){try{const j=JSON.parse(localStorage.getItem(STORE)||'null');if(j&&typeof j==='object'){S={...S,...j,newId:null,sel:null};return true}}catch(e){}return false}
 reset();
+const hadSave=load();
+/* fallback-map positions (x/y %) worked out from real coordinates */
+(function(){const la=[51.4465,51.4635],lo=[-2.6120,-2.5880],cl=(v,a,b)=>Math.max(a,Math.min(b,v));Object.values(SHOPS).forEach(s=>{s.x=+cl(8+(s.lng-lo[0])/(lo[1]-lo[0])*84,7,93).toFixed(1);s.y=+cl(30+(la[1]-s.lat)/(la[1]-la[0])*56,30,88).toFixed(1)})})();
+function meters(a,b){const R=6371e3,t=Math.PI/180,dl=(b.lat-a.lat)*t,dn=(b.lng-a.lng)*t,x=Math.sin(dl/2)**2+Math.cos(a.lat*t)*Math.cos(b.lat*t)*Math.sin(dn/2)**2;return 2*R*Math.asin(Math.sqrt(x))}
+function walk(id,from){const m=meters(from||S.here||HOME,SHOPS[id]);return Math.max(1,Math.round(m/75))+' min 步行'}
+Object.keys(SHOPS).forEach(k=>Object.defineProperty(SHOPS[k],'dist',{get(){return walk(k)}}));
 
 const $=s=>document.querySelector(s);
 const items=sid=>Object.keys(SHOPS).filter(k=>SHOPS[k].series===sid);
 const got=sid=>items(sid).filter(k=>S.collected[k]);
 const total=()=>Object.keys(SHOPS).length, have=()=>Object.keys(S.collected).length;
 const stampHTML=(id,cls='')=>{const s=SHOPS[id];return `<div class="stamp ${cls}" style="--paper:${s.paper}"><svg viewBox="0 0 120 156"><use href="#${s.sym}"/></svg></div>`};
-const pmHTML=(style='')=>`<svg class="pm" viewBox="0 0 120 120" style="${style}"><use href="#pm"/></svg>`;
+const pmHTML=(style='')=>`<svg class="pm" viewBox="0 0 120 120" style="${style}"><use href="#pm2"/></svg>`;
+const pinHTML=k=>{const p=PINS[k],t=PIN_TYPES[p.t];return `<span class="epin" style="--pc:${t.c}" data-pin-k="${k}"><i><svg viewBox="0 0 24 24"><use href="#i-pin"/></svg></i>${p.l}</span>`};
+const lockSVG='<svg viewBox="0 0 24 24"><use href="#i-lock"/></svg>';
+const isShop=id=>SHOPS[id].type==='shop';
+const uid=()=>Math.random().toString(36).slice(2,8);
+const addDays=n=>{const d=new Date();d.setDate(d.getDate()+n);return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`};
+function nearestTodo(from){const f=from?SHOPS[from]:(S.here||HOME);return Object.keys(SHOPS).filter(k=>!S.collected[k]&&k!==from).sort((a,b)=>meters(f,SHOPS[a])-meters(f,SHOPS[b]))[0]}
 const buzz=()=>{try{navigator.vibrate&&navigator.vibrate(18)}catch(e){}};
 
 /* ---------- navigation ---------- */
@@ -603,12 +1167,16 @@ function go(v){
   closeSheet();
   S.view=v;
   document.querySelectorAll('.view').forEach(el=>el.classList.toggle('on',el.id==='v-'+v));
-  $('#nav').classList.toggle('hide',v==='onb');
+  $('#nav').classList.toggle('hide',['onb','role','quiz','cover','shop','merchant'].includes(v));
   document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.go===v));
-  $('#sb').classList.toggle('light',v==='scan');
+  $('#sb').classList.toggle('light',v==='scan'||v==='cover'||S.skin==='halloween');
+  if(['passport','map','scan','rewards','me'].includes(v)){S.lastView=v;save();setTimeout(()=>window.maybeA2HS&&maybeA2HS(),1200)}
   if(v==='passport')renderPassport();
   if(v==='map')renderMap();
   if(v==='me')renderMe();
+  if(v==='rewards')renderRewards();
+  if(v==='scan')renderScan();
+  if(v==='merchant')renderMerchant();
 }
 document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b){buzz();go(b.dataset.go)}});
 
@@ -632,13 +1200,20 @@ function pageHTML(){
   <div class="ppfoot"><span>SWIPE TO TURN</span><span class="dots">${SERIES.map((_,i)=>`<i class="${i===S.page?'on':''}"></i>`).join('')}</span></div>`;
   return h;
 }
-function renderPassport(){renderChips();$('#ppage').innerHTML=pageHTML();S.newId=null}
+function paintPage(){const pg=$('#ppage');pg.style.background=`repeating-radial-gradient(circle at 110% -10%,transparent 0 7px,rgba(44,68,214,.055) 7px 8px),repeating-radial-gradient(circle at -10% 110%,transparent 0 7px,rgba(255,106,61,.055) 7px 8px),${SERIES[S.page].paper}`}
+function renderNext(){
+  const n=nearestTodo();const el=$('#nextbar');
+  if(!n){el.innerHTML='<b>全部收集完成 ✦</b>';return}
+  el.innerHTML=`<span class="q">?</span><div><b>下一枚：${SHOPS[n].short}</b><small>${SHOPS[n].area} · ${walk(n)}</small></div><span class="go">去看看 →</span>`;
+  el.onclick=()=>{buzz();S.sel=n;go('map')};
+}
+function renderPassport(){renderChips();paintPage();$('#ppage').innerHTML=pageHTML();renderNext();S.newId=null}
 function turn(i){
   if(i<0||i>=SERIES.length||i===S.page)return;
   const fwd=i>S.page,pg=$('#ppage');buzz();
   pg.classList.add(fwd?'out-l':'out-r');
   setTimeout(()=>{
-    S.page=i;renderChips();pg.innerHTML=pageHTML();
+    S.page=i;renderChips();paintPage();pg.innerHTML=pageHTML();
     pg.classList.remove('out-l','out-r');pg.classList.add(fwd?'pre-l':'pre-r');
     void pg.offsetWidth;pg.classList.remove('pre-l','pre-r');
   },300);
@@ -658,12 +1233,15 @@ function openShop(id){
   if(c){
     openSheet(`<div class="sh-big">${s.limited?`<div class="holo">${stampHTML(id)}</div>`:stampHTML(id)}${pmHTML()}</div>
     <div style="text-align:center">${s.limited?`<span class="tagl">✦ ${s.limited}</span>`:''}<h4 style="font:800 21px 'Inter Tight';letter-spacing:-.02em;margin:2px 0 2px">${s.name}</h4><small style="color:var(--muted);font-size:12px">${s.area} · <span class="st-ok">Collected ${c}</span></small></div>
-    <p class="sh-story" style="text-align:center">${s.story}</p>
-    <div class="sh-actions"><button class="btn ghost sm" data-act="share">Share</button><button class="btn sm" data-act="close">Done</button></div>`);
+    ${s.pins?`<div class="pins" style="justify-content:center;margin-top:12px">${s.pins.map(pinHTML).join('')}</div>`:''}
+    <p class="sh-story" style="text-align:center">${s.intro||s.story}</p>
+    <div class="mono" style="font-size:10px;color:var(--muted);text-align:center;margin:-6px 0 14px">稀有度 ${s.limited?'限定':'普通'} · 历次邮戳 ${(S.visits[id]||[c]).join(' / ')}</div>
+    <div class="sh-actions"><button class="btn ghost sm" data-act="share">Share</button>${isShop(id)?`<button class="btn sm" data-act="detail" data-id="${id}">店铺详情</button>`:`<button class="btn sm" data-act="close">Done</button>`}</div>`);
   }else{
     openSheet(`<div class="sh-row"><div class="qslot">?</div><div>${s.limited?`<span class="tagl">✦ ${s.limited}</span>`:''}<h4>${s.name}</h4><small>${s.area} · ${s.dist}</small><small style="margin-top:4px">Not collected yet</small></div></div>
-    <p class="sh-story">${s.story} Visit and check in to reveal this stamp.</p>
-    <div class="sh-actions"><button class="btn ghost sm" data-act="map" data-id="${id}">Show on map</button><button class="btn sm" data-act="checkin" data-id="${id}">I'm here · Check in</button></div>`);
+    ${s.pins?`<div class="pins" style="margin-top:12px">${s.pins.map(pinHTML).join('')}</div>`:''}
+    <p class="sh-story">${s.intro||s.story} ${isShop(id)?'到店扫码即可解锁这枚邮票。':'到了现场用定位签到即可解锁。'}</p>
+    <div class="sh-actions"><button class="btn ghost sm" data-act="${isShop(id)?'detail':'map'}" data-id="${id}">${isShop(id)?'店铺详情':'Show on map'}</button><button class="btn sm" data-act="checkin" data-id="${id}">${isShop(id)?'到店 · 扫码签到':'我在这里 · 签到'}</button></div>`);
   }
 }
 $('#sheet').addEventListener('click',e=>{
@@ -674,25 +1252,117 @@ $('#sheet').addEventListener('click',e=>{
   if(a==='map'){S.sel=id;go('map')}
   if(a==='checkin'){closeSheet();setTimeout(()=>unlock(id),250)}
   if(a==='passport'){closeSheet();S.page=SERIES.findIndex(x=>x.id===SHOPS[id].series);go('passport')}
+  if(a==='detail'){closeSheet();openShopPage(id)}
 });
+$('#sheet').addEventListener('click',e=>{const p=e.target.closest('[data-pin-k]');if(p)toast(PINS[p.dataset.pinK].d)});
 
 /* ---------- map ---------- */
+/* marker look: landmarks are round badges, shops are stamps, uncollected shops are dashed locks */
+function markerInner(id){const s=SHOPS[id],c=S.collected[id];
+  if(s.type==='landmark')return `<span class="lm" style="${c?'':'filter:grayscale(1) opacity(.65)'}"><svg viewBox="0 0 120 156"><use href="#${s.sym}"/></svg></span><i>${s.short}</i>`;
+  return (c?stampHTML(id,'sm'):`<span class="lk2">${lockSVG}</span>`)+`<i>${s.short}</i>`}
+function hiddenBy(id){const f=S.filter||'all',s=SHOPS[id];return (f==='landmark'&&s.type!=='landmark')||(f==='shop'&&s.type!=='shop')||(f==='todo'&&S.collected[id])}
 function renderMap(){
   $('#pins').innerHTML=Object.keys(SHOPS).map(id=>{const s=SHOPS[id],c=S.collected[id];
-    return `<button class="pin ${c?'done':''}" data-pin="${id}" style="left:${s.x}%;top:${s.y}%">${c?stampHTML(id,'sm'):`<span class="lk"><svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.2"><rect x="6" y="11" width="12" height="9" rx="2"/><path d="M9 11V8a3 3 0 0 1 6 0v3"/></svg></span>`}<i>${s.short}</i></button>`}).join('');
-  if(S.sel){const id=S.sel;S.sel=null;setTimeout(()=>mapSheet(id),350)}
+    return `<button class="pin mk ${c?'done':''} ${hiddenBy(id)?'hidden':''}" data-pin="${id}" style="left:${s.x}%;top:${s.y}%">${markerInner(id)}</button>`}).join('');
+  renderWeek();renderRouteChips();drawRoute();
+  initRealMap();refreshMarkers();
+  if(S.sel){const id=S.sel;S.sel=null;setTimeout(()=>{flyTo(id);mapSheet(id)},350)}
 }
+$('#mfilter').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(!b)return;buzz();S.filter=b.dataset.f;document.querySelectorAll('#mfilter button').forEach(x=>x.classList.toggle('on',x===b));renderMap()});
+/* weekly district event */
+function weekLeft(){const d=new Date(),n=(7-d.getDay())%7;return n===0?'今天结束':`剩 ${n} 天`}
+function weekCount(){return Object.keys(S.collected).filter(k=>WEEK.zones.includes(SHOPS[k].zone)).length}
+function renderWeek(){const n=Math.min(weekCount(),WEEK.need);
+  $('#weekBanner').innerHTML=`<div class="stamp sm" style="--paper:#f2d38a;${S.weekGot?'':'filter:grayscale(.6)'}"><svg viewBox="0 0 120 156"><use href="#st-week"/></svg></div><div><b>本周 · ${WEEK.name}</b><small>${S.weekGot?'已获得本周限定邮票 ✦':'在这一片集 3 枚邮票，得本周限定邮票'}</small></div><span class="cnt">${n}/${WEEK.need} · ${weekLeft()}</span>`;
+  $('#weekBanner').onclick=()=>{buzz();S.filter='todo';document.querySelectorAll('#mfilter button').forEach(x=>x.classList.toggle('on',x.dataset.f==='todo'));toast('已筛选出还没收集的地点');renderMap()};
+}
+/* routes */
+function renderRouteChips(){
+  $('#mroutes').innerHTML=ROUTES.map(r=>{const n=r.stops.filter(k=>S.collected[k]).length;return `<button class="rt ${S.route===r.id?'on':''}" data-r="${r.id}">${r.name} · ${n}/${r.stops.length}</button>`}).join('');
+}
+$('#mroutes').addEventListener('click',e=>{const b=e.target.closest('[data-r]');if(!b)return;buzz();S.route=S.route===b.dataset.r?null:b.dataset.r;renderRouteChips();drawRoute()});
+function drawRoute(){
+  const r=ROUTES.find(x=>x.id===S.route),card=$('#routecard');
+  if(!r){$('#routeline').innerHTML='';card.classList.remove('on');setRealRoute(null);return}
+  const pts=r.stops.map(k=>SHOPS[k]);
+  $('#routeline').innerHTML=`<polyline points="${pts.map(p=>p.x+','+(p.y-2)).join(' ')}" fill="none" stroke="var(--accent2)" stroke-width=".9" stroke-dasharray="1.6 1.4" stroke-linecap="round" vector-effect="non-scaling-stroke" style="stroke-width:3px"/>`;
+  setRealRoute(r);
+  const n=r.stops.filter(k=>S.collected[k]).length,next=r.stops.find(k=>!S.collected[k]);
+  card.innerHTML=`<b>${r.name}</b> · ${r.len} · ${n}/${r.stops.length}<div class="tr"><i style="width:${n/r.stops.length*100}%"></i></div><div class="mstops">${r.stops.map(k=>`<span class="${S.collected[k]?'ok':''}">${S.collected[k]?'✓ ':''}${SHOPS[k].short}</span>`).join('')}</div>${next?`<div style="margin-top:6px;color:var(--muted)">下一站：${SHOPS[next].short} · ${walk(next)}</div>`:'<div style="margin-top:6px">路线已完成，去 Profile 看明信片 ✦</div>'}`;
+  card.classList.add('on');
+}
+/* real cartoon map: MapLibre + OpenFreeMap (no key). Falls back to the illustrated map above if it can't load. */
+let RM=null,RMstate='idle',RMmarks=[];
+const SKIN_MAP={default:{land:'#f3efe2',water:'#8fd3f0',park:'#bfe6a8',bld:'#e9dfcf',road:'#ffffff',rail:'#d9cfbd'},
+  christmas:{land:'#f4f7fb',water:'#9cc9e6',park:'#cfe6d2',bld:'#e6e9f0',road:'#ffffff',rail:'#d5dbe6'},
+  halloween:{land:'#2a2633',water:'#3a3f6b',park:'#33402e',bld:'#3a3444',road:'#4a4456',rail:'#4a4456'},
+  cny:{land:'#fbf1e4',water:'#f2b8a8',park:'#e9d9a8',bld:'#f2dcc8',road:'#ffffff',rail:'#e8cdb0'}};
+function initRealMap(){
+  if(RMstate!=='idle')return;RMstate='loading';
+  const fail=()=>{if(RMstate==='ready')return;RMstate='fallback';$('#v-map').classList.remove('real')};
+  const start=()=>{
+    try{
+      RM=new maplibregl.Map({container:'realmap',style:window.__SP_STYLE||'https://tiles.openfreemap.org/styles/liberty',center:[-2.603,51.4545],zoom:14.1,minZoom:12,maxZoom:18,attributionControl:{compact:true}});
+      RM.on('load',()=>{RMstate='ready';$('#v-map').classList.add('real');cartoonize();refreshMarkers();drawRoute();RM.resize()});
+      RM.on('error',()=>{if(RMstate!=='ready')fail()});
+      setTimeout(fail,7000);
+    }catch(e){fail()}
+  };
+  if(window.maplibregl)return start();
+  const sc=document.createElement('script');sc.src='https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.js';sc.onload=start;sc.onerror=fail;document.head.appendChild(sc);
+  setTimeout(()=>{if(!window.maplibregl)fail()},6000);
+}
+function cartoonize(){
+  if(RMstate!=='ready')return;const P=SKIN_MAP[S.skin]||SKIN_MAP.default;
+  const set=(id,k,v)=>{try{RM.setPaintProperty(id,k,v)}catch(e){}};
+  (RM.getStyle().layers||[]).forEach(l=>{const id=l.id.toLowerCase();
+    if(l.type==='background')set(l.id,'background-color',P.land);
+    else if(l.type==='fill'){if(/water/.test(id))set(l.id,'fill-color',P.water);else if(/park|grass|wood|forest|garden|pitch|cemetery|landcover/.test(id))set(l.id,'fill-color',P.park);else if(/building/.test(id)){set(l.id,'fill-color',P.bld);set(l.id,'fill-outline-color',P.bld)}else if(/landuse|residential/.test(id))set(l.id,'fill-color',P.land)}
+    else if(l.type==='line'){if(/water|river|waterway/.test(id))set(l.id,'line-color',P.water);else if(/rail/.test(id))set(l.id,'line-color',P.rail);else if(/road|street|highway|path|bridge|tunnel|motorway|primary|secondary|tertiary|minor|service/.test(id))set(l.id,'line-color',P.road);else if(/boundary|admin/.test(id)){try{RM.setLayoutProperty(l.id,'visibility','none')}catch(e){}}}
+    else if(l.type==='symbol'&&/poi|transit|housenum|aerialway|airport|station/.test(id)){try{RM.setLayoutProperty(l.id,'visibility','none')}catch(e){}}
+    else if(l.type==='fill-extrusion'){try{RM.setLayoutProperty(l.id,'visibility','none')}catch(e){}}
+  });
+}
+function refreshMarkers(){
+  if(RMstate!=='ready')return;
+  RMmarks.forEach(m=>m.remove());RMmarks=[];
+  Object.keys(SHOPS).forEach(id=>{const s=SHOPS[id];if(hiddenBy(id))return;
+    const el=document.createElement('button');el.className='mk '+(S.collected[id]?'done':'');el.innerHTML=markerInner(id);
+    el.addEventListener('click',ev=>{ev.stopPropagation();buzz();mapSheet(id)});
+    RMmarks.push(new maplibregl.Marker({element:el,anchor:'bottom'}).setLngLat([s.lng,s.lat]).addTo(RM))});
+  const me=document.createElement('div');me.className='me-dot';me.style.position='relative';
+  RMmarks.push(new maplibregl.Marker({element:me}).setLngLat([(S.here||HOME).lng,(S.here||HOME).lat]).addTo(RM));
+}
+function setRealRoute(r){
+  if(RMstate!=='ready')return;
+  const data={type:'Feature',geometry:{type:'LineString',coordinates:r?r.stops.map(k=>[SHOPS[k].lng,SHOPS[k].lat]):[]}};
+  try{
+    if(RM.getSource('route'))RM.getSource('route').setData(data);
+    else{RM.addSource('route',{type:'geojson',data});RM.addLayer({id:'route-line',type:'line',source:'route',layout:{'line-cap':'round','line-join':'round'},paint:{'line-color':getComputedStyle(document.body).getPropertyValue('--accent2').trim()||'#ff6a3d','line-width':5,'line-dasharray':[0.2,1.6]}})}
+    if(r){const b=new maplibregl.LngLatBounds();r.stops.forEach(k=>b.extend([SHOPS[k].lng,SHOPS[k].lat]));RM.fitBounds(b,{padding:{top:200,bottom:200,left:50,right:50},maxZoom:16})}
+  }catch(e){}
+}
+function flyTo(id){if(RMstate==='ready'){try{RM.flyTo({center:[SHOPS[id].lng,SHOPS[id].lat],zoom:15.5})}catch(e){}}}
 $('#pins').addEventListener('click',e=>{const p=e.target.closest('[data-pin]');if(p){buzz();mapSheet(p.dataset.pin)}});
 function mapSheet(id){
   const s=SHOPS[id],c=S.collected[id];
   document.querySelectorAll('.pin').forEach(p=>p.classList.toggle('sel',p.dataset.pin===id));
-  openSheet(`<div class="sh-row">${c?stampHTML(id,'sm'):'<div class="qslot">?</div>'}<div>${s.limited?`<span class="tagl">✦ ${s.limited}</span>`:''}<h4>${s.name}</h4><small>${s.area} · ${s.dist}</small><small class="${c?'st-ok':''}" style="margin-top:4px">${c?'✓ Collected '+c:'● Open now · stamp available'}</small></div></div>
-  <div class="sh-actions" style="margin-top:18px">${c?`<button class="btn sm" data-act="passport" data-id="${id}">View in passport</button>`:`<button class="btn ghost sm" data-act="close">Walk there</button><button class="btn sm" data-act="checkin" data-id="${id}">Check in</button>`}</div>`);
+  openSheet(`<div class="sh-row">${c?stampHTML(id,'sm'):'<div class="qslot">?</div>'}<div>${s.limited?`<span class="tagl">✦ ${s.limited}</span>`:`<span class="tagl">${s.type==='shop'?'合作小店':'景点'}</span>`}<h4>${s.name}</h4><small>${s.area} · ${s.dist}</small><small class="${c?'st-ok':''}" style="margin-top:4px">${c?'✓ Collected '+c:(s.type==='shop'?'● 到店扫码可收集':'● 到现场定位签到可收集')}</small></div></div>
+  ${s.pins?`<div class="pins" style="margin-top:12px">${s.pins.slice(0,2).map(pinHTML).join('')}</div>`:''}
+  <p class="sh-story" style="margin:10px 0 0">${s.intro||s.story}</p>
+  <div class="sh-actions" style="margin-top:16px">${s.type==='shop'?`<button class="btn ghost sm" data-act="detail" data-id="${id}">查看店铺</button>`:''}${c?`<button class="btn sm" data-act="passport" data-id="${id}">View in passport</button>`:`<button class="btn sm" data-act="checkin" data-id="${id}">前往收集 · 签到</button>`}</div>`);
 }
 
 /* ---------- scan ---------- */
+function renderScan(){
+  const ids=Object.keys(SHOPS).filter(isShop).sort((a,b)=>meters(S.here||HOME,SHOPS[a])-meters(S.here||HOME,SHOPS[b]));
+  if(!S.scanFor||!SHOPS[S.scanFor])S.scanFor=ids.find(k=>!S.collected[k])||ids[0];
+  $('#scanList').innerHTML='<span style="font-size:11px;color:#a9acb8;align-self:center;flex:none">演示 · 我在：</span>'+ids.map(k=>`<button class="${k===S.scanFor?'on':''}" data-sf="${k}">${SHOPS[k].short}${S.collected[k]?' ✓':''}</button>`).join('');
+}
+$('#scanList').addEventListener('click',e=>{const b=e.target.closest('[data-sf]');if(b){buzz();S.scanFor=b.dataset.sf;renderScan()}});
 $('#simScan').addEventListener('click',()=>{
-  buzz();const next=Object.keys(SHOPS).find(k=>!S.collected[k]);
+  buzz();const next=S.scanFor||Object.keys(SHOPS).find(k=>!S.collected[k]);
   if(!next){toast('You’ve collected every stamp ✦');return}
   const btn=$('#simScan');btn.textContent='Reading code…';
   setTimeout(()=>{btn.textContent='Simulate a scan';unlock(next)},900);
@@ -700,29 +1370,99 @@ $('#simScan').addEventListener('click',()=>{
 
 /* ---------- unlock ---------- */
 function unlock(id){
-  const s=SHOPS[id];S.collected[id]=TODAY;S.newId=id;
-  const sid=s.series,complete=got(sid).length===items(sid).length;
+  const s=SHOPS[id],first=!S.collected[id];
+  const before={week:weekCount(),routes:ROUTES.filter(r=>r.stops.every(k=>S.collected[k])).map(r=>r.id),pins:pinCounts()};
+  if(first)S.collected[id]=TODAY;
+  S.visits[id]=(S.visits[id]||[]).concat(TODAY);S.newId=id;
+  const nv=S.visits[id].length;
+  const sid=s.series,complete=first&&got(sid).length===items(sid).length;
+  save();
   const cols=['#ff6a3d','#2c44d6','#ffd23a','#3fae68','#ff7aa8','#7ad0f0'];
   let conf='';for(let i=0;i<34;i++){const a=Math.random()*Math.PI*2,d=110+Math.random()*170;conf+=`<i class="conf" style="background:${cols[i%6]};--x:${Math.cos(a)*d}px;--y:${Math.sin(a)*d+120}px;--r:${Math.random()*720-360}deg;animation-delay:${.82+Math.random()*.12}s"></i>`}
   const si=SERIES.find(x=>x.id===sid);
   $('#unlock').innerHTML=`<div class="burst"></div>${conf}
    <div class="ul-stamp"><div class="drop">${s.limited?`<div class="holo">${stampHTML(id)}</div>`:stampHTML(id)}</div><i class="ink"></i>${pmHTML()}</div>
    <div class="ul-txt">${s.limited?`<span class="tagl">✦ ${s.limited}</span>`:`<span class="tagl">${si.name.toUpperCase()} · ${got(sid).length}/${items(sid).length}</span>`}
-   <h3>New stamp collected!</h3><p>${s.name} · ${s.area}</p>
-   <div class="sh-actions"><button class="btn ghost" id="ulShare">Share</button><button class="btn" id="ulAdd">Add to Passport</button></div></div>`;
+   <h3>${first?'New stamp collected!':`第 ${nv} 次到访！`}</h3><p>${first?`${s.name} · ${s.area}`:(nv===3?'解锁常客版邮戳 · 护照上多了一个新日期的邮戳':'护照上多了一个新日期的邮戳')}</p>
+   <div class="sh-actions"><button class="btn ghost" id="ulShare">Share</button><button class="btn" id="ulAdd">${isShop(id)?'领取奖励 →':'继续 →'}</button></div></div>`;
   const u=$('#unlock');u.classList.remove('on');void u.offsetWidth;u.classList.add('on');
   setTimeout(buzz,820);
   $('#ulShare').onclick=()=>toast('Share card copied ✓');
   $('#ulAdd').onclick=()=>{
-    buzz();u.classList.remove('on');
-    S.page=SERIES.findIndex(x=>x.id===sid);go('passport');
-    if(complete)setTimeout(()=>achievement(si),1100);
+    buzz();
+    const finish=()=>{
+      $('#pick').classList.remove('on');u.classList.remove('on');
+      S.page=SERIES.findIndex(x=>x.id===sid);go('passport');
+      /* follow-up moments, one after another */
+      const q=[];
+      if(complete)q.push(()=>achievement(si));
+      ROUTES.filter(r=>r.stops.every(k=>S.collected[k])&&!before.routes.includes(r.id)).forEach(r=>q.push(()=>postcard(r.id)));
+      if(!S.weekGot&&before.week<WEEK.need&&weekCount()>=WEEK.need){S.weekGot=true;S.keep.push({name:'Explorer Week 限定邮票',sym:'st-week',paper:'#f2d38a',at:TODAY});save();q.push(()=>weekStamp())}
+      const pc=pinCounts();Object.keys(PIN_TYPES).forEach(t=>{if((before.pins[t]||0)<3&&(pc[t]||0)>=3)setTimeout(()=>toast(`获得主题徽章：${PIN_TYPES[t].badge} ✦`),600)});
+      const run=()=>{const f=q.shift();if(f){f();window.__afterAch=run}};
+      setTimeout(run,1100);
+    };
+    if(isShop(id)&&SHOPS[id].coupons)showPick(id,()=>showNearby(id,finish));
+    else{u.classList.remove('on');showNearby(id,finish)}
   };
+}
+/* ---------- three-choose-one reward ---------- */
+function showPick(id,next){
+  const s=SHOPS[id],cs=s.coupons.slice(0,2),firstVisit=(S.visits[id]||[]).length===1;
+  const myst=s.mystery.pool[Math.floor(Math.random()*s.mystery.pool.length)];
+  const rarity={common:'COMMON',rare:'RARE',limited:'LIMITED'};
+  const card=(c,i,rot)=>`<button class="ccard ${c.r}" data-i="${i}" style="--rr:${rot}deg"><span class="rar">${rarity[c.r]}</span><div class="v">${c.v}</div><div class="c">门槛：${c.cond}</div><div class="e">有效期至 ${addDays(c.days)}</div></button>`;
+  $('#pick').innerHTML=`<span class="tagl">${s.short} · 签到奖励</span><h3>三张里挑一张</h3><p>两张写明了条件；第三张是神秘奖励，翻开前也告诉你大概价值。</p>
+   <div class="cards">${card(cs[0],0,-4)}${card(cs[1],1,0)}<button class="ccard mys" data-i="2" style="--rr:4deg"><div class="q">?</div><div class="c">神秘奖励<br>${s.mystery.range}</div></button></div>
+   <p class="note">${firstVisit?'第一次来这家店，保证至少有一张稀有券。':'不需要抽奖，也不会催你重选。'}</p><div id="pickOut" style="width:100%;display:flex;flex-direction:column;align-items:center"></div>`;
+  const P=$('#pick');P.classList.remove('on');void P.offsetWidth;P.classList.add('on');$('#unlock').classList.remove('on');
+  P.querySelectorAll('.ccard').forEach(b=>b.onclick=()=>{
+    if(P.dataset.done==='1')return;P.dataset.done='1';buzz();
+    const i=+b.dataset.i,c=i===2?myst:cs[i];
+    if(i===2){b.classList.remove('mys');b.classList.add(c.r);b.innerHTML=`<span class="rar">${rarity[c.r]}</span><div class="v">${c.v}</div><div class="c">${c.cond}</div><div class="e">${c.days?'有效期至 '+addDays(c.days):'永久收藏'}</div>`}
+    P.querySelectorAll('.ccard').forEach(x=>x.classList.add(x===b?'chosen':'gone'));
+    if(c.keep)S.keep.push({name:c.v,sym:s.sym,paper:s.paper,at:TODAY,shop:id});
+    else S.coupons.unshift({id:uid(),shop:id,v:c.v,cond:c.cond,exp:addDays(c.days),r:c.r,used:null});
+    save();
+    setTimeout(()=>{$('#pickOut').innerHTML=`<p class="note" style="margin-top:28px">${c.keep?'已放进 Rewards · 收藏邮票':'已放进 Rewards，下次到店出示即可使用'}</p><button class="btn" id="pickNext">继续</button>`;$('#pickNext').onclick=()=>{buzz();P.dataset.done='';next()}},700);
+  });
+}
+/* ---------- “there's another stamp nearby” ---------- */
+function showNearby(id,next){
+  const n=nearestTodo(id),P=$('#pick');
+  if(!n){next();return}
+  const m=Math.max(1,Math.round(meters(SHOPS[id],SHOPS[n])/75));
+  P.innerHTML=`<span class="tagl">附近还有一枚邮票</span><h3>再走 ${m} 分钟</h3><p>从 ${SHOPS[id].short} 出发，下一枚就在附近。</p>
+   <div class="near">${stampHTML(n,'sm')}<div><b>${SHOPS[n].name}</b><small>${SHOPS[n].area} · ${m} min 步行</small>${SHOPS[n].pins?`<div class="pins">${SHOPS[n].pins.slice(0,2).map(pinHTML).join('')}</div>`:`<small>${SHOPS[n].story.slice(0,34)}…</small>`}</div></div>
+   <button class="btn" id="nearGo">带我去</button><button class="skip" id="nearSkip" style="margin-top:10px">回到护照</button>`;
+  P.classList.remove('on');void P.offsetWidth;P.classList.add('on');
+  $('#nearGo').onclick=()=>{buzz();next();setTimeout(()=>{S.sel=n;go('map')},50)};
+  $('#nearSkip').onclick=()=>{buzz();next()};
+}
+function pinCounts(){const c={};Object.keys(S.collected).forEach(k=>(SHOPS[k].pins||[]).forEach(p=>{const t=PINS[p].t;c[t]=(c[t]||0)+1}));return c}
+function weekStamp(){
+  $('#ach').innerHTML=`<div class="stamp" style="--paper:#f2d38a;width:40%;transform:rotate(-5deg)"><svg viewBox="0 0 120 156"><use href="#st-week"/></svg></div><h3>本周限定邮票！</h3><p>你在 ${WEEK.name} 集齐了 ${WEEK.need} 枚邮票。错过这周就没有了。</p><button class="btn" id="achOk">收进护照</button>`;
+  $('#ach').classList.add('on');buzz();
+  $('#achOk').onclick=()=>{$('#ach').classList.remove('on');window.__afterAch&&window.__afterAch()};
+}
+/* ---------- route postcard ---------- */
+function postcard(rid){
+  const r=ROUTES.find(x=>x.id===rid),pts=r.stops.map(k=>SHOPS[k]);
+  const xs=pts.map(p=>p.lng),ys=pts.map(p=>p.lat),x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys);
+  const px=p=>10+(p.lng-x0)/((x1-x0)||1)*80,py=p=>10+(y1-p.lat)/((y1-y0)||1)*80;
+  $('#pick').innerHTML=`<span class="tagl">路线完成</span><h3>你的城市明信片</h3><p>适合发 Instagram Story</p>
+   <div class="postcard"><span class="k">SHOP PASSPORT · BRISTOL</span><h4>${r.name}</h4><span class="k">${TODAY} · ${r.stops.length} STOPS · ${r.len}</span>
+   <div class="mini"><svg viewBox="0 0 100 100" style="width:100%;height:100%"><rect width="100" height="100" fill="#e8f1e4"/><polyline points="${pts.map(p=>px(p)+','+py(p)).join(' ')}" fill="none" stroke="#ff6a3d" stroke-width="2" stroke-dasharray="2 2" stroke-linecap="round"/>${pts.map(p=>`<circle cx="${px(p)}" cy="${py(p)}" r="3" fill="#1f2a5c"/>`).join('')}</svg></div>
+   <div class="grid">${r.stops.map(k=>stampHTML(k,'sm')).join('')}</div><svg class="pmk pm" viewBox="0 0 120 120"><use href="#pm2"/></svg></div>
+   <div class="sh-actions" style="width:100%;max-width:300px;margin-top:18px"><button class="btn ghost" id="pcShare">分享</button><button class="btn" id="pcOk">完成</button></div>`;
+  const P=$('#pick');P.classList.remove('on');void P.offsetWidth;P.classList.add('on');
+  $('#pcShare').onclick=()=>toast('明信片已生成（演示）');
+  $('#pcOk').onclick=()=>{P.classList.remove('on');window.__afterAch&&window.__afterAch()};
 }
 function achievement(si){
   $('#ach').innerHTML=`<svg viewBox="0 0 160 200"><use href="#seal"/></svg><h3>${si.name} complete!</h3><p>You earned the ${si.seal}. It’s now pressed into the back of your passport.</p><button class="btn" id="achOk">Wonderful</button>`;
   $('#ach').classList.add('on');buzz();
-  $('#achOk').onclick=()=>{$('#ach').classList.remove('on');renderPassport()};
+  $('#achOk').onclick=()=>{$('#ach').classList.remove('on');renderPassport();window.__afterAch&&window.__afterAch()};
 }
 
 /* ---------- me ---------- */
@@ -734,14 +1474,167 @@ function renderMe(){
     return `<button class="prow" style="width:100%;text-align:left" data-sp="${i}">${stampHTML(first,'sm')}<div class="t"><b>${s.name}<em>${n}/${t}</em></b><div class="tr"><i style="width:${n/t*100}%"></i></div></div></button>`}).join('');
   $('#mseals').innerHTML=SERIES.map(s=>{const ok=got(s.id).length===items(s.id).length;return `<div class="seal ${ok?'':'off'}"><svg viewBox="0 0 160 200"><use href="#seal"/></svg>${s.seal}</div>`}).join('');
   $('#sealcount').textContent=`${sealsDone} / ${SERIES.length}`;
+  /* pin theme badges */
+  const pc=pinCounts();
+  $('#mpins').innerHTML=Object.keys(PIN_TYPES).map(t=>{const T=PIN_TYPES[t],n=pc[t]||0;return `<div class="badge2 ${n>=3?'':'off'}" style="--pc:${T.c}"><span class="dot"><svg viewBox="0 0 24 24"><use href="#i-pin"/></svg></span>${T.badge}<span class="mono" style="font-size:10px;color:var(--muted)">${T.n} ${Math.min(n,3)}/3</span></div>`}).join('');
+  /* routes + postcards */
+  $('#mroutesMe').innerHTML=ROUTES.map(r=>{const n=r.stops.filter(k=>S.collected[k]).length,t=r.stops.length;return `<div class="prow"><span class="stamp sm" style="--paper:${SHOPS[r.stops[0]].paper}"><svg viewBox="0 0 120 156"><use href="#${SHOPS[r.stops[0]].sym}"/></svg></span><div class="t"><b>${r.name}<em>${n}/${t}</em></b><div class="tr"><i style="width:${n/t*100}%"></i></div></div><button class="chip ${n===t?'on':''}" data-route="${r.id}" style="flex:none">${n===t?'明信片':'去走走'}</button></div>`}).join('');
+  /* skins */
+  const SK=[['default','经典','linear-gradient(135deg,#2c3a7a,#1f2a5c)'],['christmas','圣诞','linear-gradient(135deg,#c8102e,#2f6b3a)'],['halloween','万圣节','linear-gradient(135deg,#ff7a1a,#141118)'],['cny','春节','linear-gradient(135deg,#d4182f,#f5cf6b)']];
+  $('#mskins').innerHTML=SK.map(([k,n,g])=>`<button class="${S.skin===k?'on':''}" data-skin="${k}"><i style="background:${g}"></i>${n}</button>`).join('');
 }
+$('#mroutesMe').addEventListener('click',e=>{const b=e.target.closest('[data-route]');if(!b)return;buzz();const r=ROUTES.find(x=>x.id===b.dataset.route);if(r.stops.every(k=>S.collected[k])){window.__afterAch=null;postcard(r.id)}else{S.route=r.id;go('map')}});
+$('#mskins').addEventListener('click',e=>{const b=e.target.closest('[data-skin]');if(!b)return;buzz();S.skin=b.dataset.skin;applySkin();save();renderMe();toast({default:'经典皮肤',christmas:'圣诞皮肤：地图下雪了',halloween:'万圣节皮肤：天黑模式',cny:'春节皮肤：红金配色'}[S.skin])});
+function applySkin(){document.body.dataset.skin=S.skin;$('#sb').classList.toggle('light',S.view==='scan'||S.view==='cover'||S.skin==='halloween');try{document.querySelector('meta[name=theme-color]').content=getComputedStyle(document.body).getPropertyValue('--cover').trim()}catch(e){}cartoonize()}
+$('#toMerchant').onclick=()=>{buzz();S.role='merchant';save();if(S.merchant)go('merchant');else startQuiz('merchant')};
+$('#loadDemo').onclick=()=>{buzz();seedDemo();toast('已载入演示进度');renderMe()};
+function seedDemo(){
+  const d=['02·XI·26','05·XI·26','09·XI·26','11·XI·26','14·XI·26'];
+  ['cityhall','frogmore','roughtrade','cafe56','steps'].forEach((k,i)=>{S.collected[k]=d[i];S.visits[k]=[d[i]]});
+  S.visits.cafe56=['14·XI·26','15·XI·26'];
+  if(!S.coupons.length)S.coupons=[{id:uid(),shop:'cafe56',v:'第二杯半价',cond:'同一笔订单',exp:addDays(5),r:'rare',used:null},{id:uid(),shop:'roughtrade',v:'咖啡吧饮品 9 折',cond:'任意饮品',exp:addDays(12),r:'common',used:null},{id:uid(),shop:'cafe56',v:'免费加一份浓缩',cond:'购买任意咖啡',exp:'10/11',r:'common',used:{at:'10·XI·26',code:'4821'}}];
+  if(!S.nick)S.nick='Explorer';S.role='customer';S.seenCover=true;save();
+}
+
+/* ---------- rewards ---------- */
+let RT='live';
+$('#rtabs').addEventListener('click',e=>{const b=e.target.closest('[data-rt]');if(!b)return;buzz();RT=b.dataset.rt;document.querySelectorAll('#rtabs .chip').forEach(x=>x.classList.toggle('on',x===b));renderRewards()});
+function renderRewards(){
+  const live=S.coupons.filter(c=>!c.used),used=S.coupons.filter(c=>c.used);
+  $('#rcount').textContent=`${live.length} 张可用 · ${S.keep.length} 枚收藏邮票`;
+  const tk=c=>`<button class="ticket ${c.used?'used':''}" data-cp="${c.id}"><div class="l">${stampHTML(c.shop,'sm')}</div><div class="r"><small>${SHOPS[c.shop].short}</small><b>${c.v}</b><small>门槛：${c.cond}</small><small>${c.used?`已于 ${c.used.at} 使用 · 码 ${c.used.code}`:`有效期至 ${c.exp}`}</small></div><span class="tag ${c.r}">${({common:'普通',rare:'稀有',limited:'限定'})[c.r]}</span></button>`;
+  let h='';
+  if(RT==='live')h=live.length?live.map(tk).join(''):'<div class="empty">还没有优惠券。<br>到合作小店签到，就能三选一拿一张。</div>';
+  if(RT==='used')h=used.length?used.map(tk).join(''):'<div class="empty">还没有用过的券。</div>';
+  if(RT==='keep')h=S.keep.length?`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">${S.keep.map(k=>`<div style="text-align:center"><div class="stamp sm" style="--paper:${k.paper};transform:rotate(-3deg)"><svg viewBox="0 0 120 156"><use href="#${k.sym}"/></svg></div><small style="font-size:10.5px;display:block;margin-top:6px">${k.name}</small><small class="mono" style="font-size:9px;color:var(--muted)">${k.at}</small></div>`).join('')}</div>`:'<div class="empty">编号邮票和限定邮票会放在这里。<br>它们有收藏价值，但没有货币价值。</div>';
+  $('#rlist').innerHTML=h;
+}
+$('#rlist').addEventListener('click',e=>{const b=e.target.closest('[data-cp]');if(!b)return;buzz();const c=S.coupons.find(x=>x.id===b.dataset.cp);if(c)couponSheet(c)});
+function couponSheet(c){
+  const s=SHOPS[c.shop];
+  openSheet(`<div class="sh-row">${stampHTML(c.shop,'sm')}<div><span class="tagl">${s.short}</span><h4>${c.v}</h4><small>门槛：${c.cond}</small><small>有效期至 ${c.exp}</small></div></div>
+  ${c.used?`<div class="usedbox"><span class="u">USED</span><div class="code">${c.used.code}</div><small style="color:var(--muted)">已于 ${c.used.at} 使用</small></div>`:
+  `<p class="sh-story" style="margin-bottom:0">请在店员面前滑动核销。核销后会显示 4 位码，店员看一眼屏幕即可。</p><div class="slide" id="slide"><div class="fill"></div><span>向右滑动 · 当面核销</span><div class="knob">→</div></div>`}`);
+  if(c.used)return;
+  const sl=$('#slide'),kn=sl.querySelector('.knob'),fl=sl.querySelector('.fill');let x0=null,max=0;
+  kn.addEventListener('pointerdown',e=>{x0=e.clientX;max=sl.clientWidth-56;kn.setPointerCapture(e.pointerId)});
+  kn.addEventListener('pointermove',e=>{if(x0===null)return;const d=Math.max(0,Math.min(max,e.clientX-x0));kn.style.left=4+d+'px';fl.style.width=d+30+'px'});
+  kn.addEventListener('pointerup',e=>{if(x0===null)return;const d=e.clientX-x0;x0=null;
+    if(d>max*.85){buzz();c.used={at:TODAY,code:String(1000+Math.floor(Math.random()*9000))};save();couponSheet(c);renderRewards()}
+    else{kn.style.left='4px';fl.style.width='0'}});
+}
+
+/* ---------- shop detail page ---------- */
+function openShopPage(id){
+  const s=SHOPS[id],c=S.collected[id];
+  const near=nearestTodo(id);
+  $('#shopBody').innerHTML=`<div class="hero" style="background:${s.paper}"><div class="art"><svg viewBox="0 0 120 156" preserveAspectRatio="xMidYMid slice"><use href="#${s.sym}"/></svg></div><button class="back" id="shopBack"><svg viewBox="0 0 24 24"><use href="#i-back"/></svg></button><div class="big">${stampHTML(id)}</div><span class="ph">实拍照片待补 · 需店主同意</span></div>
+   <div class="sblock"><h3>${s.name}</h3><div class="loc">${s.area} · ${walk(id)} · 营业时间待确认</div>
+   <div class="pins">${(s.pins||[]).map(pinHTML).join('')}</div></div>
+   <div class="sblock"><div class="card2"><p style="font-weight:600;opacity:1">${s.intro}</p></div></div>
+   <div class="sblock"><h4>店主故事</h4><div class="card2"><p>${s.story}</p></div></div>
+   <div class="sblock"><h4>招牌</h4><div class="prods">${(s.products||[]).map(p=>`<div><b>${p[0]}</b><small>${p[1]||''}</small></div>`).join('')}</div></div>
+   <div class="sblock"><h4>本店邮票与签到奖励</h4><div class="card2" style="display:flex;gap:12px;align-items:center"><div style="width:62px;flex:none">${c?stampHTML(id,'sm'):'<div class="qslot" style="width:62px">?</div>'}</div><div class="cpv" style="flex:1">${s.coupons.map(x=>`<div><b>${x.v}</b>${x.cond}</div>`).join('')}<div class="my"><b>神秘奖励</b>${s.mystery.range}</div></div></div></div>
+   ${near?`<div class="sblock"><h4>附近还有一枚邮票</h4><button class="card2" data-near="${near}" style="display:flex;gap:10px;align-items:center;width:100%;text-align:left;color:inherit"><div style="width:40px;flex:none;filter:grayscale(.9);opacity:.6">${stampHTML(near,'sm')}</div><div><b style="font-size:13px">${SHOPS[near].name}</b><div style="font-size:11px;color:var(--muted)">${Math.max(1,Math.round(meters(s,SHOPS[near])/75))} min 步行 · ${SHOPS[near].area}</div></div></button></div>`:''}
+   <div class="sblock mono" style="font-size:9.5px;color:var(--muted);padding-bottom:10px">位置为近似值 · 店铺信息来自我们的实地访谈，需店主确认后上线</div>`;
+  $('#shopCta').innerHTML=`<button class="btn" id="shopCollect">${c?'再次到店 · Collect Stamp':'Collect Stamp · 到店扫码'}</button>`;
+  $('#shopBack').onclick=()=>{buzz();go(S.lastView||'map')};
+  $('#shopCollect').onclick=()=>{buzz();S.scanFor=id;go('scan')};
+  const nb=$('#shopBody').querySelector('[data-near]');if(nb)nb.onclick=()=>{buzz();S.sel=near;go('map')};
+  $('#shopBody').querySelectorAll('[data-pin-k]').forEach(p=>p.onclick=()=>toast(PINS[p.dataset.pinK].d));
+  $('#shopBody').scrollTop=0;go('shop');
+}
+
+/* ---------- role + one-question-per-screen onboarding ---------- */
+const FLOWS={
+  customer:[
+    {q:'你对什么感兴趣？',sub:'可以多选，我们会优先推荐这些店。',key:'interests',multi:true,opts:['咖啡与甜点','唱片与音乐','古着与服装','街头艺术','美食与酒馆','收藏与老物件']},
+    {q:'你常去哪一带？',sub:'可以多选。',key:'areas',multi:true,opts:['Park Street','Old City','Harbourside','Clifton','Stokes Croft']},
+    {q:'开启定位，看看附近的店？',sub:'只用来计算步行距离，也用于景点签到。可以跳过。',type:'loc'},
+    {q:'护照上写什么名字？',sub:'会印在护照的个人信息页上。',type:'text',key:'nick',ph:'比如 Christal'}],
+  merchant:[
+    {q:'你的店叫什么？',sub:'会印在你的专属邮票上。',type:'text',key:'name',ph:'比如 Café 56'},
+    {q:'店铺类别',key:'cat',opts:['咖啡与甜点','唱片与书','服装与古着','餐厅与酒馆','收藏与古董','其他']},
+    {q:'你最想要什么？',sub:'我们会据此推荐优惠券和活动。',key:'goal',opts:['更多新客','更多回头客','闲时也有客流']},
+    {q:'这是你的专属邮票（示意稿）',sub:'正式版由我们的设计师按店铺特色画 2–3 稿给你选。',type:'stamp'},
+    {q:'选 3 种券放进“三选一”',sub:'顾客签到后会从中挑一张。',key:'coupons',multi:true,max:3,opts:['免费升级','9 折','第二件半价','免费小样','小礼物','店主体验券']},
+    {q:'你的台卡已经准备好',sub:'打印出来放在收银台，顾客扫码就能签到。',type:'card'}]
+};
+let QF='customer',QI=0,QA={};
+function startQuiz(flow){QF=flow;QI=0;QA=flow==='merchant'?{coupons:[]}:{interests:[],areas:[]};go('quiz');renderQuiz()}
+function mStamp(name){const n=(name||'MY SHOP').toUpperCase().slice(0,16),cols={'咖啡与甜点':['#f7c9d4','#2f6b52'],'唱片与书':['#d8ccff','#2b2d6e'],'服装与古着':['#b9a8ff','#6b5ad6'],'餐厅与酒馆':['#cfe8d4','#2f4a3a'],'收藏与古董':['#c9e3cf','#2f4a3a']}[QA.cat||(S.merchant&&S.merchant.cat)]||['#ffd2a8','#c8553d'];
+  return `<div class="stamp" style="--paper:${cols[0]}"><svg viewBox="0 0 120 156"><rect width="120" height="156" fill="${cols[0]}"/><circle cx="60" cy="62" r="40" fill="#fff" opacity=".6"/><text x="60" y="80" text-anchor="middle" font-family="Alfa Slab One" font-size="48" fill="${cols[1]}">${n[0]||'S'}</text><rect y="126" width="120" height="30" fill="#fff"/><text x="60" y="146" text-anchor="middle" font-family="Alfa Slab One" font-size="${n.length>10?9:12}" fill="${cols[1]}">${n.replace(/[<&>]/g,'')}</text></svg></div>`}
+function renderQuiz(){
+  const F=FLOWS[QF],st=F[QI],pct=(QI+1)/(F.length+1)*100;
+  let body='';
+  if(st.opts)body=`<div class="opts">${st.opts.map(o=>{const on=st.multi?(QA[st.key]||[]).includes(o):QA[st.key]===o;return `<button class="opt ${on?'on':''}" data-o="${o}">${o}</button>`}).join('')}</div>`;
+  if(st.type==='text')body=`<input class="qinput" id="qin" maxlength="24" placeholder="${st.ph}" value="${(QA[st.key]||'').replace(/"/g,'')}">`;
+  if(st.type==='loc')body=`<div class="qart"><div style="text-align:center"><svg viewBox="0 0 24 24" style="width:80px;height:80px;color:var(--accent)"><use href="#i-pin-loc"/></svg><p class="sub" style="margin-top:10px">原型里用 College Green 作为你的位置。</p></div></div>`;
+  if(st.type==='stamp')body=`<div class="qart"><div class="mstamp">${mStamp(QA.name)}</div></div>`;
+  if(st.type==='card')body=`<div class="qart"><div class="tcard"><small>SHOP PASSPORT · 在这里盖章</small><div class="qr"></div><b>${(QA.name||'My Shop').replace(/[<&>]/g,'')}</b><small>扫码签到 · 三选一拿奖励</small></div></div>`;
+  const ok=st.opts?(st.multi?(QA[st.key]||[]).length>0:!!QA[st.key]):st.type==='text'?!!(QA[st.key]||'').trim():true;
+  $('#quiz').innerHTML=`<div class="qtop"><button class="x" id="qBack"><svg viewBox="0 0 24 24" width="18"><use href="${QI?'#i-back':'#i-close'}"/></svg></button><div class="qbar"><i style="width:${pct}%"></i></div></div>
+   <h2>${st.q}</h2><p class="sub">${st.sub||(st.max?`选 ${st.max} 个`:'')}</p>${body}
+   <div class="qfoot">${st.type==='loc'?`<button class="btn" id="qLoc">允许定位</button><button class="skip" id="qNext">跳过</button>`:`<button class="btn" id="qNext" ${ok?'':'disabled'}>${QI===F.length-1?(QF==='merchant'?'进入商家后台':'完成'):'继续'}</button>`}</div>`;
+  $('#quiz').querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{buzz();const o=b.dataset.o;
+    if(st.multi){const a=QA[st.key]||(QA[st.key]=[]);const i=a.indexOf(o);if(i>=0)a.splice(i,1);else{if(st.max&&a.length>=st.max)a.shift();a.push(o)}}else QA[st.key]=o;renderQuiz()});
+  const qi=$('#qin');if(qi){qi.oninput=()=>{QA[st.key]=qi.value;$('#qNext').disabled=!qi.value.trim()};setTimeout(()=>qi.focus(),50)}
+  $('#qBack').onclick=()=>{buzz();if(QI){QI--;renderQuiz()}else go('role')};
+  if($('#qLoc'))$('#qLoc').onclick=()=>{buzz();try{navigator.geolocation&&navigator.geolocation.getCurrentPosition(p=>{S.here={lat:p.coords.latitude,lng:p.coords.longitude};save()},()=>{},{timeout:5000})}catch(e){}toast('已开启（原型里用 College Green 作为你的位置）');QI++;renderQuiz()};
+  $('#qNext').onclick=()=>{buzz();if(QI<F.length-1){QI++;renderQuiz();return}
+    if(QF==='customer'){S.interests=QA.interests;S.areas=QA.areas;S.nick=(QA.nick||'Explorer').trim();S.role='customer';save();openCover()}
+    else{S.merchant={name:(QA.name||'My Shop').trim(),cat:QA.cat,goal:QA.goal};S.mcoupons=(QA.coupons.length?QA.coupons:['免费升级','9 折','小礼物']).map(n=>({n,on:true,limit:20}));S.role='merchant';save();go('merchant')}};
+}
+document.querySelectorAll('[data-role]').forEach(b=>b.onclick=()=>{buzz();const r=b.dataset.role;if(r==='merchant'&&S.merchant){S.role='merchant';save();go('merchant')}else startQuiz(r)});
+$('#demoStart').onclick=()=>{buzz();seedDemo();go('passport')};
+
+/* ---------- passport cover (first time only) ---------- */
+function openCover(){
+  $('#cvName').textContent=S.nick||'Explorer';
+  $('#cvMeta').innerHTML=`签发 ISSUED · ${TODAY}<br>编号 NO. SP-${String(Math.floor(Math.random()*9000)+1000)}<br>城市 CITY · BRISTOL`;
+  $('#book').classList.remove('open');$('#v-cover').classList.remove('coverdone');$('#tapOpen').style.display='';
+  go('cover');
+}
+$('#book').onclick=()=>{if($('#book').classList.contains('open'))return;buzz();$('#book').classList.add('open');$('#tapOpen').style.display='none';$('#v-cover').classList.add('coverdone');setTimeout(buzz,1100);setTimeout(buzz,1800)};
+const coverDone=()=>{S.seenCover=true;S.keep.find(k=>k.sym==='st-welcome')||S.keep.push({name:'Welcome 欢迎章',sym:'st-welcome',paper:'#e3c06b',at:TODAY});save();go('passport')};
+$('#coverGo').onclick=()=>{buzz();coverDone()};$('#skipCover').onclick=()=>{buzz();coverDone()};
+
+/* ---------- merchant back office (no gamification) ---------- */
+function renderMerchant(){
+  const m=S.merchant||{name:'My Shop'};$('#mName').textContent=m.name;
+  const used=S.coupons.filter(c=>c.used).length;
+  $('#mBody').innerHTML=`<div class="kpis"><div><b>46</b><small>本周签到</small> <em>+12%</em></div><div><b>18</b><small>回头客</small> <em>+4</em></div><div><b>${21+used}/34</b><small>优惠券核销</small></div><div><b style="font-size:15px;line-height:1.3;padding-top:6px">Old City 探索周</b><small>进行中的活动 · ${weekLeft()}</small></div></div>
+   <div class="macts"><button id="mRedeem">核销优惠券<small>输入顾客屏幕上的 4 位码</small></button><button class="alt" id="mEdit">编辑优惠<small>三选一里放哪几张</small></button></div>
+   <div class="mh">今天</div><div class="mlist"><div>14:05 · 签到<em>选了：第二杯半价</em></div><div>13:20 · 核销<em>免费加一份浓缩 · 4821</em></div><div>11:48 · 签到<em>新客 · 选了神秘奖励</em></div></div>
+   <div class="mh">我的物料</div><div class="mlist"><div style="gap:12px;justify-content:flex-start"><span style="width:44px">${mStamp(m.name)}</span>专属邮票（示意稿）<em style="margin-left:auto">待设计师出稿</em></div><div>收银台台卡 · 二维码<em>下载 PDF（演示）</em></div></div>
+   <p class="mono" style="font-size:9.5px;color:#999">演示数据 · 正式版需要后端同步签到和核销</p>`;
+  $('#mRedeem').onclick=()=>{
+    openSheet(`<h4 style="font:800 19px 'Inter Tight';margin:0 0 4px">核销优惠券</h4><small style="color:var(--muted)">输入顾客屏幕上的 4 位码</small><div class="codein">${[0,1,2,3].map(()=>'<input inputmode="numeric" maxlength="1">').join('')}</div><button class="btn" id="mCheck">确认核销</button><div id="mRes" style="text-align:center;margin-top:10px;font-size:13px"></div>`);
+    const ins=[...document.querySelectorAll('.codein input')];ins.forEach((x,i)=>x.oninput=()=>{if(x.value&&ins[i+1])ins[i+1].focus()});ins[0].focus();
+    $('#mCheck').onclick=()=>{const code=ins.map(x=>x.value).join('');if(code.length<4){$('#mRes').textContent='请输入 4 位码';return}
+      const c=S.coupons.find(x=>x.used&&x.used.code===code);$('#mRes').innerHTML=c?`<b style="color:#1f9d5c">✓ 有效</b> · ${c.v} · ${c.used.at}`:'<b style="color:#1f9d5c">✓ 核销成功（演示）</b>'};
+  };
+  $('#mEdit').onclick=()=>{
+    const list=S.mcoupons||(S.mcoupons=[{n:'免费升级',on:true,limit:20},{n:'9 折',on:true,limit:30},{n:'小礼物',on:true,limit:10}]);
+    const draw=()=>openSheet(`<h4 style="font:800 19px 'Inter Tight';margin:0 0 4px">编辑优惠</h4><small style="color:var(--muted)">顾客签到后，从开启的券里抽两张写明条件，再加一张神秘奖励</small><div class="mlist" style="margin-top:12px;padding:4px 0">${list.map((c,i)=>`<div><span>${c.n}<em style="display:block">每日上限 ${c.limit} 张</em></span><span class="tog ${c.on?'on':''}" data-t="${i}"></span></div>`).join('')}</div><button class="btn" data-act="close">保存</button>`);
+    draw();document.getElementById('sheet').onclick=e=>{const t=e.target.closest('[data-t]');if(t){list[+t.dataset.t].on=!list[+t.dataset.t].on;save();draw()}};
+  };
+}
+$('#toCustomer').onclick=()=>{buzz();S.role='customer';save();if(S.seenCover)go(S.lastView||'passport');else startQuiz('customer')};
 $('#mseries').addEventListener('click',e=>{const b=e.target.closest('[data-sp]');if(b){S.page=+b.dataset.sp;go('passport')}});
 
 /* ---------- misc ---------- */
 let tt;function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('on'),1800)}
-function restart(){reset();$('#unlock').classList.remove('on');$('#ach').classList.remove('on');go('onb')}
+function restart(){reset();try{localStorage.removeItem(STORE)}catch(e){}$('#unlock').classList.remove('on');$('#ach').classList.remove('on');$('#pick').classList.remove('on');applySkin();go('onb')}
 $('#resetSide').onclick=restart;$('#resetMe').onclick=()=>{restart();toast('Demo reset')};
-go('onb');
+applySkin();
+/* first time: welcome + role choice; afterwards: straight back to the last page */
+if(hadSave&&S.role==='merchant'&&S.merchant)go('merchant');
+else if(hadSave&&S.role==='customer'&&S.seenCover)go(S.lastView||'passport');
+else go('onb');
+/* “add to home screen” hint when opened in a mobile browser tab */
+function maybeA2HS(){try{if(window.__a2)return;const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+  if(!standalone&&innerWidth<=760&&!S.a2hs){const d=document.createElement('div');d.className='a2hs';d.innerHTML='<span>添加到主屏幕，像 App 一样全屏打开：Safari 点「分享」→「添加到主屏幕」</span><button>✕</button>';d.querySelector('button').onclick=()=>{d.remove();S.a2hs=true;save()};window.__a2=1;$('#scr').appendChild(d);setTimeout(()=>d.remove(),9000)}}catch(e){}}
 </script>
 </body>
 </html>
