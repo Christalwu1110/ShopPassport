@@ -511,6 +511,39 @@ body[data-skin=cny] .week{background:linear-gradient(90deg,#a50e22,#e3a82b)}
 .scanlist button.on{background:#fff;color:#111}
 .a2hs{position:absolute;left:12px;right:12px;top:max(12px,env(safe-area-inset-top));z-index:96;background:#111;color:#fff;border-radius:16px;padding:10px 12px;font-size:12px;display:flex;gap:10px;align-items:center}
 .a2hs button{margin-left:auto;color:#fff;opacity:.7}
+
+/* ---- fit fixes for real phones ---- */
+@media (max-width:760px){.hi{display:none}.skipc{top:max(16px,env(safe-area-inset-top))}}
+/* hidden bottom sheet must sit fully off-screen (no white sliver at the bottom) */
+.sheet{transform:translateY(calc(100% + 60px));visibility:hidden;transition:transform .42s cubic-bezier(.2,.9,.25,1),visibility 0s .42s;max-height:86%;overflow-y:auto;padding-bottom:max(26px,env(safe-area-inset-bottom))}
+.sheet.on{visibility:visible;transition:transform .42s cubic-bezier(.2,.9,.25,1),visibility 0s}
+/* profile & other scrolling pages: leave room for the floating nav */
+.me-scroll{padding-bottom:calc(120px + env(safe-area-inset-bottom))}
+.seals{padding-bottom:4px}
+.rlist{padding-bottom:calc(120px + env(safe-area-inset-bottom))}
+/* passport page: smaller stamps so two rows always fit, never overlapping */
+.ppwrap{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
+.pst{width:26%}.slot{width:24%}
+.slot small{font-size:8px}
+.ppage .reward{bottom:30px}
+/* cover: the opened cover shows its plain inside, not mirrored text; button fits the screen */
+.cover>*{backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.book.open .cover::after{display:none}
+.cover>*{transition:opacity .25s .35s}
+.book.open .cover>*{opacity:0}
+.coverbtn{width:auto;bottom:max(40px,calc(env(safe-area-inset-bottom) + 20px))}
+.book{transition:transform 1.1s cubic-bezier(.6,.05,.25,1)}
+.book.open{transform:translateX(14%)}
+/* map overlays stay inside the screen */
+.maptop{max-width:calc(100% - 24px)}
+.week b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:190px}
+.routecard{bottom:calc(100px + env(safe-area-inset-bottom));max-height:34%;overflow-y:auto}
+/* three-choose-one cards on narrow phones */
+@media (max-width:380px){.ccard .v{font-size:13px}.ccard{padding:8px 6px}}
+/* rewards ticket text never runs under the tag */
+.ticket .r{padding-right:56px}
+/* shop page: content clears the sticky button */
+.shopscroll{padding-bottom:calc(120px + env(safe-area-inset-bottom))}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
