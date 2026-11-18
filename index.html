@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Shop Passport — Interactive Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0f0f12;--muted:#7a7c85;--bg:#e8e9ed}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{background:var(--bg);font:15px/1.5 Inter,system-ui,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;display:flex;align-items:center;justify-content:center;gap:70px;min-height:100svh;overflow:hidden}
+body::before{content:"";position:fixed;inset:0;background-image:linear-gradient(#0000000a 1px,transparent 1px),linear-gradient(90deg,#0000000a 1px,transparent 1px);background-size:120px 120px;pointer-events:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+.mono{font-family:'JetBrains Mono',monospace}
+
+/* side notes (desktop) */
+.notes{width:300px;position:relative}
+.notes .k{font:500 11px 'JetBrains Mono';letter-spacing:.16em;color:var(--muted)}
+.notes h1{font:800 44px/1 'Inter Tight';letter-spacing:-.03em;margin:14px 0 14px}
+.notes h1 span{font-weight:500;color:var(--muted)}
+.notes ol{padding:0;margin:22px 0 0;list-style:none;counter-reset:n}
+.notes li{counter-increment:n;display:grid;grid-template-columns:30px 1fr;padding:12px 0;border-top:1px solid #d6d8de;font-size:14px;color:#3d3f48}
+.notes li::before{content:counter(n,decimal-leading-zero);font:500 11px/1.9 'JetBrains Mono';color:var(--muted)}
+.notes .rst{margin-top:18px;font:600 12px Inter;border:1.5px solid var(--ink);border-radius:99px;padding:9px 16px}
+
+/* phone */
+.phone{width:340px;height:min(736px,calc(100svh - 40px));border-radius:52px;padding:10px;background:#fff;box-shadow:0 0 0 1.5px #c9cbd2,0 50px 90px -30px rgba(20,22,40,.4);position:relative;flex:none}
+.scr{height:100%;border-radius:43px;background:#f4f5f7;overflow:hidden;position:relative;isolation:isolate}
+@media (max-width:760px){
+  body{display:block;background:#f4f5f7}
+  body::before,.notes{display:none}
+  .phone{width:100%;height:100svh;border-radius:0;padding:0;box-shadow:none}
+  .scr{border-radius:0}
+}
+.sb{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:16px 26px 0;font:600 12px Inter;height:44px;z-index:40;pointer-events:none}
+.sb .di{width:96px;height:28px;border-radius:16px;background:#000;position:absolute;left:50%;top:10px;transform:translateX(-50%)}
+.sb b{display:block;width:20px;height:9px;border-radius:3px;background:currentColor}
+.sb.light{color:#fff}
+@media (max-width:760px){.sb{display:none}}
+.hi{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:120px;height:4.5px;border-radius:4px;background:#111;z-index:60;pointer-events:none}
+
+/* views */
+.view{position:absolute;inset:0;padding-top:44px;display:flex;flex-direction:column;opacity:0;pointer-events:none;transform:scale(.985);transition:opacity .3s,transform .3s}
+.view.on{opacity:1;pointer-events:auto;transform:none}
+@media (max-width:760px){.view{padding-top:max(14px,env(safe-area-inset-top))}}
+
+/* stamp */
+.stamp{--r:4px;--paper:#f6a28f;display:block;padding:calc(2.1*var(--r));aspect-ratio:120/156;
+  background:radial-gradient(var(--r),#0000 97%,var(--paper)) round calc(-1.5*var(--r)) calc(-1.5*var(--r))/calc(3*var(--r)) calc(3*var(--r)),
+  linear-gradient(var(--paper) 0 0) no-repeat 50%/calc(100% - 3*var(--r)) calc(100% - 3*var(--r));
+  filter:drop-shadow(0 6px 10px rgba(30,30,50,.16))}
+.stamp svg{display:block;width:100%;height:100%;border:1.5px solid #fff}
+.sm{--r:2.6px}
+.holo{position:relative}
+.holo::after{content:"";position:absolute;inset:8%;mix-blend-mode:color-dodge;opacity:.75;pointer-events:none;background:linear-gradient(115deg,transparent 25%,#ff8be0 38%,#86fdff 46%,#fff48a 54%,transparent 66%);background-size:260% 260%;animation:holo 3.4s ease-in-out infinite}
+@keyframes holo{0%,100%{background-position:100% 0}50%{background-position:0 100%}}
+.pm{position:absolute;mix-blend-mode:multiply;pointer-events:none}
+
+/* onboarding */
+#v-onb{background:#f4f5f7}
+.onb-art{flex:1;position:relative}
+.onb-art .a{position:absolute;width:42%;left:10%;top:6%;transform:rotate(-14deg);animation:float 5s ease-in-out infinite}
+.onb-art .b{position:absolute;width:45%;right:9%;top:40%;transform:rotate(11deg);animation:float 5s ease-in-out -2.5s infinite}
+@keyframes float{50%{translate:0 -8px}}
+.onb-art svg.path{position:absolute;inset:0;width:100%;height:100%}
+.onb-t{padding:0 26px 44px}
+.onb-t h2{font:800 32px/1.02 'Inter Tight';letter-spacing:-.03em;margin:0 0 10px}
+.onb-t h2 span{font-weight:500}
+.onb-t p{color:var(--muted);font-size:13px;margin:0 0 20px}
+.btn{display:block;width:100%;background:#111;color:#fff;text-align:center;border-radius:99px;padding:15px;font:600 14px Inter;transition:transform .15s}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:transparent;color:#111;box-shadow:inset 0 0 0 1.5px #111}
+.btn.sm{padding:12px;font-size:13px}
+.skip{display:block;margin:12px auto 0;font-size:12px;color:var(--muted)}
+
+/* header */
+.hd{display:flex;justify-content:space-between;align-items:center;padding:10px 20px 0}
+.hd small{font-size:11px;color:var(--muted)}
+.hd h3{font:800 24px/1.05 'Inter Tight';letter-spacing:-.02em;margin:2px 0 0}
+.av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#ffb36b,#ff5f7e);box-shadow:0 0 0 3px #fff,0 4px 10px rgba(0,0,0,.12)}
+.chips{display:flex;gap:6px;padding:14px 20px 8px;overflow-x:auto;scrollbar-width:none;flex:none}
+.chip{font:500 12px Inter;padding:8px 13px;border-radius:99px;background:#fff;white-space:nowrap;transition:background .2s,color .2s}
+.chip em{font-style:normal;opacity:.55;margin-left:4px;font-size:11px}
+.chip.on{background:#111;color:#fff}
+
+/* passport */
+.ppwrap{flex:1;padding:6px 22px 96px 18px;display:flex;align-items:flex-start;justify-content:center;perspective:1200px;touch-action:pan-y}
+.ppage{position:relative;width:100%;max-height:100%;aspect-ratio:272/392;border-radius:6px 18px 18px 6px;
+  background:repeating-radial-gradient(circle at 110% -10%,transparent 0 7px,rgba(44,68,214,.055) 7px 8px),repeating-radial-gradient(circle at -10% 110%,transparent 0 7px,rgba(255,106,61,.055) 7px 8px),#fff;
+  box-shadow:3px 3px 0 -1px #fff,3px 3px 0 0 #dcdde3,6px 6px 0 -1px #fff,6px 6px 0 0 #d2d4db,0 20px 34px -16px rgba(20,22,40,.3);
+  transform-origin:left center;transition:transform .32s cubic-bezier(.4,0,.2,1),opacity .32s}
+.ppage.out-l{transform:rotateY(-70deg);opacity:0}
+.ppage.out-r{transform:translateX(40px) rotateY(20deg);opacity:0}
+.ppage.pre-l{transform:translateX(40px);opacity:0;transition:none}
+.ppage.pre-r{transform:rotateY(-70deg);opacity:0;transition:none}
+.ppage::before{content:"";position:absolute;left:0;top:0;bottom:0;width:18px;background:linear-gradient(90deg,rgba(0,0,0,.12),transparent);z-index:2;pointer-events:none}
+.ppage::after{content:"";position:absolute;left:8px;top:12px;bottom:12px;border-left:1.5px dashed rgba(0,0,0,.18);z-index:2;pointer-events:none}
+.pphead{display:flex;justify-content:space-between;padding:12px 14px 0 26px;font:500 8px 'JetBrains Mono';letter-spacing:.16em;color:#9a9cab}
+.pgt{padding:6px 14px 0 26px;display:flex;justify-content:space-between;align-items:baseline}
+.pgt b{font:800 19px 'Inter Tight';letter-spacing:-.02em}
+.pgt span{font:600 11px Inter;color:var(--muted)}
+.wm{position:absolute;width:56%;left:50%;top:44%;transform:translate(-50%,-50%);color:#2c44d6;opacity:.06;pointer-events:none}
+.pst{position:absolute;width:35%;transform:rotate(var(--rot));transition:transform .25s}
+.pst:active{transform:rotate(var(--rot)) scale(.95)}
+.pst .pm{width:78%;right:-30%;top:-10%;transform:rotate(-12deg);opacity:.9}
+.pst.new{animation:pop .9s cubic-bezier(.2,1.6,.4,1)}
+.pst.new .stamp{filter:drop-shadow(0 0 0 #ffd23a) drop-shadow(0 6px 10px rgba(30,30,50,.16));animation:glow 1.6s ease-out .3s}
+@keyframes pop{0%{transform:rotate(var(--rot)) scale(1.6);opacity:0}100%{transform:rotate(var(--rot)) scale(1);opacity:1}}
+@keyframes glow{0%,100%{filter:drop-shadow(0 6px 10px rgba(30,30,50,.16))}30%{filter:drop-shadow(0 0 14px #ffc93a)}}
+.slot{position:absolute;width:33%;aspect-ratio:120/156;border:1.5px dashed #c7c9d2;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#a2a4af;transform:rotate(var(--rot));transition:border-color .2s,background .2s}
+.slot:hover{border-color:#111;background:#fafafb}
+.slot span{width:28px;height:28px;border-radius:50%;background:#f1f2f5;display:grid;place-items:center;font:700 13px Inter}
+.slot small{font:500 8.5px/1.3 'JetBrains Mono';text-align:center;padding:0 6px}
+.reward{position:absolute;left:26px;right:14px;bottom:30px;display:flex;align-items:center;gap:10px;border-top:1px solid #eceef2;padding-top:10px}
+.reward svg{width:30px;flex:none}
+.reward.lock svg{filter:grayscale(1);opacity:.35}
+.reward b{font:600 11px Inter;display:block}
+.reward small{font-size:10px;color:var(--muted)}
+.ppfoot{position:absolute;left:26px;right:14px;bottom:10px;display:flex;justify-content:space-between;align-items:center;font:500 8.5px 'JetBrains Mono';color:#a2a4af;letter-spacing:.08em}
+.dots{display:flex;gap:4px}.dots i{width:5px;height:5px;border-radius:50%;background:#d5d6dd;transition:all .3s}.dots i.on{width:14px;border-radius:3px;background:#111}
+
+/* nav */
+.nav{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);display:flex;gap:4px;background:#fff;border-radius:99px;padding:6px;box-shadow:0 10px 30px rgba(0,0,0,.14);z-index:30;transition:opacity .25s,transform .25s}
+.nav.hide{opacity:0;pointer-events:none;transform:translate(-50%,20px)}
+.nav button{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;color:#111;transition:background .2s,color .2s}
+.nav button.on{background:#111;color:#fff}
+.nav svg{width:19px;height:19px}
+
+/* map */
+#v-map{padding-top:0}
+.mapbg{position:absolute;inset:0}
+.msearch{position:absolute;top:56px;left:16px;right:16px;background:#fff;border-radius:99px;padding:12px 16px;font-size:12.5px;color:var(--muted);display:flex;gap:9px;align-items:center;z-index:5;box-shadow:0 6px 18px rgba(0,0,0,.1)}
+@media (max-width:760px){.msearch{top:max(16px,env(safe-area-inset-top))}}
+.msearch svg{width:15px;height:15px}
+.pin{position:absolute;transform:translate(-50%,-100%);z-index:4;display:flex;flex-direction:column;align-items:center;gap:3px;transition:transform .2s}
+.pin:hover{transform:translate(-50%,-100%) scale(1.08)}
+.pin .stamp{width:46px}
+.pin .lk{width:38px;height:38px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 6px 14px rgba(0,0,0,.15);border:2px solid #111}
+.pin .lk svg{width:15px}
+.pin i{font:600 9px Inter;font-style:normal;background:#111;color:#fff;border-radius:99px;padding:3px 7px;white-space:nowrap}
+.pin.done i{background:#fff;color:#111;box-shadow:0 2px 6px rgba(0,0,0,.1)}
+.pin.sel .lk{background:#ffd23a}
+.me-dot{position:absolute;width:16px;height:16px;border-radius:50%;background:#2c44d6;border:3px solid #fff;box-shadow:0 0 0 8px rgba(44,68,214,.18);transform:translate(-50%,-50%);z-index:3;animation:ping 2s infinite}
+@keyframes ping{50%{box-shadow:0 0 0 14px rgba(44,68,214,.06)}}
+
+/* scan */
+#v-scan{background:#0c0d12;color:#fff;padding-top:0}
+.cam{position:absolute;inset:0;background:radial-gradient(120% 80% at 50% 40%,#3a3f52,#0c0d12 70%)}
+.cam::before{content:"";position:absolute;inset:0;background:linear-gradient(transparent 60%,rgba(0,0,0,.7));}
+.shopfront{position:absolute;left:50%;top:36%;width:76%;transform:translate(-50%,-50%);opacity:.35;filter:blur(1.5px)}
+.vf{position:absolute;left:50%;top:38%;width:62%;aspect-ratio:1;transform:translate(-50%,-50%)}
+.vf i{position:absolute;width:34px;height:34px;border:4px solid #fff}
+.vf i:nth-child(1){left:0;top:0;border-right:0;border-bottom:0;border-radius:14px 0 0 0}
+.vf i:nth-child(2){right:0;top:0;border-left:0;border-bottom:0;border-radius:0 14px 0 0}
+.vf i:nth-child(3){left:0;bottom:0;border-right:0;border-top:0;border-radius:0 0 0 14px}
+.vf i:nth-child(4){right:0;bottom:0;border-left:0;border-top:0;border-radius:0 0 14px 0}
+.vf .line{position:absolute;left:8%;right:8%;height:2px;background:#ffd23a;box-shadow:0 0 16px #ffd23a;animation:scan 2.2s ease-in-out infinite}
+@keyframes scan{0%,100%{top:10%}50%{top:88%}}
+.vf .qr{position:absolute;inset:26%;background:
+  conic-gradient(from 90deg at 30% 30%,#fff 25%,transparent 0) 0 0/33% 33%,
+  linear-gradient(#fff 0 0) 0 0/0 0;opacity:.18;border-radius:6px}
+.scan-ui{position:absolute;left:0;right:0;bottom:0;padding:0 24px 112px;text-align:center;z-index:3}
+.scan-ui h3{font:800 22px 'Inter Tight';margin:0 0 6px;letter-spacing:-.02em}
+.scan-ui p{font-size:12.5px;color:#a9acb8;margin:0 0 18px}
+.scan-ui .btn{background:#fff;color:#111}
+.scan-top{position:absolute;top:56px;left:20px;right:20px;display:flex;justify-content:space-between;z-index:3}
+@media (max-width:760px){.scan-top{top:max(16px,env(safe-area-inset-top))}}
+.cbtn{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.14);backdrop-filter:blur(8px);display:grid;place-items:center;color:#fff}
+.cbtn svg{width:16px;height:16px}
+
+/* me */
+.mecard{margin:16px 20px 0;background:#fff;border-radius:24px;padding:18px;display:grid;grid-template-columns:repeat(3,1fr);text-align:center}
+.mecard b{display:block;font:800 26px 'Inter Tight';letter-spacing:-.02em}
+.mecard small{font-size:10.5px;color:var(--muted)}
+.mecard div+div{border-left:1px solid #eef0f3}
+.sec{padding:20px 20px 0}
+.sec h4{font:700 14px 'Inter Tight';margin:0 0 10px;display:flex;justify-content:space-between}
+.sec h4 span{font:500 11px Inter;color:var(--muted)}
+.prow{display:flex;align-items:center;gap:12px;background:#fff;border-radius:16px;padding:10px 14px;margin-bottom:8px}
+.prow .stamp{width:30px;flex:none}
+.prow .t{flex:1}
+.prow b{font:600 12.5px Inter;display:flex;justify-content:space-between}
+.prow b em{font-style:normal;color:var(--muted);font-weight:500}
+.tr{height:5px;border-radius:5px;background:#eceef2;margin-top:6px;overflow:hidden}
+.tr i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,#ff6a3d,#ffb02e);transition:width .6s}
+.seals{display:flex;gap:10px;overflow-x:auto;padding-bottom:110px;scrollbar-width:none}
+.seal{flex:none;width:84px;background:#fff;border-radius:16px;padding:10px 6px;text-align:center;font:500 9.5px/1.3 Inter;color:var(--muted)}
+.seal svg{width:46px;display:block;margin:0 auto 4px}
+.seal.off svg{filter:grayscale(1);opacity:.3}
+.me-scroll{flex:1;overflow-y:auto;scrollbar-width:none}
+.resetbtn{font:500 11px Inter;color:var(--muted);text-decoration:underline;margin:0 auto 30px;display:block}
+
+/* sheets */
+.backdrop{position:absolute;inset:0;background:rgba(10,10,20,.35);opacity:0;pointer-events:none;transition:opacity .3s;z-index:70}
+.backdrop.on{opacity:1;pointer-events:auto}
+.sheet{position:absolute;left:8px;right:8px;bottom:8px;background:#fff;border-radius:34px;padding:12px 22px 26px;z-index:71;transform:translateY(110%);transition:transform .42s cubic-bezier(.2,.9,.25,1)}
+.sheet.on{transform:none}
+.grab{width:38px;height:5px;border-radius:5px;background:#ddd;margin:0 auto 14px}
+.sh-row{display:flex;gap:14px;align-items:center}
+.sh-row .stamp,.sh-row .qslot{width:76px;flex:none}
+.qslot{aspect-ratio:120/156;border:1.5px dashed #c7c9d2;border-radius:8px;display:grid;place-items:center;color:#a2a4af;font:700 20px Inter}
+.sh-row h4{font:800 19px/1.1 'Inter Tight';letter-spacing:-.02em;margin:0 0 4px}
+.sh-row small{display:block;font-size:11.5px;color:var(--muted)}
+.st-ok{color:#1f9d5c!important;font-weight:600}
+.tagl{font:600 9px 'JetBrains Mono';letter-spacing:.1em;background:#111;color:#fff;border-radius:99px;padding:4px 8px;display:inline-block;margin-bottom:6px}
+.sh-story{font-size:13px;color:#4a4c55;margin:14px 0 16px}
+.sh-big{display:flex;justify-content:center;margin:4px 0 14px;position:relative}
+.sh-big>.stamp,.sh-big>.holo{width:46%}.holo>.stamp{width:100%}
+.sh-big .pm{width:34%;right:20%;top:-6%;transform:rotate(-14deg)}
+.sh-actions{display:flex;gap:8px}
+.sh-actions .btn{flex:1}
+
+/* unlock overlay */
+.unlock{position:absolute;inset:0;background:#fff;z-index:80;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 26px 40px;text-align:center;opacity:0;pointer-events:none;transition:opacity .3s;overflow:hidden}
+.unlock.on{opacity:1;pointer-events:auto}
+.burst{position:absolute;top:50%;left:50%;width:560px;height:560px;margin:-380px 0 0 -280px;background:repeating-conic-gradient(#ffd76a40 0 9deg,transparent 9deg 18deg);border-radius:50%;-webkit-mask:radial-gradient(closest-side,#000 30%,transparent);mask:radial-gradient(closest-side,#000 30%,transparent);animation:spin 26s linear infinite;opacity:0;transition:opacity .6s .5s}
+.unlock.on .burst{opacity:1}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ul-stamp{position:relative;width:54%;margin-bottom:30px}
+.ul-stamp .drop{transform:translateY(-140%) rotate(-24deg) scale(1.25);opacity:0}
+.unlock.on .ul-stamp .drop{animation:drop .6s cubic-bezier(.3,1.4,.5,1) .15s forwards}
+@keyframes drop{to{transform:rotate(-4deg);opacity:1}}
+.unlock.on .ul-stamp{animation:thud .25s ease-out .82s}
+@keyframes thud{40%{transform:scale(.96) translateY(3px)}}
+.ul-stamp .pm{width:66%;right:-26%;top:-8%;transform:rotate(-14deg) scale(1.8);opacity:0}
+.unlock.on .ul-stamp .pm{animation:stampin .22s ease-in .8s forwards}
+@keyframes stampin{to{transform:rotate(-14deg) scale(1);opacity:.92}}
+.ink{position:absolute;right:-6%;top:6%;width:44%;aspect-ratio:1;border-radius:50%;background:radial-gradient(#1d1b3a33,transparent 65%);transform:scale(0);opacity:0}
+.unlock.on .ink{animation:ink .7s ease-out .82s}
+@keyframes ink{0%{transform:scale(.3);opacity:1}100%{transform:scale(1.8);opacity:0}}
+.ul-txt{opacity:0;transform:translateY(10px);transition:all .5s 1.05s;width:100%;position:relative}
+.unlock.on .ul-txt{opacity:1;transform:none}
+.ul-txt h3{font:800 28px/1.05 'Inter Tight';letter-spacing:-.03em;margin:10px 0 6px}
+.ul-txt p{color:var(--muted);font-size:13px;margin:0 0 22px}
+.conf{position:absolute;left:50%;top:38%;width:8px;height:13px;border-radius:2px;opacity:0;z-index:2}
+.unlock.on .conf{animation:conf 1.6s cubic-bezier(.15,.6,.4,1) forwards}
+@keyframes conf{0%{opacity:1;transform:translate(0,0) rotate(0)}100%{opacity:0;transform:translate(var(--x),var(--y)) rotate(var(--r))}}
+
+/* achievement */
+.ach{position:absolute;inset:0;z-index:85;background:rgba(10,10,20,.82);backdrop-filter:blur(6px);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;text-align:center;padding:0 30px 40px;opacity:0;pointer-events:none;transition:opacity .35s}
+.ach.on{opacity:1;pointer-events:auto}
+.ach svg{width:46%;transform:scale(0) rotate(-30deg)}
+.ach.on svg{animation:sealin .7s cubic-bezier(.3,1.5,.5,1) .15s forwards}
+@keyframes sealin{to{transform:none}}
+.ach h3{font:800 30px/1.05 'Inter Tight';letter-spacing:-.03em;margin:18px 0 6px}
+.ach p{color:#b3b5c2;font-size:13px;margin:0 0 22px}
+.ach .btn{background:#fff;color:#111;max-width:260px}
+
+.toast{position:absolute;left:50%;top:60px;transform:translate(-50%,-20px);background:#111;color:#fff;font:500 12px Inter;padding:10px 16px;border-radius:99px;z-index:95;opacity:0;transition:all .3s;white-space:nowrap;pointer-events:none}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+  <linearGradient id="skyA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a9def0"/><stop offset="1" stop-color="#ffe0c2"/></linearGradient>
+  <linearGradient id="skyB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7fcdf0"/><stop offset="1" stop-color="#e6f7ff"/></linearGradient>
+  <linearGradient id="skyC" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb37a"/><stop offset=".6" stop-color="#ffd9a0"/><stop offset="1" stop-color="#fff0d6"/></linearGradient>
+  <linearGradient id="skyD" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c9b8ff"/><stop offset="1" stop-color="#ffe3f1"/></linearGradient>
+  <linearGradient id="water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2fa3c8"/><stop offset="1" stop-color="#1b6f9e"/></linearGradient>
+  <pattern id="grain" width="4" height="4" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r=".45" fill="#000" opacity=".07"/><circle cx="3" cy="3" r=".4" fill="#fff" opacity=".12"/></pattern>
+</defs>
+
+<!-- Clifton Suspension Bridge -->
+<symbol id="st-bridge" viewBox="0 0 120 156">
+  <rect width="120" height="156" fill="url(#skyA)"/>
+  <circle cx="90" cy="30" r="11" fill="#ff6a2b"/>
+  <path d="M12 26h20a6 6 0 0 0-9-6 7 7 0 0 0-11 6z" fill="#fff"/>
+  <path d="M60 18h16a5 5 0 0 0-7-5 6 6 0 0 0-9 5z" fill="#fff" opacity=".85"/>
+  <path d="M0 60c10-4 20 2 26 12l6 56H0z" fill="#d9683c"/>
+  <path d="M0 60c10-4 20 2 26 12l2 10c-8-6-18-8-28-6z" fill="#b8502b"/>
+  <path d="M120 64c-10-4-19 2-25 12l-6 52h31z" fill="#d9683c"/>
+  <g fill="#2f8a52"><circle cx="6" cy="56" r="7"/><circle cx="16" cy="54" r="6"/><circle cx="114" cy="60" r="7"/><circle cx="104" cy="60" r="5"/><circle cx="2" cy="80" r="5"/><circle cx="118" cy="84" r="5"/></g>
+  <g fill="#3fae68"><circle cx="11" cy="52" r="4"/><circle cx="110" cy="56" r="4"/></g>
+  <rect x="25" y="40" width="8" height="44" fill="#7a4a35"/><rect x="87" y="40" width="8" height="44" fill="#7a4a35"/>
+  <path d="M27 50h4v12h-4zM89 50h4v12h-4z" fill="#ffe0c2" opacity=".7"/>
+  <path d="M29 42Q60 90 91 42" stroke="#3a2a40" stroke-width="1.8" fill="none"/>
+  <g stroke="#3a2a40" stroke-width=".8"><path d="M38 55v29M46 63v21M54 67v17M62 68v16M70 66v18M78 61v23M84 54v30"/></g>
+  <rect x="25" y="83" width="70" height="3.5" fill="#3a2a40"/>
+  <rect x="0" y="104" width="120" height="24" fill="url(#water)"/>
+  <path d="M10 112h14M40 116h18M76 110h16M92 120h12" stroke="#fff" stroke-opacity=".55" stroke-width="1.4" stroke-linecap="round"/>
+  <path d="M52 106h14l-3 4h-8z" fill="#fff"/><path d="M58 98v8l6-1z" fill="#ff6a2b"/>
+  <rect width="120" height="128" fill="url(#grain)"/>
+  <rect y="126" width="120" height="30" fill="#fff"/>
+  <text x="60" y="147" text-anchor="middle" font-family="Alfa Slab One" font-size="15" fill="#e2502c" letter-spacing=".5">CLIFTON</text>
+</symbol>
+
+<!-- Balloon Fiesta -->
+<symbol id="st-balloon" viewBox="0 0 120 156">
+  <rect width="120" height="156" fill="url(#skyB)"/>
+  <path d="M84 20h18a5 5 0 0 0-8-5 6 6 0 0 0-10 5z" fill="#fff"/>
+  <g transform="translate(40 40)"><path d="M0-22c14 0 20 10 20 18 0 12-11 18-14 24h-12C-9 14-20 8-20-4c0-8 6-18 20-18z" fill="#ff4d4d"/><path d="M0-22c5 0 7 12 7 18 0 12-4 18-5 24h-4c-1-6-5-12-5-24 0-6 2-18 7-18z" fill="#ffd23a"/><path d="M-6 20h12M-5 22l1 6h8l1-6" stroke="#5a3a2a" stroke-width="1.2" fill="#a8683e"/></g>
+  <g transform="translate(84 52) scale(.72)"><path d="M0-22c14 0 20 10 20 18 0 12-11 18-14 24h-12C-9 14-20 8-20-4c0-8 6-18 20-18z" fill="#2c44d6"/><path d="M-20-4h40M-17 8h34" stroke="#fff" stroke-width="5"/><path d="M-5 22l1 6h8l1-6z" fill="#a8683e"/></g>
+  <g transform="translate(66 22) scale(.45)"><path d="M0-22c14 0 20 10 20 18 0 12-11 18-14 24h-12C-9 14-20 8-20-4c0-8 6-18 20-18z" fill="#2fb36b"/><path d="M0-22c5 0 7 12 7 18 0 12-4 18-5 24h-4c-1-6-5-12-5-24 0-6 2-18 7-18z" fill="#fff"/></g>
+  <g transform="translate(16 74) scale(.4)"><path d="M0-22c14 0 20 10 20 18 0 12-11 18-14 24h-12C-9 14-20 8-20-4c0-8 6-18 20-18z" fill="#ff8a3d"/></g>
+  <path d="M0 98c20-10 40-8 60 0s40 6 60-4v34H0z" fill="#53b56f"/>
+  <path d="M0 108c24-6 44-2 64 4s38 2 56-4v20H0z" fill="#3a9a57"/>
+  <g>
+    <path d="M6 112l6-6 6 6v14H6z" fill="#ff7aa8"/><path d="M18 110l6-6 6 6v16H18z" fill="#ffd23a"/><path d="M30 108l6-6 6 6v18H30z" fill="#7ad0f0"/><path d="M42 108l6-6 6 6v18H42z" fill="#b48cff"/><path d="M54 110l6-6 6 6v16H54z" fill="#ff8a3d"/><path d="M66 112l6-6 6 6v14H66z" fill="#60d394"/>
+    <g fill="#fff" opacity=".9"><rect x="9" y="114" width="2.5" height="3.5"/><rect x="21" y="112" width="2.5" height="3.5"/><rect x="33" y="110" width="2.5" height="3.5"/><rect x="45" y="110" width="2.5" height="3.5"/><rect x="57" y="112" width="2.5" height="3.5"/><rect x="69" y="114" width="2.5" height="3.5"/></g>
+  </g>
+  <rect width="120" height="128" fill="url(#grain)"/>
+  <rect y="126" width="120" height="30" fill="#fff"/>
+  <text x="60" y="147" text-anchor="middle" font-family="Alfa Slab One" font-size="14" fill="#2c44d6">FIESTA</text>
+</symbol>
+
+<!-- Record shop -->
+<symbol id="st-records" viewBox="0 0 120 156">
+  <rect width="120" height="156" fill="url(#skyD)"/>
+  <rect x="8" y="22" width="104" height="104" fill="#2b2d6e"/>
+  <rect x="8" y="22" width="104" height="14" fill="#1d1f52"/>
+  <text x="60" y="33" text-anchor="middle" font-family="Alfa Slab One" font-size="9" fill="#ffd23a" letter-spacing="1">RECORDS</text>
+  <path d="M6 38h108l-4 10H10z" fill="#fff"/>
+  <path d="M10 48l6-10 6 10 6-10 6 10 6-10 6 10 6-10 6 10 6-10 6 10 6-10 6 10 6-10 6 10 6-10 6 10 4-6v6z" fill="#ff4d7a"/>
+  <rect x="16" y="56" width="58" height="58" fill="#ffe9c9"/>
+  <circle cx="45" cy="85" r="23" fill="#121224"/>
+  <circle cx="45" cy="85" r="17" fill="none" stroke="#2a2a44" stroke-width="1"/>
+  <circle cx="45" cy="85" r="12" fill="none" stroke="#2a2a44" stroke-width="1"/>
+  <circle cx="45" cy="85" r="7" fill="#ff4d7a"/><circle cx="45" cy="85" r="1.6" fill="#121224"/>
+  <path d="M28 72a20 20 0 0 1 12-8" stroke="#fff" stroke-opacity=".4" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <rect x="80" y="62" width="24" height="64" fill="#ffd23a"/><circle cx="99" cy="96" r="1.8" fill="#2b2d6e"/>
+  <rect x="84" y="66" width="16" height="22" fill="#fff6c8"/>
+  <path d="M20 112h14v14H20z" fill="#3fae68"/><circle cx="23" cy="108" r="5" fill="#2f8a52"/><circle cx="30" cy="106" r="5" fill="#3fae68"/>
+  <rect width="120" height="128" fill="url(#grain)"/>
+  <rect y="126" width="120" height="30" fill="#fff"/>
+  <text x="60" y="147" text-anchor="middle" font-family="Alfa Slab One" font-size="14" fill="#6b3cff">VINYL</text>
+</symbol>
+
+<!-- Café -->
+<symbol id="st-cafe" viewBox="0 0 120 156">
+  <rect width="120" height="156" fill="#fff3e3"/>
+  <rect x="0" y="0" width="120" height="128" fill="#1f6b4f"/>
+  <rect x="0" y="0" width="120" height="16" fill="#185840"/>
+  <path d="M0 16h120v12H0z" fill="#fff"/>
+  <path d="M0 16h12v12H0zM24 16h12v12H24zM48 16h12v12H48zM72 16h12v12H72zM96 16h12v12H96z" fill="#ff7a3d"/>
+  <path d="M0 28c3 5 9 5 12 0 3 5 9 5 12 0 3 5 9 5 12 0 3 5 9 5 12 0 3 5 9 5 12 0 3 5 9 5 12 0 3 5 9 5 12 0 3 5 9 5 12 0 3 5 9 5 12 0 3 5 9 5 12 0" fill="#ff7a3d"/>
+  <rect x="12" y="42" width="96" height="58" rx="4" fill="#ffe3b5"/>
+  <path d="M44 56c-4 5 4 7 0 12M56 52c-4 5 4 7 0 14M68 56c-4 5 4 7 0 12" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M38 70h40v8a14 14 0 0 1-14 14h-12a14 14 0 0 1-14-14z" fill="#fff"/>
+  <path d="M78 73h4a6 6 0 0 1 0 12h-5" stroke="#fff" stroke-width="3.5" fill="none"/>
+  <ellipse cx="58" cy="71" rx="20" ry="3" fill="#8a4b2a"/>
+  <path d="M46 71c4-2 8 2 12 0s8 2 12 0" stroke="#e8c49c" stroke-width="1.2" fill="none"/>
+  <ellipse cx="58" cy="94" rx="28" ry="4" fill="#e8b980"/>
+  <circle cx="22" cy="54" r="5" fill="#3fae68"/><circle cx="18" cy="60" r="5" fill="#2f8a52"/><rect x="16" y="62" width="9" height="10" fill="#ff7a3d"/>
+  <rect x="88" y="78" width="14" height="14" rx="3" fill="#ff7aa8"/><rect x="88" y="76" width="14" height="4" rx="2" fill="#fff"/><circle cx="95" cy="74" r="2.4" fill="#e2302c"/>
+  <rect x="0" y="104" width="120" height="24" fill="#185840"/>
+  <path d="M10 112h100" stroke="#fff" stroke-opacity=".25" stroke-dasharray="4 4"/>
+  <rect width="120" height="128" fill="url(#grain)"/>
+  <rect y="126" width="120" height="30" fill="#fff"/>
+  <text x="60" y="147" text-anchor="middle" font-family="Alfa Slab One" font-size="14" fill="#1f6b4f">CAFÉ 56</text>
+</symbol>
+
+<!-- Harbourside -->
+<symbol id="st-harbour" viewBox="0 0 120 156">
+  <rect width="120" height="156" fill="url(#skyC)"/>
+  <circle cx="26" cy="30" r="10" fill="#ff5a36"/>
+  <path d="M74 24h18a5 5 0 0 0-8-5 6 6 0 0 0-10 5z" fill="#fff"/>
+  <path d="M86 34l18-16 4 3-14 14v42h-6z" fill="#3a2a40"/><path d="M104 18v12" stroke="#3a2a40" stroke-width="1.2"/>
+  <rect x="0" y="62" width="22" height="30" fill="#c8553d"/><rect x="22" y="56" width="18" height="36" fill="#ffd23a"/><rect x="40" y="66" width="20" height="26" fill="#7ad0f0"/><rect x="60" y="60" width="18" height="32" fill="#ff7aa8"/><rect x="78" y="68" width="42" height="24" fill="#8a3a2e"/>
+  <g fill="#fff" opacity=".85"><rect x="4" y="68" width="4" height="5"/><rect x="12" y="68" width="4" height="5"/><rect x="26" y="62" width="4" height="5"/><rect x="32" y="62" width="4" height="5"/><rect x="44" y="72" width="4" height="5"/><rect x="52" y="72" width="4" height="5"/><rect x="64" y="66" width="4" height="5"/><rect x="70" y="66" width="4" height="5"/><rect x="84" y="74" width="5" height="5"/><rect x="96" y="74" width="5" height="5"/><rect x="108" y="74" width="5" height="5"/></g>
+  <rect x="0" y="92" width="120" height="36" fill="url(#water)"/>
+  <g stroke="#3a2a40" stroke-width="1.3"><path d="M44 54v40M60 50v44M76 56v38"/><path d="M44 58l16-6 16 6M30 92l14-36M90 92L76 58" stroke-width=".7"/></g>
+  <path d="M24 92h74l-8 12H32z" fill="#1d1d2b"/><path d="M28 98h66" stroke="#e2302c" stroke-width="2"/><path d="M32 104h58l-2 3H34z" fill="#e2302c"/>
+  <path d="M8 112h20M46 118h24M88 114h18" stroke="#fff" stroke-opacity=".5" stroke-width="1.4" stroke-linecap="round"/>
+  <rect width="120" height="128" fill="url(#grain)"/>
+  <rect y="126" width="120" height="30" fill="#fff"/>
+  <text x="60" y="147" text-anchor="middle" font-family="Alfa Slab One" font-size="13" fill="#c8553d">HARBOUR</text>
+</symbol>
+
+<!-- Park Street -->
+<symbol id="st-park" viewBox="0 0 120 156">
+  <rect width="120" height="156" fill="url(#skyB)"/>
+  <circle cx="24" cy="24" r="9" fill="#ffd23a"/>
+  <path d="M74 8h4v6h3v-4h3v6h4v-4h3v4h3v80H71V16h3z" fill="#e8d7b6"/>
+  <path d="M71 16h22v6H71z" fill="#cdb791"/>
+  <rect x="78" y="30" width="8" height="16" rx="4" fill="#3a5a8c"/><rect x="78" y="54" width="8" height="12" rx="4" fill="#3a5a8c"/>
+  <path d="M0 76h20v-6l8-6 8 6v10h16v-6l8-6 8 6v40H0z" fill="#f2efe8"/>
+  <path d="M0 76h20v-6l8-6 8 6v10h16v-6l8-6 8 6" stroke="#cdb791" stroke-width="1.2" fill="none"/>
+  <g fill="#2c44d6"><rect x="4" y="82" width="5" height="8"/><rect x="12" y="82" width="5" height="8"/><rect x="24" y="74" width="5" height="8"/><rect x="31" y="74" width="5" height="8"/><rect x="40" y="86" width="5" height="8"/><rect x="56" y="80" width="5" height="8"/><rect x="63" y="80" width="5" height="8"/><rect x="4" y="96" width="5" height="8"/><rect x="24" y="90" width="5" height="8"/><rect x="56" y="96" width="5" height="8"/></g>
+  <circle cx="102" cy="88" r="12" fill="#2f8a52"/><circle cx="112" cy="94" r="9" fill="#3fae68"/><rect x="101" y="96" width="3" height="16" fill="#7a4a35"/>
+  <path d="M0 118L120 92v36H0z" fill="#545a6b"/><path d="M0 122L120 96" stroke="#ffd23a" stroke-width="1.2" stroke-dasharray="5 4"/>
+  <g transform="translate(30 104) rotate(-12)"><rect width="30" height="13" rx="3" fill="#e2302c"/><rect x="3" y="3" width="6" height="4" fill="#cdeefa"/><rect x="11" y="3" width="6" height="4" fill="#cdeefa"/><rect x="19" y="3" width="6" height="4" fill="#cdeefa"/><circle cx="7" cy="13" r="2.4" fill="#111"/><circle cx="23" cy="13" r="2.4" fill="#111"/></g>
+  <rect width="120" height="128" fill="url(#grain)"/>
+  <rect y="126" width="120" height="30" fill="#fff"/>
+  <text x="60" y="147" text-anchor="middle" font-family="Alfa Slab One" font-size="12" fill="#2c44d6">PARK STREET</text>
+</symbol>
+
+<symbol id="pm" viewBox="0 0 120 120">
+  <g fill="none" stroke="#1d1b3a" stroke-width="2.2" opacity=".85"><circle cx="44" cy="60" r="34"/><circle cx="44" cy="60" r="27" stroke-width="1.2"/><path d="M82 44c8-5 14 5 22 0s14 5 22 0M82 56c8-5 14 5 22 0s14 5 22 0M82 68c8-5 14 5 22 0s14 5 22 0M82 80c8-5 14 5 22 0s14 5 22 0"/></g>
+  <text x="44" y="55" text-anchor="middle" font-family="JetBrains Mono" font-weight="500" font-size="8" fill="#1d1b3a">BRISTOL</text>
+  <text x="44" y="66" text-anchor="middle" font-family="JetBrains Mono" font-weight="500" font-size="9" fill="#1d1b3a">16·XI·26</text>
+  <text x="44" y="76" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="#1d1b3a">★ ★ ★</text>
+</symbol>
+
+<symbol id="seal" viewBox="0 0 160 200">
+  <path d="M64 120L44 196l18-14 12 16 10-74z" fill="#7a0a1f"/><path d="M96 120l20 76-18-14-12 16-10-74z" fill="#9c1028"/>
+  <path d="M80 8c10 0 14 8 24 9s16-3 22 5 2 16 7 24 12 10 11 20-9 12-10 22 6 16 0 24-14 4-22 9-10 14-21 16-16-6-26-6-16 9-26 3-6-16-12-23-16-8-17-18 8-15 6-24-10-15-3-23 15-3 23-9 9-17 20-18 16 3 24 3z" fill="#d4182f"/>
+  <circle cx="80" cy="80" r="44" fill="#b3122a"/><circle cx="80" cy="80" r="36" fill="none" stroke="#7a0a1f" stroke-width="1.2" stroke-dasharray="2 3"/>
+  <g fill="none" stroke="#ff9aa9" stroke-width="2.4" stroke-linecap="round"><path d="M58 90V66M102 90V66M58 68Q80 92 102 68M52 90h56"/></g>
+  <text x="80" y="108" text-anchor="middle" font-family="JetBrains Mono" font-size="6.5" fill="#ffc2cb" letter-spacing="1.5">ROUTE COMPLETE</text>
+  <ellipse cx="62" cy="44" rx="16" ry="7" fill="#fff" opacity=".2" transform="rotate(-30 62 44)"/>
+</symbol>
+
+<!-- icons -->
+<symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9H4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z M5 17a3 3 0 0 1 3-3h11" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+<symbol id="i-map" viewBox="0 0 24 24"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2zM9 4v14M15 6v14" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 21a8 8 0 0 1 16 0" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M16 16l4 4" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4" fill="none" stroke="currentColor" stroke-width="2.2"/></symbol>
+<symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-scan" viewBox="0 0 24 24"><path d="M4 9V5h4M16 5h4v4M20 15v4h-4M8 19H4v-4M7 12h10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+</svg>
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <!-- Cabot Tower -->
+  <symbol id="st-cabot" viewBox="0 0 120 156">
+    <rect width="120" height="156" fill="url(#skyB)"/>
+    <circle cx="90" cy="26" r="10" fill="#ffd23a"/>
+    <path d="M14 22h18a5 5 0 0 0-8-5 6 6 0 0 0-10 5z" fill="#fff"/>
+    <path d="M0 96c26-22 56-30 84-22s28 10 36 14v40H0z" fill="#3fae68"/>
+    <path d="M0 108c30-12 60-14 120-4v24H0z" fill="#2f8a52"/>
+    <path d="M52 86V40h-3v-6h22v6h-3v46z" fill="#d98a5a"/>
+    <path d="M49 34v-4h3v3h3v-3h3v3h4v-3h3v3h3v-3h3v4z" fill="#b8673d"/>
+    <path d="M56 30l4-16 4 16z" fill="#b8673d"/><path d="M60 14V6" stroke="#3a2a40" stroke-width="1.2"/><path d="M60 6h8l-2 3 2 3h-8z" fill="#e2302c"/>
+    <rect x="57" y="44" width="6" height="10" rx="3" fill="#3a2a40"/><rect x="57" y="62" width="6" height="10" rx="3" fill="#3a2a40"/>
+    <rect x="52" y="56" width="16" height="2" fill="#b8673d"/>
+    <g fill="#2f8a52"><circle cx="24" cy="92" r="9"/><circle cx="34" cy="88" r="7"/><circle cx="92" cy="86" r="8"/><circle cx="102" cy="90" r="9"/></g>
+    <g fill="#5cc47e"><circle cx="20" cy="88" r="4"/><circle cx="98" cy="84" r="4"/></g>
+    <path d="M30 128c10-10 20-14 30-14s20 4 30 14" stroke="#fff" stroke-opacity=".5" stroke-width="2" stroke-dasharray="3 4" fill="none"/>
+    <rect width="120" height="128" fill="url(#grain)"/>
+    <rect y="126" width="120" height="30" fill="#fff"/>
+    <text x="60" y="146" text-anchor="middle" font-family="Alfa Slab One" font-size="11.5" fill="#2f8a52">CABOT TOWER</text>
+  </symbol>
+  <!-- Guitar shop -->
+  <symbol id="st-guitar" viewBox="0 0 120 156">
+    <rect width="120" height="156" fill="#ffd23a"/>
+    <circle cx="60" cy="66" r="44" fill="#ffe27a"/>
+    <g transform="rotate(-32 60 70)">
+      <rect x="56" y="10" width="8" height="58" fill="#7a4a35"/>
+      <rect x="53" y="4" width="14" height="12" rx="3" fill="#3a2a40"/>
+      <circle cx="51" cy="8" r="2" fill="#3a2a40"/><circle cx="69" cy="8" r="2" fill="#3a2a40"/><circle cx="51" cy="13" r="2" fill="#3a2a40"/><circle cx="69" cy="13" r="2" fill="#3a2a40"/>
+      <path d="M60 60c-14 0-20 8-18 18 1 6-6 8-6 18 0 14 12 22 24 22s24-8 24-22c0-10-7-12-6-18 2-10-4-18-18-18z" fill="#ff5a36"/>
+      <circle cx="60" cy="80" r="7" fill="#3a2a40"/>
+      <rect x="52" y="100" width="16" height="4" rx="1" fill="#3a2a40"/>
+      <g stroke="#fff" stroke-width=".6" opacity=".8"><path d="M58 14v88M60 14v88M62 14v88"/></g>
+    </g>
+    <path d="M94 24v18" stroke="#2c44d6" stroke-width="3"/><ellipse cx="90" cy="43" rx="5" ry="4" fill="#2c44d6"/><path d="M94 24l8 4" stroke="#2c44d6" stroke-width="3"/>
+    <path d="M20 96v14" stroke="#e2302c" stroke-width="3"/><ellipse cx="16" cy="111" rx="5" ry="4" fill="#e2302c"/>
+    <rect width="120" height="128" fill="url(#grain)"/>
+    <rect y="126" width="120" height="30" fill="#fff"/>
+    <text x="60" y="147" text-anchor="middle" font-family="Alfa Slab One" font-size="13" fill="#e2502c">GUITARS</text>
+  </symbol>
+  <!-- Bakery -->
+  <symbol id="st-bakery" viewBox="0 0 120 156">
+    <rect width="120" height="156" fill="#ffc1d6"/>
+    <path d="M0 0h120v22H0z" fill="#fff"/>
+    <path d="M0 0h15v22H0zM30 0h15v22H30zM60 0h15v22H60zM90 0h15v22H90z" fill="#e2302c"/>
+    <path d="M0 22c4 6 11 6 15 0 4 6 11 6 15 0 4 6 11 6 15 0 4 6 11 6 15 0 4 6 11 6 15 0 4 6 11 6 15 0 4 6 11 6 15 0 4 6 11 6 15 0z" fill="#e2302c"/>
+    <ellipse cx="60" cy="100" rx="46" ry="8" fill="#e98fb0"/>
+    <path d="M22 88c8-30 68-30 76 0-10-6-22-8-38-8s-28 2-38 8z" fill="#e8a04a"/>
+    <path d="M22 88c4 6 14 8 20 4 6 4 30 4 36 0 6 4 16 2 20-4-14-4-62-4-76 0z" fill="#c97a2e"/>
+    <g stroke="#a85f22" stroke-width="2" fill="none" stroke-linecap="round"><path d="M42 66c2 8 2 16 0 24M60 62v28M78 66c-2 8-2 16 0 24"/></g>
+    <rect x="80" y="42" width="26" height="14" rx="7" fill="#d98a5a"/><path d="M86 44l4 10M94 44l4 10" stroke="#b8673d" stroke-width="2"/>
+    <circle cx="20" cy="50" r="7" fill="#fff"/><circle cx="20" cy="50" r="3" fill="#e2302c"/>
+    <rect width="120" height="128" fill="url(#grain)"/>
+    <rect y="126" width="120" height="30" fill="#fff"/>
+    <text x="60" y="147" text-anchor="middle" font-family="Alfa Slab One" font-size="13" fill="#c8553d">BAKERY</text>
+  </symbol>
+</svg>
+
+<aside class="notes">
+  <span class="k">SHOP PASSPORT · PROTOTYPE</span>
+  <h1>Tap around.<br><span>It's all live.</span></h1>
+  <ol>
+    <li>Start your passport, then swipe the page to turn through each series.</li>
+    <li>Tap a stamp to see its story. Tap a dashed slot to find where to collect it.</li>
+    <li>Open the map and tap a locked pin, then check in.</li>
+    <li>Or use Scan to simulate a shop's QR code.</li>
+    <li>Collect Cabot Tower to complete Landmarks and earn the Bristol Seal.</li>
+  </ol>
+  <button class="rst" id="resetSide">Restart prototype</button>
+</aside>
+
+<div class="phone"><div class="scr" id="scr">
+  <div class="sb" id="sb"><span>9:41</span><i class="di"></i><b></b></div>
+
+  <!-- Onboarding -->
+  <section class="view on" id="v-onb">
+    <div class="onb-art">
+      <svg class="path" viewBox="0 0 300 400" preserveAspectRatio="none" fill="none"><path d="M170 80c80 0 100 70 70 130" stroke="#7ad0f0" stroke-width="1.6" stroke-dasharray="4 5"/><path d="M70 200c-34 34-24 110 34 130" stroke="#ff6a3d" stroke-width="1.6" stroke-dasharray="4 5"/></svg>
+      <div class="stamp a" style="--paper:#8fd3e8"><svg><use href="#st-bridge"/></svg></div>
+      <div class="stamp b" style="--paper:#ffb08f"><svg><use href="#st-balloon"/></svg></div>
+    </div>
+    <div class="onb-t">
+      <h2>Collect Stamps.<br><span>Explore Bristol.</span></h2>
+      <p>Visit independent shops and landmarks, earn their stamps and fill your city passport.</p>
+      <button class="btn" data-go="passport">Start my passport</button>
+      <button class="skip" data-go="map">Explore the map first</button>
+    </div>
+  </section>
+
+  <!-- Passport -->
+  <section class="view" id="v-passport">
+    <div class="hd">
+      <div><small id="pcount">My Passport</small><h3>Bristol, Vol.01</h3></div>
+      <button class="av" data-go="me" aria-label="Profile"></button>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="ppwrap" id="ppwrap"><div class="ppage" id="ppage"></div></div>
+  </section>
+
+  <!-- Map -->
+  <section class="view" id="v-map">
+    <svg class="mapbg" viewBox="0 0 300 640" preserveAspectRatio="xMidYMid slice">
+      <rect width="300" height="640" fill="#eef1e8"/>
+      <rect x="196" y="40" width="104" height="110" rx="14" fill="#d3ebcb"/><rect x="0" y="380" width="80" height="170" rx="14" fill="#d3ebcb"/><rect x="100" y="270" width="70" height="60" rx="30" fill="#d3ebcb"/>
+      <path d="M0 140h300M0 260h300M0 420h300M80 0v640M210 0v640M0 40l300 150M300 330L40 640M140 0l20 640" stroke="#fff" stroke-width="10"/>
+      <path d="M-10 470C70 430 110 500 170 474S260 410 310 434V490C260 470 230 530 170 532S80 490-10 520z" fill="#a3d8ec"/>
+      <path d="M-10 480C70 440 110 510 170 484" stroke="#fff" stroke-opacity=".6" stroke-width="1.5" fill="none" stroke-dasharray="6 6"/>
+      <g fill="#b7dfa9"><circle cx="230" cy="80" r="11"/><circle cx="250" cy="100" r="9"/><circle cx="30" cy="430" r="10"/><circle cx="135" cy="300" r="10"/></g>
+      <text x="40" y="560" font-family="JetBrains Mono" font-size="8" fill="#7aa7b8" letter-spacing="2">RIVER AVON</text>
+    </svg>
+    <div class="msearch"><svg><use href="#i-search"/></svg>Search shops, routes, stamps</div>
+    <div class="me-dot" style="left:50%;top:62%"></div>
+    <div id="pins"></div>
+  </section>
+
+  <!-- Scan -->
+  <section class="view" id="v-scan">
+    <div class="cam"></div>
+    <div class="shopfront"><svg viewBox="0 0 120 128" style="width:100%"><use href="#st-cafe"/></svg></div>
+    <div class="scan-top"><button class="cbtn" data-go="passport" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button><button class="cbtn" aria-label="Torch"><svg viewBox="0 0 24 24"><path d="M9 2h6l-1 8h4L9 22l2-9H7z" fill="currentColor"/></svg></button></div>
+    <div class="vf"><i></i><i></i><i></i><i></i><div class="line"></div></div>
+    <div class="scan-ui">
+      <h3>Scan the shop's code</h3>
+      <p>Find the Shop Passport QR at the counter to collect its stamp.</p>
+      <button class="btn" id="simScan">Simulate a scan</button>
+    </div>
+  </section>
+
+  <!-- Me -->
+  <section class="view" id="v-me">
+    <div class="hd"><div><small>Explorer since Nov 2026</small><h3>Your Journey</h3></div><span class="av"></span></div>
+    <div class="me-scroll">
+      <div class="mecard" id="mestats"></div>
+      <div class="sec"><h4>Series<span>Complete one to earn a seal</span></h4><div id="mseries"></div></div>
+      <div class="sec"><h4>Seals<span id="sealcount"></span></h4><div class="seals" id="mseals"></div></div>
+      <button class="resetbtn" id="resetMe">Reset demo</button>
+    </div>
+  </section>
+
+  <nav class="nav hide" id="nav">
+    <button data-go="passport" aria-label="Passport"><svg viewBox="0 0 24 24"><use href="#i-book"/></svg></button>
+    <button data-go="map" aria-label="Map"><svg viewBox="0 0 24 24"><use href="#i-map"/></svg></button>
+    <button data-go="scan" aria-label="Scan"><svg viewBox="0 0 24 24"><use href="#i-scan"/></svg></button>
+    <button data-go="me" aria-label="Me"><svg viewBox="0 0 24 24"><use href="#i-user"/></svg></button>
+  </nav>
+
+  <div class="backdrop" id="backdrop"></div>
+  <div class="sheet" id="sheet"></div>
+
+  <div class="unlock" id="unlock"></div>
+  <div class="ach" id="ach"></div>
+  <div class="toast" id="toast"></div>
+  <i class="hi"></i>
+</div></div>
+
+<script>
+const SHOPS = {
+  clifton:{sym:'st-bridge',paper:'#ffb08f',name:'Clifton Suspension Bridge',short:'Clifton',area:'Clifton Down',series:'landmarks',limited:'LIMITED · 042/500',dist:'18 min walk',x:16,y:36,story:'Brunel’s bridge over the Avon Gorge. This limited stamp is only issued on autumn sunset walks.'},
+  harbour:{sym:'st-harbour',paper:'#ffe28a',name:'Harbourside',short:'Harbourside',area:'Floating Harbour',series:'landmarks',dist:'9 min walk',x:58,y:72,story:'Cranes, steamships and colourful warehouses along the old floating harbour.'},
+  park:{sym:'st-park',paper:'#9ddcf0',name:'Park Street',short:'Park Street',area:'City Centre',series:'landmarks',dist:'4 min walk',x:48,y:50,story:'One of Bristol’s steepest shopping streets, crowned by a gothic tower.'},
+  cabot:{sym:'st-cabot',paper:'#b6e7c4',name:'Cabot Tower',short:'Cabot Tower',area:'Brandon Hill',series:'landmarks',dist:'7 min walk',x:30,y:60,story:'Climb the tower on Brandon Hill for the best view over the whole city.'},
+  records:{sym:'st-records',paper:'#d8ccff',name:'Vinyl Records',short:'Vinyl Records',area:'Nelson Street',series:'music',dist:'6 min walk',x:60,y:34,story:'Crates of new and second-hand vinyl, plus free in-store gigs on Fridays.'},
+  guitar:{sym:'st-guitar',paper:'#ffc1d6',name:'Croft Guitars',short:'Croft Guitars',area:'Stokes Croft',series:'music',dist:'12 min walk',x:82,y:25,story:'A tiny workshop that repairs, builds and sells guitars. Say hi to the shop dog.'},
+  cafe:{sym:'st-cafe',paper:'#b6e7c4',name:'Café 56',short:'Café 56',area:'Gloucester Road',series:'coffee',dist:'4 min walk',x:72,y:48,story:'Small-batch roasts and the best window seat on Gloucester Road.'},
+  bakery:{sym:'st-bakery',paper:'#ffd2a8',name:'Corner Bakery',short:'Corner Bakery',area:'Gloucester Road',series:'coffee',dist:'5 min walk',x:88,y:39,story:'Croissants out of the oven at 8am. Get there early.'},
+  fiesta:{sym:'st-balloon',paper:'#8fd3e8',name:'Balloon Fiesta',short:'Balloon Fiesta',area:'Ashton Court',series:'events',limited:'SEASONAL',dist:'25 min walk',x:16,y:90,story:'Hundreds of hot air balloons rise over the city every August.'}
+};
+const SERIES=[{id:'landmarks',name:'Landmarks',seal:'Bristol Seal'},{id:'music',name:'Music',seal:'Encore Seal'},{id:'coffee',name:'Coffee Trail',seal:'Barista Seal'},{id:'events',name:'Events',seal:'Fiesta Seal'}];
+const POS=[{l:9,t:17,r:-6},{l:54,t:15,r:5},{l:12,t:47,r:4},{l:55,t:45,r:-4}];
+const INITIAL={clifton:'02·XI·26',harbour:'05·XI·26',park:'09·XI·26',records:'11·XI·26',cafe:'14·XI·26'};
+const TODAY='16·XI·26';
+let S;
+function reset(){S={collected:{...INITIAL},page:0,view:'onb',newId:null,sel:null};}
+reset();
+
+const $=s=>document.querySelector(s);
+const items=sid=>Object.keys(SHOPS).filter(k=>SHOPS[k].series===sid);
+const got=sid=>items(sid).filter(k=>S.collected[k]);
+const total=()=>Object.keys(SHOPS).length, have=()=>Object.keys(S.collected).length;
+const stampHTML=(id,cls='')=>{const s=SHOPS[id];return `<div class="stamp ${cls}" style="--paper:${s.paper}"><svg viewBox="0 0 120 156"><use href="#${s.sym}"/></svg></div>`};
+const pmHTML=(style='')=>`<svg class="pm" viewBox="0 0 120 120" style="${style}"><use href="#pm"/></svg>`;
+const buzz=()=>{try{navigator.vibrate&&navigator.vibrate(18)}catch(e){}};
+
+/* ---------- navigation ---------- */
+function go(v){
+  closeSheet();
+  S.view=v;
+  document.querySelectorAll('.view').forEach(el=>el.classList.toggle('on',el.id==='v-'+v));
+  $('#nav').classList.toggle('hide',v==='onb');
+  document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.go===v));
+  $('#sb').classList.toggle('light',v==='scan');
+  if(v==='passport')renderPassport();
+  if(v==='map')renderMap();
+  if(v==='me')renderMe();
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b){buzz();go(b.dataset.go)}});
+
+/* ---------- passport ---------- */
+function renderChips(){
+  $('#chips').innerHTML=SERIES.map((s,i)=>`<button class="chip ${i===S.page?'on':''}" data-page="${i}">${s.name}<em>${got(s.id).length}/${items(s.id).length}</em></button>`).join('');
+  $('#pcount').textContent=`My Passport · ${have()} / ${total()} stamps`;
+}
+$('#chips').addEventListener('click',e=>{const c=e.target.closest('[data-page]');if(c)turn(+c.dataset.page)});
+function pageHTML(){
+  const s=SERIES[S.page],ids=items(s.id),n=got(s.id).length,done=n===ids.length;
+  let h=`<div class="pphead"><span>SHOP PASSPORT · BRISTOL</span><span>${String(S.page+1).padStart(2,'0')}</span></div>
+  <div class="pgt"><b>${s.name}</b><span>${n} / ${ids.length}</span></div>
+  <svg class="wm" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="50" cy="50" r="46"/><circle cx="50" cy="50" r="40" stroke-dasharray="2 3"/><path d="M26 64V40M74 64V40M26 42Q50 70 74 42M20 64h60"/></svg>`;
+  ids.forEach((id,i)=>{
+    const p=POS[i],c=S.collected[id];
+    if(c) h+=`<button class="pst ${id===S.newId?'new':''}" data-id="${id}" style="left:${p.l}%;top:${p.t}%;--rot:${p.r}deg">${SHOPS[id].limited?`<div class="holo">${stampHTML(id,'sm')}</div>`:stampHTML(id,'sm')}${i%2===0?pmHTML():''}</button>`;
+    else h+=`<button class="slot" data-id="${id}" style="left:${p.l+1}%;top:${p.t+1}%;--rot:${p.r/2}deg"><span>?</span><small>${SHOPS[id].short}</small></button>`;
+  });
+  h+=`<div class="reward ${done?'':'lock'}"><svg viewBox="0 0 160 200"><use href="#seal"/></svg><div><b>${done?s.seal+' earned':'Complete to earn the '+s.seal}</b><small>${done?'Series complete · '+TODAY:(ids.length-n)+' more stamp'+(ids.length-n>1?'s':'')+' to go'}</small></div></div>
+  <div class="ppfoot"><span>SWIPE TO TURN</span><span class="dots">${SERIES.map((_,i)=>`<i class="${i===S.page?'on':''}"></i>`).join('')}</span></div>`;
+  return h;
+}
+function renderPassport(){renderChips();$('#ppage').innerHTML=pageHTML();S.newId=null}
+function turn(i){
+  if(i<0||i>=SERIES.length||i===S.page)return;
+  const fwd=i>S.page,pg=$('#ppage');buzz();
+  pg.classList.add(fwd?'out-l':'out-r');
+  setTimeout(()=>{
+    S.page=i;renderChips();pg.innerHTML=pageHTML();
+    pg.classList.remove('out-l','out-r');pg.classList.add(fwd?'pre-l':'pre-r');
+    void pg.offsetWidth;pg.classList.remove('pre-l','pre-r');
+  },300);
+}
+let sx=null,moved=false;
+$('#ppwrap').addEventListener('pointerdown',e=>{sx=e.clientX;moved=false});
+$('#ppwrap').addEventListener('pointermove',e=>{if(sx!==null&&Math.abs(e.clientX-sx)>10)moved=true});
+$('#ppwrap').addEventListener('pointerup',e=>{if(sx===null)return;const dx=e.clientX-sx;sx=null;if(Math.abs(dx)>40)turn(S.page+(dx<0?1:-1))});
+$('#ppage').addEventListener('click',e=>{if(moved)return;const b=e.target.closest('[data-id]');if(b){buzz();openShop(b.dataset.id)}});
+
+/* ---------- sheet ---------- */
+function openSheet(html){$('#sheet').innerHTML='<div class="grab"></div>'+html;$('#sheet').classList.add('on');$('#backdrop').classList.add('on')}
+function closeSheet(){$('#sheet').classList.remove('on');$('#backdrop').classList.remove('on');document.querySelectorAll('.pin.sel').forEach(p=>p.classList.remove('sel'))}
+$('#backdrop').addEventListener('click',closeSheet);
+function openShop(id){
+  const s=SHOPS[id],c=S.collected[id];
+  if(c){
+    openSheet(`<div class="sh-big">${s.limited?`<div class="holo">${stampHTML(id)}</div>`:stampHTML(id)}${pmHTML()}</div>
+    <div style="text-align:center">${s.limited?`<span class="tagl">✦ ${s.limited}</span>`:''}<h4 style="font:800 21px 'Inter Tight';letter-spacing:-.02em;margin:2px 0 2px">${s.name}</h4><small style="color:var(--muted);font-size:12px">${s.area} · <span class="st-ok">Collected ${c}</span></small></div>
+    <p class="sh-story" style="text-align:center">${s.story}</p>
+    <div class="sh-actions"><button class="btn ghost sm" data-act="share">Share</button><button class="btn sm" data-act="close">Done</button></div>`);
+  }else{
+    openSheet(`<div class="sh-row"><div class="qslot">?</div><div>${s.limited?`<span class="tagl">✦ ${s.limited}</span>`:''}<h4>${s.name}</h4><small>${s.area} · ${s.dist}</small><small style="margin-top:4px">Not collected yet</small></div></div>
+    <p class="sh-story">${s.story} Visit and check in to reveal this stamp.</p>
+    <div class="sh-actions"><button class="btn ghost sm" data-act="map" data-id="${id}">Show on map</button><button class="btn sm" data-act="checkin" data-id="${id}">I'm here · Check in</button></div>`);
+  }
+}
+$('#sheet').addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]');if(!b)return;buzz();
+  const a=b.dataset.act,id=b.dataset.id;
+  if(a==='close')closeSheet();
+  if(a==='share'){closeSheet();toast('Share card copied ✓')}
+  if(a==='map'){S.sel=id;go('map')}
+  if(a==='checkin'){closeSheet();setTimeout(()=>unlock(id),250)}
+  if(a==='passport'){closeSheet();S.page=SERIES.findIndex(x=>x.id===SHOPS[id].series);go('passport')}
+});
+
+/* ---------- map ---------- */
+function renderMap(){
+  $('#pins').innerHTML=Object.keys(SHOPS).map(id=>{const s=SHOPS[id],c=S.collected[id];
+    return `<button class="pin ${c?'done':''}" data-pin="${id}" style="left:${s.x}%;top:${s.y}%">${c?stampHTML(id,'sm'):`<span class="lk"><svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2.2"><rect x="6" y="11" width="12" height="9" rx="2"/><path d="M9 11V8a3 3 0 0 1 6 0v3"/></svg></span>`}<i>${s.short}</i></button>`}).join('');
+  if(S.sel){const id=S.sel;S.sel=null;setTimeout(()=>mapSheet(id),350)}
+}
+$('#pins').addEventListener('click',e=>{const p=e.target.closest('[data-pin]');if(p){buzz();mapSheet(p.dataset.pin)}});
+function mapSheet(id){
+  const s=SHOPS[id],c=S.collected[id];
+  document.querySelectorAll('.pin').forEach(p=>p.classList.toggle('sel',p.dataset.pin===id));
+  openSheet(`<div class="sh-row">${c?stampHTML(id,'sm'):'<div class="qslot">?</div>'}<div>${s.limited?`<span class="tagl">✦ ${s.limited}</span>`:''}<h4>${s.name}</h4><small>${s.area} · ${s.dist}</small><small class="${c?'st-ok':''}" style="margin-top:4px">${c?'✓ Collected '+c:'● Open now · stamp available'}</small></div></div>
+  <div class="sh-actions" style="margin-top:18px">${c?`<button class="btn sm" data-act="passport" data-id="${id}">View in passport</button>`:`<button class="btn ghost sm" data-act="close">Walk there</button><button class="btn sm" data-act="checkin" data-id="${id}">Check in</button>`}</div>`);
+}
+
+/* ---------- scan ---------- */
+$('#simScan').addEventListener('click',()=>{
+  buzz();const next=Object.keys(SHOPS).find(k=>!S.collected[k]);
+  if(!next){toast('You’ve collected every stamp ✦');return}
+  const btn=$('#simScan');btn.textContent='Reading code…';
+  setTimeout(()=>{btn.textContent='Simulate a scan';unlock(next)},900);
+});
+
+/* ---------- unlock ---------- */
+function unlock(id){
+  const s=SHOPS[id];S.collected[id]=TODAY;S.newId=id;
+  const sid=s.series,complete=got(sid).length===items(sid).length;
+  const cols=['#ff6a3d','#2c44d6','#ffd23a','#3fae68','#ff7aa8','#7ad0f0'];
+  let conf='';for(let i=0;i<34;i++){const a=Math.random()*Math.PI*2,d=110+Math.random()*170;conf+=`<i class="conf" style="background:${cols[i%6]};--x:${Math.cos(a)*d}px;--y:${Math.sin(a)*d+120}px;--r:${Math.random()*720-360}deg;animation-delay:${.82+Math.random()*.12}s"></i>`}
+  const si=SERIES.find(x=>x.id===sid);
+  $('#unlock').innerHTML=`<div class="burst"></div>${conf}
+   <div class="ul-stamp"><div class="drop">${s.limited?`<div class="holo">${stampHTML(id)}</div>`:stampHTML(id)}</div><i class="ink"></i>${pmHTML()}</div>
+   <div class="ul-txt">${s.limited?`<span class="tagl">✦ ${s.limited}</span>`:`<span class="tagl">${si.name.toUpperCase()} · ${got(sid).length}/${items(sid).length}</span>`}
+   <h3>New stamp collected!</h3><p>${s.name} · ${s.area}</p>
+   <div class="sh-actions"><button class="btn ghost" id="ulShare">Share</button><button class="btn" id="ulAdd">Add to Passport</button></div></div>`;
+  const u=$('#unlock');u.classList.remove('on');void u.offsetWidth;u.classList.add('on');
+  setTimeout(buzz,820);
+  $('#ulShare').onclick=()=>toast('Share card copied ✓');
+  $('#ulAdd').onclick=()=>{
+    buzz();u.classList.remove('on');
+    S.page=SERIES.findIndex(x=>x.id===sid);go('passport');
+    if(complete)setTimeout(()=>achievement(si),1100);
+  };
+}
+function achievement(si){
+  $('#ach').innerHTML=`<svg viewBox="0 0 160 200"><use href="#seal"/></svg><h3>${si.name} complete!</h3><p>You earned the ${si.seal}. It’s now pressed into the back of your passport.</p><button class="btn" id="achOk">Wonderful</button>`;
+  $('#ach').classList.add('on');buzz();
+  $('#achOk').onclick=()=>{$('#ach').classList.remove('on');renderPassport()};
+}
+
+/* ---------- me ---------- */
+function renderMe(){
+  const sealsDone=SERIES.filter(s=>got(s.id).length===items(s.id).length).length;
+  const lim=Object.keys(S.collected).filter(k=>SHOPS[k].limited).length;
+  $('#mestats').innerHTML=`<div><b>${have()}</b><small>Stamps</small></div><div><b>${sealsDone}</b><small>Seals</small></div><div><b>${lim}</b><small>Limited</small></div>`;
+  $('#mseries').innerHTML=SERIES.map((s,i)=>{const n=got(s.id).length,t=items(s.id).length,first=items(s.id)[0];
+    return `<button class="prow" style="width:100%;text-align:left" data-sp="${i}">${stampHTML(first,'sm')}<div class="t"><b>${s.name}<em>${n}/${t}</em></b><div class="tr"><i style="width:${n/t*100}%"></i></div></div></button>`}).join('');
+  $('#mseals').innerHTML=SERIES.map(s=>{const ok=got(s.id).length===items(s.id).length;return `<div class="seal ${ok?'':'off'}"><svg viewBox="0 0 160 200"><use href="#seal"/></svg>${s.seal}</div>`}).join('');
+  $('#sealcount').textContent=`${sealsDone} / ${SERIES.length}`;
+}
+$('#mseries').addEventListener('click',e=>{const b=e.target.closest('[data-sp]');if(b){S.page=+b.dataset.sp;go('passport')}});
+
+/* ---------- misc ---------- */
+let tt;function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('on'),1800)}
+function restart(){reset();$('#unlock').classList.remove('on');$('#ach').classList.remove('on');go('onb')}
+$('#resetSide').onclick=restart;$('#resetMe').onclick=()=>{restart();toast('Demo reset')};
+go('onb');
+</script>
+</body>
+</html>
