@@ -591,6 +591,78 @@ body[data-skin=halloween] .nav{background:color-mix(in srgb,var(--card) 90%,tran
 .pgt span{font:600 11px 'JetBrains Mono';background:color-mix(in srgb,var(--accent) 10%,#fff);color:var(--accent);padding:3px 8px;border-radius:99px}
 /* map: docked bar leaves room */
 .fab{bottom:calc(96px + env(safe-area-inset-bottom))}
+/* ===== Apple HIG layout layer =====
+   4/8pt spacing · 20pt side margins · 34pt large titles · 44pt minimum touch targets
+   50pt primary buttons anchored to the bottom safe area · 49pt tab bar + home-indicator inset */
+.scr{--m:20px;--tab:49px;--safe-b:env(safe-area-inset-bottom);--safe-t:env(safe-area-inset-top)}
+/* fill the real screen: --app-h is measured in JS (iOS Home Screen apps report a short height) */
+@media (max-width:760px){
+  html,body{background:#f4f5f7}
+  body{background:var(--app)}
+  .phone{position:fixed;top:0;left:0;right:0;bottom:auto;height:var(--app-h,100dvh)}
+  .view{padding-top:calc(var(--safe-t) + 8px)}
+  .vpad{padding:calc(var(--safe-t) + 12px) var(--m) calc(var(--safe-b) + 16px)}
+  #v-map,#v-scan,#v-shop,#v-cover{padding-top:0}
+  .mhd{padding-top:calc(var(--safe-t) + 12px)}
+}
+/* buttons */
+.btn{min-height:50px;height:50px;padding:0 16px;border-radius:14px;font:600 17px/1 Inter;display:flex;align-items:center;justify-content:center;letter-spacing:-.01em}
+.btn.sm{min-height:44px;height:44px;font-size:15px;border-radius:12px}
+.skip{min-height:44px;font-size:15px;display:flex;align-items:center;justify-content:center;margin:4px auto 0}
+/* welcome: content anchored to the bottom safe area */
+.onb-t{padding:0 var(--m) calc(var(--safe-b) + 16px)}
+.onb-t h2{font-size:34px;line-height:1.08;letter-spacing:-.02em;margin-bottom:8px}
+.onb-t p{font-size:15px;line-height:1.45;margin-bottom:24px}
+/* question screens */
+.vpad h2{font-size:34px;line-height:1.1;letter-spacing:-.02em;margin:8px 0}
+.vpad .sub{font-size:15px;line-height:1.4;margin-bottom:24px}
+.qtop{min-height:44px;margin-bottom:16px}
+.qtop .x{width:44px;height:44px;margin-left:-12px}
+.opts{gap:12px}
+.opt{min-height:56px;padding:16px;font-size:16px;border-radius:14px}
+.qfoot{padding-top:16px}
+.rolecard{min-height:88px;padding:16px;border-radius:16px;margin-bottom:12px}
+/* large title header */
+.hd{padding:8px var(--m) 0;align-items:flex-end}
+.hd small{font-size:13px;line-height:18px}
+.hd h3{font-size:34px;line-height:41px;letter-spacing:-.02em;margin:0}
+.hd .av{width:36px;height:36px;margin-bottom:4px}
+.chips,.tabs2{padding:12px var(--m) 8px;gap:8px}
+.chip{min-height:34px;padding:0 14px;font-size:14px;display:inline-flex;align-items:center;border-radius:17px}
+.nextbar{margin:0 var(--m) 12px;width:calc(100% - 2*var(--m));min-height:56px;padding:8px 16px;border-radius:14px}
+.nextbar b{font-size:15px}.nextbar small{font-size:13px}.nextbar .go{font-size:15px}
+/* passport page: 20pt margins, clear of the tab bar and the raised Scan button */
+.ppwrap{padding:0 calc(var(--m) + 10px) calc(var(--tab) + var(--safe-b) + 20px) var(--m)}
+/* standard tab bar: flush to the bottom, 49pt + home-indicator inset, hairline top edge */
+.nav{left:0;right:0;bottom:0;height:calc(var(--tab) + var(--safe-b));padding:0 4px var(--safe-b);border-radius:0;align-items:stretch;justify-content:space-around;box-shadow:0 -.5px 0 rgba(0,0,0,.18)}
+@media (max-width:760px){.nav{bottom:0}}
+.nav button{justify-content:center;gap:2px;padding:0;min-width:44px}
+.nav button svg{width:24px;height:24px}
+.nav button span{font:500 10px/12px Inter}
+.nav button.on{color:var(--accent)!important}
+.nav button.on::after{display:none}
+.nav button.scanbtn{justify-content:flex-end;padding-bottom:3px}
+.nav button.scanbtn b{width:56px;height:56px;margin-top:-22px;margin-bottom:1px;border-width:4px}
+.nav button.scanbtn b svg{width:26px;height:26px}
+.nav.hide{transform:translateY(100%)}
+/* lists and scrolling pages end above the tab bar */
+.me-scroll,.rlist{padding-bottom:calc(var(--tab) + var(--safe-b) + 24px)}
+.mecard,.sec{margin-left:var(--m);margin-right:var(--m)}.sec{padding-left:0;padding-right:0}
+.mecard{margin-top:16px}
+.rlist{padding-left:var(--m);padding-right:var(--m)}
+/* map overlays */
+@media (max-width:760px){.msearch{top:calc(var(--safe-t) + 8px)}.maptop{top:calc(var(--safe-t) + 60px)}}
+.msearch{left:16px;right:16px;min-height:44px;padding:0 16px;font-size:15px;border-radius:12px}
+.maptop{left:16px;right:16px}
+.routecard{bottom:calc(var(--tab) + var(--safe-b) + 12px);left:16px;right:16px;border-radius:14px}
+/* shop page: bottom button anchored to the safe area */
+.sticky{left:var(--m);right:var(--m);bottom:calc(var(--safe-b) + 12px)}
+.sblock{padding:16px var(--m) 0}
+/* cover + scan bottom buttons */
+.coverbtn{left:var(--m);right:var(--m);bottom:calc(var(--safe-b) + 16px)}
+.scan-ui{padding:0 var(--m) calc(var(--tab) + var(--safe-b) + 24px)}
+/* sheets: content sits above the home indicator */
+.sheet{left:0;right:0;bottom:0;border-radius:14px 14px 0 0;padding:8px var(--m) calc(var(--safe-b) + 16px)}
 /* shop page: content clears the sticky button */
 .shopscroll{padding-bottom:calc(120px + env(safe-area-inset-bottom))}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
@@ -1720,6 +1792,15 @@ else go('onb');
 /* “add to home screen” hint when opened in a mobile browser tab */
 function maybeA2HS(){try{if(window.__a2)return;const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
   if(!standalone&&innerWidth<=760&&!S.a2hs){const d=document.createElement('div');d.className='a2hs';d.innerHTML='<span><b>Add Shop Passport to your Home Screen</b><br>Opens full screen, like an app.</span><button class="add" style="opacity:1;background:#fff;color:#111;border-radius:99px;padding:6px 12px;font:600 11px Inter">Add</button><button class="x">✕</button>';d.querySelector('.x').onclick=()=>{d.remove();S.a2hs=true;save()};d.querySelector('.add').onclick=()=>{d.remove();S.a2hs=true;save();installApp()};window.__a2=1;$('#scr').appendChild(d);setTimeout(()=>d.remove(),12000)}}catch(e){}}
+/* ---------- fill the real screen ---------- */
+function fitViewport(){try{
+  let h=window.innerHeight;
+  const ios=/iPhone|iPad|iPod/.test(navigator.userAgent)||(/Macintosh/.test(navigator.userAgent)&&'ontouchend' in document);
+  /* iOS Home Screen apps with a translucent status bar report a height short by the status bar */
+  if(ios&&isStandalone()){const sh=Math.max(screen.height,screen.width)>h&&innerWidth<innerHeight?screen.height:h;h=Math.max(h,sh)}
+  document.documentElement.style.setProperty('--app-h',h+'px');
+}catch(e){}}
+fitViewport();addEventListener('resize',fitViewport);addEventListener('orientationchange',()=>setTimeout(fitViewport,300));
 /* ---------- add to Home Screen / install ---------- */
 function isStandalone(){try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(e){return false}}
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();window.__bip=e});
